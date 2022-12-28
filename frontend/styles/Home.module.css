@@ -1,0 +1,96 @@
+.map
+{
+  padding-top:30px;
+  padding-left:30px;
+  -margin-top:60px;
+  -margin-left:30px;
+}
+
+.container
+{
+  float:left;
+  position:absolute;
+  -padding:50%;
+  width:318;
+  height:318;
+}
+
+.x
+{
+  margin-left:30px;
+  float:left;
+  position:absolute;
+  background:#ccc;
+  width:288px;
+  height:30px;
+}
+
+.y
+{
+  margin-top:30px;
+  float:right;
+  position:absolute;
+  background:#ccc;
+  height:288px;
+  width:30px;
+}
+
+.info
+{
+  left:340px;
+  top:50px;
+  float:left;
+  position:absolute;
+  height:100px;
+  width:100px;
+}
+
+.arrows
+{
+  width:192px;
+  height:192px;
+  position:absolute;
+  left:400px;
+  top:120px;
+}
+
+
+.warriors
+{
+  position:absolute;
+  width:128px;
+  height:64px;
+  left:360px;
+  top:35px;
+}
+
+.img
+{
+  position:absolute;
+  width:64px;
+  height:64px;
+}
+.number
+{
+  margin-left:64px;
+  margin-top:23px;
+  position:absolute;
+  width:64px;
+  height:32px;
+  font-size:20pt;
+}
+
+.map_element
+{
+  background-color:ForestGreen;
+  border:1px solid;
+  border-color:green;
+}
+
+.war_situation
+{
+  position:absolute;
+  margin-left:600px;
+  width:400px;
+  height:100px;
+}
