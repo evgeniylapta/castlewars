@@ -1,0 +1,28 @@
+@import "../../styles/variables";
+
+.mapNumbers {
+  position: absolute;
+  display: flex;
+
+  > * {
+    width: $cellSize;
+    height: $cellSize;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.mapNumbersBottom {
+  height: $cellSize;
+  left: $cellSize;
+  bottom: 0;
+  width: calc(100% - $cellSize)
+}
+
+.mapNumbersLeft {
+  left: 0;
+  height: calc(100% - $cellSize);
+  width: $cellSize;
+  flex-direction: column;
+}

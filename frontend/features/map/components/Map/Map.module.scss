@@ -1,0 +1,38 @@
+@import "../../styles/variables";
+
+.mapContainer {
+  display: flex;
+  align-items: center;
+
+  > * + * {
+    margin-left: 10px;
+  }
+}
+
+.mapWrap {
+  position: relative;
+  display: flex;
+  padding-top: $cellSize;
+  padding-left: $cellSize;
+  padding-bottom: $cellSize;
+}
+
+.map {
+  display: grid;
+  border-top: 1px solid #ccc;
+  border-left: 1px solid #ccc;
+}
+
+.current {
+  border: 1px solid red
+}
+
+.mapControlsWrap {
+  position: absolute;
+  top: 0;
+  width: calc(100% - $cellSize);
+  height: $cellSize;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

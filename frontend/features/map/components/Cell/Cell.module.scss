@@ -1,0 +1,30 @@
+@import "../../styles/variables";
+
+.mapItem {
+  position: relative;
+  width: $cellSize;
+  height: $cellSize;
+  border-right: 1px solid #ccc;
+  border-bottom: 1px solid #ccc;
+  background-color: ForestGreen;
+  display: flex;
+  justify-content: center;
+  align-items: center
+}
+
+.selectable {
+  cursor: pointer;
+}
+
+.selection {
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  left: -1px;
+  right: -1px;
+  border: 1px solid coral;
+
+  &.current {
+    border-color: deepskyblue;
+  }
+}
