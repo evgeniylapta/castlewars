@@ -50,26 +50,27 @@ function useMapControlsHandle(currentCenterPoint: Point, setCurrentCenterPoint: 
   }
 }
 
-function useExpanding() {
-  const [isExtendedMap, setIsExtendedMap] = useState(false)
+function useExpandingHandle() {
+  const [isExpandedMap, setIsExpandedMap] = useState(false)
 
   return {
-    isExtendedMap,
-    expandMap: useCallback(() => setIsExtendedMap(true), [isExtendedMap]),
-    collapseMap: useCallback(() => setIsExtendedMap(false), [isExtendedMap])
+    isExpandedMap,
+    expandMap: useCallback(() => setIsExpandedMap(true), [isExpandedMap]),
+    collapseMap: useCallback(() => setIsExpandedMap(false), [isExpandedMap])
   }
 }
 
-function useCenterPoint(initialPoint: Point) {
+function useCenterPointHandle(initialPoint: Point, goToMyCastlePointCallback?: () => void, selectedPoint?: Point) {
   const [currentCenterPoint, setCurrentCenterPoint] = useState<Point>(initialPoint)
 
   return {
     currentCenterPoint,
     setCurrentCenterPoint,
-    goToMyCastlePointFactory: useCallback((callback?: () => void) => () => {
+    goToSelectedCastle: useCallback(() => selectedPoint && setCurrentCenterPoint(selectedPoint), [selectedPoint]),
+    goToMyCastlePoint: useCallback(()=> {
       setCurrentCenterPoint(initialPoint)
-      callback?.()
-    }, [initialPoint])
+      goToMyCastlePointCallback?.()
+    }, [initialPoint, goToMyCastlePointCallback])
   }
 }
 
@@ -88,18 +89,25 @@ function useSelection(defaultPoint: Point) {
   }
 }
 
+function useMapSize(isExpandedMap: boolean) {
+  const minSize = 9;
+  const maxSize = 15;
+
+  return useMemo(() => isExpandedMap ? maxSize : minSize, [isExpandedMap, minSize, maxSize])
+}
+
 const useContext = () => {
   const myCastlePoint = useMyCastlePoint()
 
   const { setSelectedPoint, selectedPoint } = useSelection(myCastlePoint)
 
-  const expanding = useExpanding()
-  const { isExtendedMap } = expanding
+  const expandingHandle = useExpandingHandle()
+  const { isExpandedMap } = expandingHandle
 
-  const { setCurrentCenterPoint, goToMyCastlePointFactory, currentCenterPoint } = useCenterPoint(myCastlePoint)
-  const goToMyCastlePoint = goToMyCastlePointFactory(() => setSelectedPoint(undefined))
+  const centerPointHandle = useCenterPointHandle(myCastlePoint, () => setSelectedPoint(undefined), selectedPoint)
+  const { currentCenterPoint, setCurrentCenterPoint } = centerPointHandle
 
-  const mapSize = useMemo(() => isExtendedMap ? 15 : 9, [isExtendedMap])
+  const mapSize = useMapSize(isExpandedMap)
 
   const { pointsList, startPoint } = usePoints(currentCenterPoint, mapSize)
 
@@ -108,12 +116,13 @@ const useContext = () => {
     pointsList,
     mapSize,
     controlsHandle: useMapControlsHandle(currentCenterPoint, setCurrentCenterPoint),
-    expanding,
-    goToMyCastlePoint,
+    centerPointHandle,
+    expandingHandle,
     selection: {
       selectedPoint,
       setSelectedPoint
-    }
+    },
+    myCastlePoint
   }
 }
 
