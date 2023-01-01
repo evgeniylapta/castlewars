@@ -5,7 +5,7 @@ import { useAuthContext } from '../../auth';
 import { useMemo } from 'react';
 
 const useContext = () => {
-  const { currentUserId } = useAuthContext()
+  const { userData: { userId } } = useAuthContext()
 
   const castles: Castle[] = [
     {
@@ -29,10 +29,10 @@ const useContext = () => {
   ]
 
   const myCastlePoint: Point | undefined = useMemo(() => {
-    const found = castles.find(({ userId }) => userId === currentUserId)
+    const found = castles.find(({ userId }) => userId === userId)
 
     return found ? { x: found.x, y: found.y } : undefined
-  }, [currentUserId, castles]);
+  }, [userId, castles]);
 
   return {
     castles,

@@ -1,0 +1,13 @@
+.wrap {
+  text-transform: capitalize;
+  display: flex;
+  align-items: center;
+
+  > * + * {
+    margin-left: 5px;
+  }
+}
+
+.img {
+  max-height: 50px;
+}

@@ -1,0 +1,30 @@
+.title {
+  font-weight: bold;
+}
+
+.section {
+  & + .section {
+    margin-top: 20px;
+  }
+}
+
+.sectionBody {
+  margin-top: 5px;
+}
+
+.unit {
+  margin-top: 5px;
+}
+
+.gold {
+  width:25px;
+}
+
+.goldWrap {
+  display: flex;
+  align-items: center;
+
+  > * + * {
+    margin-left: 5px;
+  }
+}

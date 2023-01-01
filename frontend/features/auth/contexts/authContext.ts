@@ -1,8 +1,14 @@
 import constate from 'constate'
+import { TUser } from '../types';
 
 const useContext = () => {
+  const userData: TUser = {
+    userId: 1,
+    userName: 'Username'
+  }
+
   return {
-    currentUserId: 1
+    userData
   }
 }
 

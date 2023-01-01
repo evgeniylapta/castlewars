@@ -12,7 +12,7 @@ import MapActions from '../MapActions/MapActions';
 function useModels() {
   const { pointsList } = useMapContext()
   const { castles } = useCastlesContext()
-  const { currentUserId } = useAuthContext()
+  const { userData: { userId } } = useAuthContext()
 
   return useMemo(() => {
     return pointsList.map((point) => {
@@ -21,11 +21,11 @@ function useModels() {
       return {
         key: `${point.x}_${point.y}`,
         isCastle: !!foundCastle,
-        isOwnCastle: foundCastle?.userId === currentUserId,
+        isOwnCastle: foundCastle?.userId === userId,
         point
       }
     })
-  }, [pointsList, castles, currentUserId])
+  }, [pointsList, castles, userId])
 }
 
 const Map: FC = () => {

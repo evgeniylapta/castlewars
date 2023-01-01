@@ -1,8 +1,9 @@
 import styles from './Home.module.scss'
-import legionnaire from '../../../map/assets/legionnaire.png'
 import { Map } from '../../../map';
 import { CastlesProvider } from '../../../castles';
 import { AuthProvider } from '../../../auth';
+import { WarStatus } from '../../../warStatus';
+import { CastleInfo } from '../../../castleInfo';
 
 export default function Home() {
   return (
@@ -11,15 +12,9 @@ export default function Home() {
         <div className={styles.container}>
           <Map />
 
-          <div className={styles.warriors} id="warriors">
-            <div className={styles.img} id="img">
-              <img src={legionnaire.src} />
-              <div className={styles.number} id="number" />
-            </div>
+          <CastleInfo className={styles.warSituation} />
 
-            <div className={styles.war_situation} id="war_situation">
-            </div>
-          </div>
+          <WarStatus className={styles.warSituation} />
         </div>
       </CastlesProvider>
     </AuthProvider>
