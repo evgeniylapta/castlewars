@@ -1,7 +1,7 @@
 import express from 'express';
-import castleRoute from './castle.route';
-import userRoute from './user.route';
-import config from '../../config/config';
+import castleRoute from './features/castle/castle.route';
+import userRoute from './features/user/user.route';
+import config from './config/config';
 
 const router = express.Router();
 

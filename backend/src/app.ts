@@ -6,7 +6,7 @@ import compression from 'compression';
 import cors from 'cors';
 import httpStatus from 'http-status';
 import ApiError from './utils/ApiError';
-import routes from './routes/v1';
+import routes from './routes';
 
 const app = express()
 
