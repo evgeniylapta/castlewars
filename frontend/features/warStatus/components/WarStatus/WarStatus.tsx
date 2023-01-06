@@ -1,9 +1,13 @@
 import { FC } from 'react';
-import { TClassNameable } from '../../../../shared/types';
+import InfoSection from '../../../../shared/components/InfoSection/InfoSection';
 
-const WarStatus: FC<TClassNameable> = ({ className }) => {
+const WarStatus: FC = () => {
   return (
-    <div className={className}>War status</div>
+    <div>
+      <InfoSection title="War status">
+        <div></div>
+      </InfoSection>
+    </div>
   )
 }
 

@@ -1,37 +1,45 @@
 import styles from './Map.module.scss'
 import { FC, useMemo } from 'react';
-import classNames from 'classnames';
 import Cell from '../Cell/Cell';
 import Controls from '../Controls/Controls';
-import { MapProvider, useMapContext } from '../../contexts/mapContext';
-import { useCastlesContext } from '../../../castles';
-import { useAuthContext } from '../../../auth';
+import { useMapPointsContext, MapPointsProvider } from '../../contexts/mapPointsContext';
 import Numbers from '../Numbers/Numbers';
 import MapActions from '../MapActions/MapActions';
+import { isPointsEqual } from '../../utils/mapUtils';
+import { useCastlesContext, useMyCastleContext } from '../../../castle';
+import { useMapSizeContext } from '../../contexts/mapSizeContext';
 
 function useModels() {
-  const { pointsList } = useMapContext()
-  const { castles } = useCastlesContext()
-  const { userData: { userId } } = useAuthContext()
+  const { pointsList } = useMapPointsContext()
+  const { castlesQuery: { data: castles } } = useCastlesContext()
+  const { myCastlePoint } = useMyCastleContext()
 
   return useMemo(() => {
     return pointsList.map((point) => {
-      const foundCastle =  castles.find(({ x, y }) => point.x === x && y === point.y)
+      const foundCastle =  castles?.find(({ x, y }) => point.x === x && y === point.y)
 
       return {
         key: `${point.x}_${point.y}`,
         isCastle: !!foundCastle,
-        isOwnCastle: foundCastle?.userId === userId,
+        isOwnCastle: !!myCastlePoint && isPointsEqual(point, myCastlePoint),
         point
       }
     })
-  }, [pointsList, castles, userId])
+  }, [pointsList, castles, myCastlePoint])
 }
 
+// function useShowSpinner() {
+//   const { castlesQuery: { isFetching } } = useCastleContext()
+//
+//   return isFetching
+// }
+
 const Map: FC = () => {
-  const { mapSize } = useMapContext()
+  const { mapSize } = useMapSizeContext()
 
   const models = useModels()
+
+  // const showSpinner = useShowSpinner()
 
   return (
     <div className={styles.mapContainer}>
@@ -43,6 +51,12 @@ const Map: FC = () => {
         </div>
         <Numbers />
         <div className={styles.map} style={{ gridTemplateColumns: `repeat(${mapSize}, 1fr)` }}>
+          {/*{showSpinner && (*/}
+          {/*   <div className={styles.spinnerOverlay}>*/}
+              {/*<Spinner  />*/}
+             {/*</div>*/}
+          {/*)}*/}
+
           {models.map(({ key, isCastle, isOwnCastle, point }) => (
             <Cell point={point} key={key} isCastle={isCastle} isOwnCastle={isOwnCastle} />
           ))}
@@ -53,7 +67,7 @@ const Map: FC = () => {
 }
 
 export default () => (
-  <MapProvider>
+  <MapPointsProvider>
     <Map />
-  </MapProvider>
+  </MapPointsProvider>
 )

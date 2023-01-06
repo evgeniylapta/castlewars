@@ -21,6 +21,20 @@
   display: grid;
   border-top: 1px solid #ccc;
   border-left: 1px solid #ccc;
+  position: relative;
+}
+
+.spinnerOverlay {
+  position: absolute !important;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .current {

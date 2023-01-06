@@ -1,6 +1,7 @@
 import express from 'express';
 import castleRoute from './features/castle/castle.route';
 import userRoute from './features/user/user.route';
+import dictionariesRouter from './features/dictionaries/dictionaries.route';
 import config from './config/config';
 
 const router = express.Router();
@@ -13,6 +14,10 @@ const defaultRoutes = [
   {
     path: '/user',
     route: userRoute,
+  },
+  {
+    path: '/dictionaries',
+    route: dictionariesRouter,
   },
 ];
 

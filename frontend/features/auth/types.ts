@@ -1,4 +1,5 @@
 export type TUser = {
-  userId: number
-  userName: string
+  id: string
+  name: string
+  tribeId: string
 }

@@ -2,8 +2,8 @@ import styles from './Cell.module.scss'
 import castle from '../../assets/castle.gif'
 import { FC } from 'react';
 import classNames from 'classnames';
-import { useMapContext } from '../../contexts/mapContext';
 import { Point } from '../../types';
+import { useSelectedMapPointContext } from '../../contexts/selectedMapPointContext';
 
 type TProps = {
   isCastle: boolean,
@@ -12,7 +12,7 @@ type TProps = {
 }
 
 const Cell: FC<TProps> = ({ isOwnCastle, isCastle, point: { x, y } }) => {
-  const { selection: { setSelectedPoint, selectedPoint } } = useMapContext()
+  const { setSelectedPoint, selectedPoint } = useSelectedMapPointContext()
 
   const isSelected = selectedPoint?.x === x && selectedPoint?.y === y;
 

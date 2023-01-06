@@ -1,15 +1,17 @@
 import { FC, useMemo } from 'react';
-import { useMapContext } from '../../contexts/mapContext';
 import styles from './MapActions.module.scss';
 import { isPointsEqual } from '../../utils/mapUtils';
+import { useMapCenterContext } from '../../contexts/mapCenterContext';
+import { useSelectedMapPointContext } from '../../contexts/selectedMapPointContext';
+import { useMyCastleContext } from '../../../castle';
+import { useMapSizeContext } from '../../contexts/mapSizeContext';
 
 const MapActions: FC = () => {
-  const {
-    expandingHandle: { isExpandedMap, expandMap, collapseMap },
-    selection: { selectedPoint },
-    myCastlePoint,
-    centerPointHandle: { goToMyCastlePoint, goToSelectedCastle, currentCenterPoint }
-  } = useMapContext()
+  const { isExpandedMap, expandMap, collapseMap } = useMapSizeContext()
+
+  const { selectedPoint } = useSelectedMapPointContext()
+  const { goToSelectedCastle, goToMyCastlePoint, currentCenterPoint } = useMapCenterContext()
+  const { myCastlePoint } = useMyCastleContext()
 
   const showGoToMyCastleButton = useMemo(
     () => !isPointsEqual(myCastlePoint, currentCenterPoint),

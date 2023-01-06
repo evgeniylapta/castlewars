@@ -1,22 +1,46 @@
 import styles from './Home.module.scss'
 import { Map } from '../../../map';
-import { CastlesProvider } from '../../../castles';
-import { AuthProvider } from '../../../auth';
+import { CastlesProvider, MyCastleProvider, useMyCastleContext, CastleDetailsProvider } from '../../../castle';
+import { SelectedMapPointContextProvider, MapCenterContextProvider, MapSizeProvider } from '../../../map';
+import { UnitTypesContextProvider } from '../../../unit';
+import { TribeTypesContextProvider } from '../../../tribe';
 import { WarStatus } from '../../../warStatus';
 import { CastleInfo } from '../../../castleInfo';
 
-export default function Home() {
+function Home() {
+  const { isMyCastleFetched } = useMyCastleContext()
+
+  if (!isMyCastleFetched) {
+    return null
+  }
+
   return (
-    <AuthProvider>
-      <CastlesProvider>
-        <div className={styles.container}>
-          <Map />
-
-          <CastleInfo className={styles.warSituation} />
-
-          <WarStatus className={styles.warSituation} />
-        </div>
-      </CastlesProvider>
-    </AuthProvider>
+    <SelectedMapPointContextProvider>
+      <MapCenterContextProvider>
+        <MapSizeProvider>
+          <CastlesProvider>
+            <TribeTypesContextProvider>
+              <UnitTypesContextProvider>
+                <CastleDetailsProvider>
+                  <div className={styles.container}>
+                    <Map />
+                    <div>
+                      <CastleInfo className={styles.warSituation} />
+                      <WarStatus className={styles.warSituation} />
+                    </div>
+                  </div>
+                </CastleDetailsProvider>
+              </UnitTypesContextProvider>
+            </TribeTypesContextProvider>
+          </CastlesProvider>
+        </MapSizeProvider>
+      </MapCenterContextProvider>
+    </SelectedMapPointContextProvider>
   )
 }
+
+export default () => (
+  <MyCastleProvider>
+    <Home />
+  </MyCastleProvider>
+)

@@ -4,10 +4,10 @@ import arrowUp from '../../assets/arrow_up.png';
 import arrowLeft from '../../assets/arrow_left.png';
 import arrowRight from '../../assets/arrow_right.png';
 import arrowDown from '../../assets/arrow_down.png';
-import { useMapContext } from '../../contexts/mapContext';
+import { useMapCenterContext } from '../../contexts/mapCenterContext';
 
 const Controls: FC = () => {
-  const { controlsHandle: { goBottom, goLeft, goRight, goTop } } = useMapContext()
+  const { goBottom, goLeft, goRight, goTop } = useMapCenterContext()
 
   return (
     <div className={styles.arrows}>

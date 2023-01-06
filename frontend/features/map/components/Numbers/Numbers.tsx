@@ -1,10 +1,10 @@
 import styles from './Numbers.module.scss'
 import { FC } from 'react';
 import classNames from 'classnames';
-import { useMapContext } from '../../contexts/mapContext';
+import { useMapPointsContext } from '../../contexts/mapPointsContext';
 
 const Numbers: FC = () => {
-  const { numbers: { x: xNumbers, y: yNumbers } } = useMapContext()
+  const { numbers: { x: xNumbers, y: yNumbers } } = useMapPointsContext()
 
   return (
     <>

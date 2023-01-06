@@ -20,7 +20,7 @@ async function getErrors(Constructor: any, object: any): Promise<ValidationError
 }
 
 const validateGuard = (
-  { Body, Query, Params }: { Body?: () => void, Query?: () => void, Params?: () => void }
+  { Body, Query, Params }: { Body?: any, Query?: any, Params?: any }
 ) => async (req: Request, res: Response, next) => {
 
   const errors: ValidationError[] = [

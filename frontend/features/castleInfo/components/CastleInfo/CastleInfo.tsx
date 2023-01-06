@@ -1,51 +1,61 @@
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import styles from './CastleInfo.module.scss';
 import { TClassNameable } from '../../../../shared/types';
-import { CastleInfoProvider, useCastleInfoContext } from '../../contexts/castleInfoContext';
 import Unit from '../Unit/Unit';
 import goldImg from '../../assets/gold.png';
-import classNames from 'classnames';
 import Tribe from '../Tribe/Tribe';
 import { useAuthContext } from '../../../auth';
+import { useCastleDetailsContext } from '../../../castle';
+import { TTribeType, useTribeTypesContext } from '../../../tribe';
+import InfoSection from '../../../../shared/components/InfoSection/InfoSection';
 
 type TProps = TClassNameable
 
 const CastleInfo: FC<TProps> = ({ className}) => {
-  const { castleInfo: { units, money, tribe, userId: castleUserId } } = useCastleInfoContext()
-  const { userData: { userId } } = useAuthContext()
+  const { userData: { id: userId } } = useAuthContext()
+
+  const { castleDetailsQuery: { data: castleDetails } } = useCastleDetailsContext()
+
+  const { tribeTypesQuery: { data: tribeTypes } } = useTribeTypesContext()
+
+  const tribeType: TTribeType | undefined = useMemo(
+    () => tribeTypes?.find(({ id }) => id === castleDetails?.user.tribeId)?.name,
+    [castleDetails, tribeTypes]
+  )
+
+  if (!castleDetails) {
+    return null
+  }
 
   return (
     <div className={className}>
-      <div className={styles.section}>
-        <div className={styles.title}>Player</div>
-        <div className={styles.sectionBody}>
-          <div>Id: {castleUserId} {castleUserId === userId && ('(me)')}</div>
+      <InfoSection title="Castle">
+        <div>
+          User name: {castleDetails.user.name}
+          {' '}
+          <b>{castleDetails.user.id === userId && ('(me)')}</b>
         </div>
-      </div>
+        <div>Coords: x: {castleDetails.x} y: {castleDetails.y}</div>
+      </InfoSection>
 
-      <div className={styles.section}>
-        <div className={styles.title}>Tribe</div>
-        <div className={styles.sectionBody}>
-          <Tribe type={tribe} />
-        </div>
-      </div>
+      <InfoSection title="Tribe">
+        {tribeType && <Tribe type={tribeType} />}
+      </InfoSection>
 
-      <div className={styles.section}>
-        <div className={styles.title}>Gold</div>
-        <div className={classNames(styles.sectionBody, styles.goldWrap)}>
+      <InfoSection title="Gold">
+        <div className={styles.goldWrap}>
           <img className={styles.gold} src={goldImg.src} alt=""/>
-          <span>{money}</span>
+          <span>{castleDetails?.castleResources?.gold}</span>
         </div>
-      </div>
+      </InfoSection>
 
-      <div className={styles.section}>
-        <div className={styles.title}>Troops</div>
-        <div className={classNames(styles.sectionBody, styles.units)}>
-          {units.map(({ type, amount }) => <Unit className={styles.unit} key={type} type={type} amount={amount} />)}
+      <InfoSection title="Troops">
+        <div className={styles.units}>
+          {castleDetails?.unitGroups?.map((unitGroup) => <Unit className={styles.unit} unitGroup={unitGroup} />)}
         </div>
-      </div>
+      </InfoSection>
     </div>
   )
 }
 
-export default ({...props}: TProps) => <CastleInfoProvider><CastleInfo {...props}/></CastleInfoProvider>
+export default CastleInfo

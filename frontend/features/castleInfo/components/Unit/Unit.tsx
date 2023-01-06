@@ -1,6 +1,4 @@
 import { FC } from 'react';
-import { TUnitType } from '../../types';
-import styles from './Unit.module.scss';
 import clubswingerImg from '../../assets/Clubswinger.png';
 import emperorCavalryImg from '../../assets/EmperorCavalry.png';
 import legionnaireImg from '../../assets/Legionnaire.png';
@@ -11,42 +9,48 @@ import spearfighterImg from '../../assets/Spearfighter.png';
 import swordsmanImg from '../../assets/Swordsman.png';
 import theutatesThunderImg from '../../assets/TheutatesThunder.png';
 import { TClassNameable } from '../../../../shared/types';
+import { TUnitName, useUnitTypesContext } from '../../../unit';
+import { TUnitGroup } from '../../../castle';
 import classNames from 'classnames';
+import styles from './Unit.module.scss';
 
-function useUnitIcon(type: TUnitType) {
+function useUnitIcon(type?: TUnitName) {
   switch (type) {
-    case 'clubswinger':
+    case 'Clubswinger':
       return clubswingerImg
-    case 'emperor cavalry':
+    case 'Emperors cavalry':
       return emperorCavalryImg
-    case 'paladin':
+    case 'Paladin':
       return paladinImg
-    case 'legionnaire':
+    case 'Legionnaire':
       return legionnaireImg
-    case 'phalanx':
+    case 'Phalanx':
       return phalanxImg
-    case 'praetorian':
+    case 'Praetorian':
       return praetorianImg
-    case 'spearfighter':
+    case 'Spearfighter':
       return spearfighterImg
-    case 'swordsman':
+    case 'Swordsman':
       return swordsmanImg
-    case 'theutates thunder':
+    case 'Theutates Thunder':
       return theutatesThunderImg
   }
 }
 
 type TProps = {
-  type: TUnitType,
-  amount: number
+  unitGroup: TUnitGroup
 } & TClassNameable
 
-const Unit: FC<TProps> = ({ type, amount, className }) => {
-  const icon = useUnitIcon(type)
+const Unit: FC<TProps> = ({ unitGroup: { unitTypeId, amount }, className }) => {
+  const { unitTypesQuery: { data: unitTypes } } = useUnitTypesContext()
+
+  const foundType = unitTypes?.find(({ id }) => id === unitTypeId)?.name
+
+  const icon = useUnitIcon(foundType)
 
   return (
     <div className={classNames(className, styles.wrap)}>
-      <img src={icon.src} alt=""/>
+      <img src={icon?.src} alt=""/>
       <span>{amount}</span>
     </div>
   )

@@ -1,4 +1,4 @@
-import { IsNotEmpty, Length, IsUUID, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsUUID, IsNumber } from 'class-validator';
 
 export class CastleCreateDto {
   @IsUUID(4)
