@@ -7,8 +7,6 @@ import { useMyCastleContext } from '../../castle';
 function useCenterPointHandle(initialPoint: Point, goToMyCastlePointCallback?: () => void, selectedPoint?: Point) {
   const [currentCenterPoint, setCurrentCenterPoint] = useState<Point>(initialPoint)
 
-  console.log(currentCenterPoint);
-
   return {
     currentCenterPoint,
     setCurrentCenterPoint,

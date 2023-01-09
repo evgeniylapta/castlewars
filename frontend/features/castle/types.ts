@@ -1,26 +1,30 @@
 import { TUser } from '../auth';
-
-export type TUnitGroup = {
-  id: string
-  unitTypeId: string
-  amount: number
-  ownerCastleId: string | null
-  ownerAttackId: string | null
-}
+import { TUnitGroup } from '../unit';
 
 export type TCastle = {
-  id: number
+  id: string
   x: number
   y: number
-  userId: number
+  userId: string
 }
 
-export type TCastleExtended = TCastle & {
+export type TCastleUserExtension = {
+  user: TUser
+}
+
+export type TCastleResourcesExtension = {
   castleResources: {
     id: string
     gold: number
     castleId: string
-  },
-  unitGroups: TUnitGroup[],
-  user: TUser
+  }
 }
+
+export type TCastleUnitGroupsExtension = {
+  unitGroups: TUnitGroup[]
+}
+
+export type TCastleExtended = TCastle
+  & TCastleResourcesExtension
+  & TCastleUserExtension
+  & TCastleUnitGroupsExtension

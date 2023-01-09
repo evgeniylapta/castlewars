@@ -9,10 +9,10 @@ import spearfighterImg from '../../assets/Spearfighter.png';
 import swordsmanImg from '../../assets/Swordsman.png';
 import theutatesThunderImg from '../../assets/TheutatesThunder.png';
 import { TClassNameable } from '../../../../shared/types';
-import { TUnitName, useUnitTypesContext } from '../../../unit';
-import { TUnitGroup } from '../../../castle';
 import classNames from 'classnames';
 import styles from './Unit.module.scss';
+import { TUnitGroup, TUnitName } from '../../types';
+import { useUnitTypesContext } from '../../contexts/unitsContext';
 
 function useUnitIcon(type?: TUnitName) {
   switch (type) {

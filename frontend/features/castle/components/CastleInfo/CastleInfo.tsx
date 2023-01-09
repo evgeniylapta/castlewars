@@ -1,13 +1,12 @@
 import { FC, useMemo } from 'react';
 import styles from './CastleInfo.module.scss';
 import { TClassNameable } from '../../../../shared/types';
-import Unit from '../Unit/Unit';
 import goldImg from '../../assets/gold.png';
-import Tribe from '../Tribe/Tribe';
 import { useAuthContext } from '../../../auth';
-import { useCastleDetailsContext } from '../../../castle';
-import { TTribeType, useTribeTypesContext } from '../../../tribe';
+import { useCastleDetailsContext } from '../../index';
+import { Tribe, TTribeType, useTribeTypesContext } from '../../../tribe';
 import InfoSection from '../../../../shared/components/InfoSection/InfoSection';
+import { Unit } from '../../../unit';
 
 type TProps = TClassNameable
 

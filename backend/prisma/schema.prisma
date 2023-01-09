@@ -58,6 +58,7 @@ model Attack {
   castleTo     Castle      @relation(name: "AttackCastleTo", fields: [castleToId], references: [id])
   castleToId   String
   unitGroups   UnitGroup[]
+  dateTime     DateTime
 }
 
 model UnitGroup {

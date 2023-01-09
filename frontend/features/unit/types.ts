@@ -16,3 +16,11 @@ export type TUnitTypesResponseItem = {
 
 export type TUnitTypesResponse = TUnitTypesResponseItem[]
 
+export type TUnitGroup = {
+  id: string
+  unitTypeId: string
+  amount: number
+  ownerCastleId: string | null
+  ownerAttackId: string | null
+}
+

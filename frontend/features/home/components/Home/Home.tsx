@@ -1,11 +1,16 @@
 import styles from './Home.module.scss'
 import { Map } from '../../../map';
-import { CastlesProvider, MyCastleProvider, useMyCastleContext, CastleDetailsProvider } from '../../../castle';
+import {
+  CastlesProvider,
+  MyCastleProvider,
+  useMyCastleContext,
+  CastleDetailsProvider,
+  CastleInfo
+} from '../../../castle';
 import { SelectedMapPointContextProvider, MapCenterContextProvider, MapSizeProvider } from '../../../map';
 import { UnitTypesContextProvider } from '../../../unit';
 import { TribeTypesContextProvider } from '../../../tribe';
-import { WarStatus } from '../../../warStatus';
-import { CastleInfo } from '../../../castleInfo';
+import { WarStatus } from '../../../attack';
 
 function Home() {
   const { isMyCastleFetched } = useMyCastleContext()
