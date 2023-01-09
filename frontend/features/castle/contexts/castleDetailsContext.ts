@@ -17,7 +17,8 @@ const useContext = () => {
 
   return {
     castleDetailsQuery: useCastleDetailsQuery(selectedCastleId),
-    selectedCastleId
+    selectedCastleId,
+    isMyCastleSelected: selectedCastleId === myCastleId
   }
 }
 

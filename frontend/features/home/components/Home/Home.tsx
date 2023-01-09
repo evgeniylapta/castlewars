@@ -10,7 +10,7 @@ import {
 import { SelectedMapPointContextProvider, MapCenterContextProvider, MapSizeProvider } from '../../../map';
 import { UnitTypesContextProvider } from '../../../unit';
 import { TribeTypesContextProvider } from '../../../tribe';
-import { WarStatus } from '../../../attack';
+import { CreateAttack, WarStatus } from '../../../attack';
 
 function Home() {
   const { isMyCastleFetched } = useMyCastleContext()
@@ -32,6 +32,7 @@ function Home() {
                     <div>
                       <CastleInfo className={styles.warSituation} />
                       <WarStatus className={styles.warSituation} />
+                      <CreateAttack />
                     </div>
                   </div>
                 </CastleDetailsProvider>

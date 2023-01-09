@@ -2,7 +2,7 @@ import { FC, ReactNode } from 'react';
 import styles from './InfoSection.module.scss';
 
 type TProps = {
-  title: string,
+  title?: string,
   children: ReactNode
 }
 
