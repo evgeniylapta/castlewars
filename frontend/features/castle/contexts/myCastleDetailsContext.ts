@@ -1,23 +1,26 @@
 import constate from 'constate'
 import { Point } from '../../map/types';
 import { useMemo } from 'react';
-import { useMyCastleQuery } from '../query';
+import { useCastleDetailsQuery } from '../query';
+import { useAuthContext } from '../../auth';
 
 const useContext = () => {
-  const { data: myCastle, isFetched } = useMyCastleQuery()
+  const { currentUserQuery: { data: currentUser } } = useAuthContext()
+  const myCastleDetailsQuery = useCastleDetailsQuery(currentUser?.castles[0].id)
 
   const myCastlePoint: Point | undefined = useMemo(() => {
+    const { data: myCastle } = myCastleDetailsQuery
+
     if (!myCastle) {
       return { y: 0 , x: 0 }
     }
 
     return { x: myCastle.x, y: myCastle.y }
-  }, [myCastle]);
+  }, [myCastleDetailsQuery.data]);
 
   return {
-    myCastlePoint,
-    myCastleId: myCastle?.id,
-    isMyCastleFetched: isFetched
+    myCastleDetailsQuery,
+    myCastlePoint
   }
 }
 

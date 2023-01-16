@@ -1,19 +1,20 @@
 import { FC, useMemo } from 'react';
 import styles from './CastleInfo.module.scss';
 import { TClassNameable } from '../../../../shared/types';
-import goldImg from '../../assets/gold.png';
 import { useAuthContext } from '../../../auth';
-import { useCastleDetailsContext } from '../../index';
+import { useSelectedCastleDetailsContext } from '../../index';
 import { Tribe, TTribeType, useTribeTypesContext } from '../../../tribe';
 import InfoSection from '../../../../shared/components/InfoSection/InfoSection';
 import { Unit } from '../../../unit';
+import { Gold } from '../../../resources';
+import { AttacksStatus, CreateAttack } from '../../../attack';
 
 type TProps = TClassNameable
 
 const CastleInfo: FC<TProps> = ({ className}) => {
-  const { userData: { id: userId } } = useAuthContext()
+  const { currentUserQuery: { data: currentUser } } = useAuthContext()
 
-  const { castleDetailsQuery: { data: castleDetails } } = useCastleDetailsContext()
+  const { castleDetailsQuery: { data: castleDetails } } = useSelectedCastleDetailsContext()
 
   const { tribeTypesQuery: { data: tribeTypes } } = useTribeTypesContext()
 
@@ -28,13 +29,13 @@ const CastleInfo: FC<TProps> = ({ className}) => {
 
   return (
     <div className={className}>
-      <InfoSection title="Castle">
+      <InfoSection noMargin title="Castle">
         <div>
           User name: {castleDetails.user.name}
           {' '}
-          <b>{castleDetails.user.id === userId && ('(me)')}</b>
+          <b>{castleDetails.user.id === currentUser?.id && ('(me)')}</b>
         </div>
-        <div>Coords: x: {castleDetails.x} y: {castleDetails.y}</div>
+        <div>Coords: [x: {castleDetails.x} y: {castleDetails.y}]</div>
       </InfoSection>
 
       <InfoSection title="Tribe">
@@ -42,17 +43,20 @@ const CastleInfo: FC<TProps> = ({ className}) => {
       </InfoSection>
 
       <InfoSection title="Gold">
-        <div className={styles.goldWrap}>
-          <img className={styles.gold} src={goldImg.src} alt=""/>
-          <span>{castleDetails?.castleResources?.gold}</span>
-        </div>
+        <Gold />
       </InfoSection>
 
       <InfoSection title="Troops">
         <div className={styles.units}>
-          {castleDetails?.unitGroups?.map((unitGroup) => <Unit className={styles.unit} unitGroup={unitGroup} />)}
+          {castleDetails?.unitGroups?.map((unitGroup) => <Unit key={unitGroup.id} className={styles.unit} unitGroup={unitGroup} />)}
         </div>
       </InfoSection>
+
+      <InfoSection title="War status">
+        <AttacksStatus />
+      </InfoSection>
+
+      <CreateAttack key={castleDetails.id} />
     </div>
   )
 }

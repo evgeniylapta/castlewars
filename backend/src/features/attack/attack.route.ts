@@ -1,12 +1,13 @@
 import express from 'express';
 import validateGuard from '../../middlewares/validate';
-import { getCastleAttacksQueryDto } from './dto/getCastleAttacksQueryDto';
-import { getAttacks } from './attack.controller';
+import { GetCastleAttacksQueryDto } from './dto/getCastleAttacksQueryDto';
+import { createAttackController, getAttacksController } from './attack.controller';
+import { PostCreateAttackBodyDto } from './dto/postCreateAttackBodyDto';
 
 const router = express.Router();
 
 router.route('/')
-  .get(validateGuard({ Query: getCastleAttacksQueryDto }), getAttacks)
-  // .post(validateGuard({ Body: CastleCreateDto }), createCastle);
+  .get(validateGuard({ Query: GetCastleAttacksQueryDto }), getAttacksController)
+  .post(validateGuard({ Body: PostCreateAttackBodyDto }), createAttackController);
 
 export default router;

@@ -30,12 +30,12 @@ const MapActions: FC = () => {
       </button>
       {showGoToMyCastleButton && (
         <button onClick={goToMyCastlePoint}>
-          Go to my castle
+          Navigate to my castle
         </button>
       )}
       {showGoToSelectedCastleButton && (
         <button onClick={goToSelectedCastle}>
-          Go to selected castle
+          Navigate to selected castle
         </button>
       )}
     </div>

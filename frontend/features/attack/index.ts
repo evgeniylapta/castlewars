@@ -1,3 +1,2 @@
-export { default as WarStatus } from './components/WarStatus/WarStatus'
-export { default as CreateAttack } from './components/CreateAttack/CreateAttack'
-export * from './contexts/attackContext'
+export { default as AttacksStatus } from './components/status/AttacksStatus/AttacksStatus'
+export { default as CreateAttack } from './components/create/CreateAttack/CreateAttack'

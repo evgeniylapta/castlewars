@@ -6,6 +6,7 @@ import { TCastle, TCastleExtended } from './types';
 const myCastleGetKey = () => 'myCastle'
 const castlesGetKey = (mapRange?: MapRange) => ['castles', mapRange?.minX, mapRange?.minY, mapRange?.maxX, mapRange?.maxY]
 const castleDetailsGetKey = (castleId?: TCastle['id']) => ['castleDetails', castleId]
+const castlesDistanceGetKey = (castleFromId?: TCastle['id'], castleToId?: TCastle['id']) => ['castlesDistance', castleFromId, castleToId]
 
 async function getMyCastle() {
   const { data } = await apiClient.get<TCastle>('/castle/my')
@@ -13,6 +14,7 @@ async function getMyCastle() {
   return data
 }
 
+// todo remove
 export function useMyCastleQuery() {
   return useQuery(myCastleGetKey(), getMyCastle);
 }
@@ -47,8 +49,24 @@ async function getCastleDetails(castleId?: TCastle['id']) {
 export function useCastleDetailsQuery(castleId?: TCastle['id']) {
   return useQuery(castleDetailsGetKey(castleId), () => getCastleDetails(castleId),
     {
-      enabled: !!castleId,
-      // keepPreviousData: true
+      enabled: !!castleId
+    });
+}
+
+
+export function useCastlesDistanceQuery(castleFromId?: TCastle['id'], castleToId?: TCastle['id']) {
+  return useQuery(castlesDistanceGetKey(castleFromId, castleToId), async () => {
+      const { data } = await apiClient.get<any>('/castle/distance', {
+        params: {
+          castleFromId,
+          castleToId
+        }
+      })
+
+      return data
+    },
+    {
+      enabled: !!castleFromId && !!castleToId,
     });
 }
 

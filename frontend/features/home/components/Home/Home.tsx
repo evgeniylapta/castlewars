@@ -1,21 +1,22 @@
 import styles from './Home.module.scss'
 import { Map } from '../../../map';
 import {
-  CastlesProvider,
+  CastlesRangeProvider,
   MyCastleProvider,
   useMyCastleContext,
-  CastleDetailsProvider,
+  SelectedCastleDetailsProvider,
   CastleInfo
 } from '../../../castle';
 import { SelectedMapPointContextProvider, MapCenterContextProvider, MapSizeProvider } from '../../../map';
 import { UnitTypesContextProvider } from '../../../unit';
 import { TribeTypesContextProvider } from '../../../tribe';
-import { CreateAttack, WarStatus } from '../../../attack';
+import { useAuthContext } from '../../../auth';
 
 function Home() {
-  const { isMyCastleFetched } = useMyCastleContext()
+  const { currentUserQuery: { data: currentUser } } = useAuthContext()
+  const { myCastleDetailsQuery: { data: myCastleDetails } } = useMyCastleContext()
 
-  if (!isMyCastleFetched) {
+  if (!myCastleDetails || !currentUser) {
     return null
   }
 
@@ -23,22 +24,18 @@ function Home() {
     <SelectedMapPointContextProvider>
       <MapCenterContextProvider>
         <MapSizeProvider>
-          <CastlesProvider>
+          <CastlesRangeProvider>
             <TribeTypesContextProvider>
               <UnitTypesContextProvider>
-                <CastleDetailsProvider>
+                <SelectedCastleDetailsProvider>
                   <div className={styles.container}>
                     <Map />
-                    <div>
-                      <CastleInfo className={styles.warSituation} />
-                      <WarStatus className={styles.warSituation} />
-                      <CreateAttack />
-                    </div>
+                    <CastleInfo className={styles.info} />
                   </div>
-                </CastleDetailsProvider>
+                </SelectedCastleDetailsProvider>
               </UnitTypesContextProvider>
             </TribeTypesContextProvider>
-          </CastlesProvider>
+          </CastlesRangeProvider>
         </MapSizeProvider>
       </MapCenterContextProvider>
     </SelectedMapPointContextProvider>

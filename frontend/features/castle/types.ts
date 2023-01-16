@@ -1,5 +1,6 @@
 import { TUser } from '../auth';
 import { TUnitGroup } from '../unit';
+import { TCastleResources } from '../resources';
 
 export type TCastle = {
   id: string
@@ -13,11 +14,7 @@ export type TCastleUserExtension = {
 }
 
 export type TCastleResourcesExtension = {
-  castleResources: {
-    id: string
-    gold: number
-    castleId: string
-  }
+  castleResources: TCastleResources
 }
 
 export type TCastleUnitGroupsExtension = {

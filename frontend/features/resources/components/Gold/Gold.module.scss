@@ -1,0 +1,12 @@
+.gold {
+  width:25px;
+}
+
+.goldWrap {
+  display: flex;
+  align-items: center;
+
+  > * + * {
+    margin-left: 5px;
+  }
+}

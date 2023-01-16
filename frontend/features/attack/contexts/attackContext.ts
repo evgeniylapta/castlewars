@@ -1,9 +1,9 @@
 import constate from 'constate'
 import { useAttacksListQuery } from '../query';
-import { useCastleDetailsContext } from '../../castle';
+import { useSelectedCastleDetailsContext } from '../../castle';
 
 const useContext = () => {
-  const { selectedCastleId } = useCastleDetailsContext()
+  const { selectedCastleId } = useSelectedCastleDetailsContext()
 
   return {
     attacksListQuery: useAttacksListQuery(selectedCastleId)

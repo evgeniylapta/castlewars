@@ -1,8 +1,8 @@
 import { FC, useMemo, useState } from 'react';
-import { TAttack } from '../../types';
+import { TAttack } from '../../../types';
 import styles from './Attack.module.scss';
 import classNames from 'classnames';
-import { TClassNameable } from '../../../../shared/types';
+import { TClassNameable } from '../../../../../shared/types';
 import { formatDistanceStrict, isAfter } from 'date-fns';
 import { useHarmonicIntervalFn } from 'react-use';
 
@@ -13,13 +13,13 @@ type TProps = TClassNameable & {
 
 function useCoords(attack: TAttack, fromCurrentCastle: boolean) {
   return {
-    x: fromCurrentCastle ? attack.castleFrom.x : attack.castleTo.x,
-    y: fromCurrentCastle ? attack.castleFrom.y : attack.castleTo.y
+    x: fromCurrentCastle ? attack.castleTo.x : attack.castleFrom.x,
+    y: fromCurrentCastle ? attack.castleTo.y : attack.castleFrom.y
   }
 }
 
 function useName(attack: TAttack, fromCurrentCastle: boolean) {
-  return fromCurrentCastle ? attack.castleFrom.user.name : attack.castleTo.user.name
+  return fromCurrentCastle ? attack.castleTo.user.name : attack.castleFrom.user.name
 }
 
 function useTime({ dateTime }: TAttack) {

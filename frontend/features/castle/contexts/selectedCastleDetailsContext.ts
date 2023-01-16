@@ -1,14 +1,16 @@
 import constate from 'constate'
-import { useCastleDetailsQuery, useMyCastleQuery } from '../query';
+import { useCastleDetailsQuery } from '../query';
 import { useSelectedMapPointContext } from '../../map';
-import { useCastlesContext } from './castlesContext';
-import { useMyCastleContext } from './myCastleContext';
+import { useCastlesRangeContext } from './castlesRangeContext';
+import { useMyCastleContext } from './myCastleDetailsContext';
 import { useMemo } from 'react';
 
 const useContext = () => {
-  const { myCastleId } = useMyCastleContext()
+  const { myCastleDetailsQuery: { data: myCastleDetails } } = useMyCastleContext()
   const { selectedPoint } = useSelectedMapPointContext()
-  const { castlesQuery: { data: castles } } = useCastlesContext()
+  const { castlesQuery: { data: castles } } = useCastlesRangeContext()
+
+  const myCastleId = myCastleDetails?.id
 
   const selectedCastleId = useMemo(
     () => castles?.find(({ x, y }) => selectedPoint.x === x && selectedPoint.y === y)?.id || myCastleId,
@@ -22,4 +24,4 @@ const useContext = () => {
   }
 }
 
-export const [CastleDetailsProvider, useCastleDetailsContext] = constate(useContext)
+export const [SelectedCastleDetailsProvider, useSelectedCastleDetailsContext] = constate(useContext)

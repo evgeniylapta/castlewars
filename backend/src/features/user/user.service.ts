@@ -4,6 +4,9 @@ export async function findCurrentUser() {
   return await prisma.user.findFirst({
     where: {
       name: 'User1'
+    },
+    include: {
+      castles: true
     }
   });
 }

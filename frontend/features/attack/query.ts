@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { apiClient } from '../../shared/apiClient';
 import { TCastle } from '../castle';
 import { TAttack } from './types';
@@ -18,4 +18,11 @@ export function useAttacksListQuery(castleId?: TCastle['id']) {
     {
       enabled: !!castleId
     });
+}
+
+export function useCreateAttackMutation() {
+  return useMutation<void, undefined, { castleId: string, data: object }>(
+    'createAttack',
+    async ({ data, castleId }) => await apiClient.post('/attack', { castleId, data })
+  );
 }

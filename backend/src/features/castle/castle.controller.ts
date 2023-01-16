@@ -4,23 +4,16 @@ import { Request } from 'express';
 import { findCurrentUser } from '../user/user.service';
 import { GetCastlesQueryDto } from './dto/getCastlesQueryDto';
 import { getCastleDetailsQueryDto } from './dto/getCastleDetailsQueryDto';
+import {
+  calculateDistanceBetweenCastles,
+  findCastlesByCoordsRanges,
+} from './castle.service';
+import { GetDistanceBetweenCastlesQueryDto } from './dto/getDistanceBetweenPointsQueryDto';
 
 export const getCastles = async (req: Request<object, object, object, GetCastlesQueryDto>, res) => {
   const { minX, minY, maxX, maxY } = req.query
 
-  res.send(await prisma.castle.findMany({
-    where: {
-      AND: [
-        { x: { gte: Number(minX) } },
-        { x: { lte: Number(maxX) } },
-        { y: { gte: Number(minY) } },
-        { y: { lte: Number(maxY) } }
-      ]
-    },
-    include: {
-      user: true
-    }
-  }));
+  res.send(await findCastlesByCoordsRanges(Number(minX), Number(minY), Number(maxX), Number(maxY)));
 };
 
 export const getCurrentUserCastle = async (req, res) => {
@@ -50,4 +43,10 @@ export const createCastle = async (req: Request<object, object, CastleCreateDto>
   res.send(await prisma.castle.create({
     data: { userId, y, x }
   }));
+};
+
+export const getDistanceBetweenCastles = async (req: Request<object, object, object, GetDistanceBetweenCastlesQueryDto>, res) => {
+  const { fromCastleId, toCastleId } = req.query
+
+  res.send(await calculateDistanceBetweenCastles(fromCastleId, toCastleId));
 };

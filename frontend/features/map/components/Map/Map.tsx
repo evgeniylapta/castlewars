@@ -6,12 +6,12 @@ import { useMapPointsContext, MapPointsProvider } from '../../contexts/mapPoints
 import Numbers from '../Numbers/Numbers';
 import MapActions from '../MapActions/MapActions';
 import { isPointsEqual } from '../../utils/mapUtils';
-import { useCastlesContext, useMyCastleContext } from '../../../castle';
+import { useCastlesRangeContext, useMyCastleContext } from '../../../castle';
 import { useMapSizeContext } from '../../contexts/mapSizeContext';
 
 function useModels() {
   const { pointsList } = useMapPointsContext()
-  const { castlesQuery: { data: castles } } = useCastlesContext()
+  const { castlesQuery: { data: castles } } = useCastlesRangeContext()
   const { myCastlePoint } = useMyCastleContext()
 
   return useMemo(() => {
@@ -28,18 +28,10 @@ function useModels() {
   }, [pointsList, castles, myCastlePoint])
 }
 
-// function useShowSpinner() {
-//   const { castlesQuery: { isFetching } } = useCastleContext()
-//
-//   return isFetching
-// }
-
 const Map: FC = () => {
   const { mapSize } = useMapSizeContext()
 
   const models = useModels()
-
-  // const showSpinner = useShowSpinner()
 
   return (
     <div className={styles.mapContainer}>
