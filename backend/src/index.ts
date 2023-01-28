@@ -1,9 +1,12 @@
 import config from './config/config'
 import logger from './config/logger'
 import app from './app'
+import { startAttacksProcessing } from './features/attack/attackProcessing.service';
 
-const server = app.listen(config.port, () => {
+const server = app.listen(config.port, async () => {
   logger.info(`Listening to port ${config.port}`);
+
+  startAttacksProcessing()
 });
 
 const exitHandler = () => {

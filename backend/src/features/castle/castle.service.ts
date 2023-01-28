@@ -31,7 +31,7 @@ export async function calculateDistanceBetweenCastles(castleFromId: string, cast
   return calculateDistanceBetweenPoints(castleFrom.x, castleFrom.y, castleTo.x, castleTo.y)
 }
 
-async function calculateDistanceBetweenPoints(x1: number, y1: number, x2: number, y2: number) {
+export function calculateDistanceBetweenPoints(x1: number, y1: number, x2: number, y2: number): number {
   let resX;
   let resY;
 

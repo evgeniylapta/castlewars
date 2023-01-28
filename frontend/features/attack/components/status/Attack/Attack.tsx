@@ -8,18 +8,19 @@ import { useHarmonicIntervalFn } from 'react-use';
 
 type TProps = TClassNameable & {
   attack: TAttack,
-  fromCurrentCastle: boolean
+  fromCurrentCastle?: boolean
+  isReturning?: boolean
 }
 
-function useCoords(attack: TAttack, fromCurrentCastle: boolean) {
+function useCoords(attack: TAttack, fromCurrentCastle?: boolean, isReturning?: boolean) {
   return {
-    x: fromCurrentCastle ? attack.castleTo.x : attack.castleFrom.x,
-    y: fromCurrentCastle ? attack.castleTo.y : attack.castleFrom.y
+    x: fromCurrentCastle && !isReturning ? attack.castleTo.x : attack.castleFrom.x,
+    y: fromCurrentCastle && !isReturning ? attack.castleTo.y : attack.castleFrom.y
   }
 }
 
-function useName(attack: TAttack, fromCurrentCastle: boolean) {
-  return fromCurrentCastle ? attack.castleTo.user.name : attack.castleFrom.user.name
+function useName(attack: TAttack, fromCurrentCastle?: boolean, isReturning?: boolean) {
+  return fromCurrentCastle || isReturning ? attack.castleTo.user.name : attack.castleFrom.user.name
 }
 
 function useTime({ dateTime }: TAttack) {
@@ -46,9 +47,9 @@ function useTime({ dateTime }: TAttack) {
   )
 }
 
-const Attack: FC<TProps> = ({ attack, fromCurrentCastle, className }) => {
-  const userName = useName(attack, fromCurrentCastle);
-  const { x, y } = useCoords(attack, fromCurrentCastle)
+const Attack: FC<TProps> = ({ attack, fromCurrentCastle, className, isReturning }) => {
+  const userName = useName(attack, fromCurrentCastle, isReturning);
+  const { x, y } = useCoords(attack, fromCurrentCastle, isReturning)
 
   const time = useTime(attack)
 
@@ -57,14 +58,18 @@ const Attack: FC<TProps> = ({ attack, fromCurrentCastle, className }) => {
       <span className={classNames(
         styles.icon,
         {
-          [styles.fromIcon]: fromCurrentCastle,
-          [styles.toIcon]: !fromCurrentCastle
+          ...(isReturning ? {
+            [styles.isReturning]: isReturning,
+          } : {
+            [styles.fromIcon]: fromCurrentCastle,
+            [styles.toIcon]: !fromCurrentCastle
+          })
         }
       )}>
-        {fromCurrentCastle ? '>>>' : '<<<'}
+        {fromCurrentCastle && !isReturning ? '>>>' : '<<<'}
       </span>
       {' '}
-      Attack {fromCurrentCastle ? 'to' : 'from'}
+      {isReturning ? 'Returning' : 'Attack'} {fromCurrentCastle && !isReturning ? 'to' : 'from'}
       {' '}
       {userName}
       (x: {x}, y: {y})

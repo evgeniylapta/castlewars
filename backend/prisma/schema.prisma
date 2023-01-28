@@ -59,6 +59,7 @@ model Attack {
   castleToId   String
   unitGroups   UnitGroup[]
   dateTime     DateTime
+  isReturning  Boolean
 }
 
 model UnitGroup {

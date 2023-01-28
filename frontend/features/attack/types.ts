@@ -8,7 +8,8 @@ export type TAttack = {
   castleToId: string,
   castleTo: TCastle & TCastleUserExtension,
   dateTime: string,
-  unitGroups: TUnitGroup[]
+  unitGroups: TUnitGroup[],
+  isReturning: boolean
 }
 
 

@@ -11,13 +11,28 @@ function getAttacks() {
   const { selectedCastleId } = useSelectedCastleDetailsContext()
 
   return useMemo(() => {
-    const initialData = { attackFromCurrentCastle: [], attackToCurrentCastle: [] }
+    type TResult = {
+      attackFromCurrentCastle: TAttack[],
+      attackToCurrentCastle: TAttack[],
+      returningAttacksOfCurrentCastle: TAttack[]
+    }
 
-    return attacksData?.reduce<{ attackFromCurrentCastle: TAttack[], attackToCurrentCastle: TAttack[] }>(
-      (result, attack) => ({
-        attackFromCurrentCastle: [...result.attackFromCurrentCastle, ...(attack.castleFromId === selectedCastleId ? [attack] : [])],
-        attackToCurrentCastle: [...result.attackToCurrentCastle, ...(attack.castleToId === selectedCastleId ? [attack] : [])]
-      }),
+    const initialData: TResult = { attackFromCurrentCastle: [], attackToCurrentCastle: [], returningAttacksOfCurrentCastle: [] }
+
+
+    return attacksData?.reduce<TResult>(
+      (result, attack) => {
+        const attackFromCurrentCastle: TAttack[] = [
+          ...result.attackFromCurrentCastle,
+          ...(attack.castleFromId === selectedCastleId ? [attack] : [])
+        ]
+
+        return ({
+          attackFromCurrentCastle: attackFromCurrentCastle.filter(({ isReturning }) => !isReturning),
+          attackToCurrentCastle: [...result.attackToCurrentCastle, ...(attack.castleToId === selectedCastleId ? [attack] : [])],
+          returningAttacksOfCurrentCastle: [...result.returningAttacksOfCurrentCastle, ...attackFromCurrentCastle.filter(({ isReturning }) => isReturning)]
+        });
+      },
       initialData
     ) || initialData
   }, [selectedCastleId, attacksData])
@@ -26,7 +41,7 @@ function getAttacks() {
 type TProps = TClassNameable
 
 const AttacksStatus: FC<TProps> = () => {
-  const { attackFromCurrentCastle, attackToCurrentCastle } = getAttacks()
+  const { attackFromCurrentCastle, attackToCurrentCastle, returningAttacksOfCurrentCastle } = getAttacks()
 
   if (!attackFromCurrentCastle.length && !attackToCurrentCastle.length) {
     return null
@@ -36,6 +51,7 @@ const AttacksStatus: FC<TProps> = () => {
     <>
       {attackFromCurrentCastle.map((attack) => <Attack className={styles.item} key={attack.id} attack={attack} fromCurrentCastle={true} />)}
       {attackToCurrentCastle.map((attack) => <Attack className={styles.item} key={attack.id} attack={attack} fromCurrentCastle={false} />)}
+      {returningAttacksOfCurrentCastle.map((attack) => <Attack className={styles.item} key={attack.id} attack={attack} isReturning />)}
     </>
   )
 }

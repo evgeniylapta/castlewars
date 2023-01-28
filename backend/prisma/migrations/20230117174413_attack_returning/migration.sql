@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Attack" ADD COLUMN "isReturning" BOOLEAN NOT NULL DEFAULT false;
+ALTER TABLE "Attack" ALTER COLUMN "isReturning" DROP DEFAULT;

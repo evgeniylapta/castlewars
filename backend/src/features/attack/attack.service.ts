@@ -1,5 +1,9 @@
 import { prisma } from '../../config/prisma';
-import { findUnitGroupsByCastleId, findUnitTypes } from '../unit/unit.service';
+import {
+  findUnitGroupsByCastleId,
+  findUnitTypes,
+  getUnitTypesMovingMinutes
+} from '../unit/unit.service';
 import { calculateDistanceBetweenCastles } from '../castle/castle.service';
 import { add } from 'date-fns';
 
@@ -7,8 +11,13 @@ export async function findAttacksByUser(castleId: string) {
   return await prisma.attack.findMany({
     where: {
       OR: [
-        {castleToId: castleId},
-        {castleFromId: castleId}
+        {
+          castleToId: castleId,
+          isReturning: false
+        },
+        {
+          castleFromId: castleId
+        }
       ]
     },
     include: {
@@ -38,16 +47,15 @@ export async function createAttack(castleFromId: string, castleToId: string, dat
   const requestUnitTypeKeys = Object.keys(data)
   const requestUnitTypes = requestUnitTypeKeys.map((key) => unitTypes.find(({ id }) => id === key))
 
-  const slowestUnitSpeed = Math.min(...requestUnitTypes.map(({ speed }) => speed))
-
-  const minutesToDestination = Math.ceil(60 / slowestUnitSpeed) * distance
-
+  const minutesToDestination = getUnitTypesMovingMinutes(requestUnitTypes, distance)
   const destinationDate = add(new Date(), {
     minutes: minutesToDestination
   })
 
   const unitGroupsToUpdate = (await findUnitGroupsByCastleId(castleFromId))
     .filter(({ unitTypeId }) => requestUnitTypeKeys.includes(unitTypeId))
+
+  // todo удалять если пустая группа
 
   await prisma.$transaction([
     prisma.attack.create({
@@ -63,7 +71,8 @@ export async function createAttack(castleFromId: string, castleToId: string, dat
               ownerCastleId: null,
             }))
           }
-        }
+        },
+        isReturning: false
       }
     }),
     ...unitGroupsToUpdate.map(({ id, unitTypeId, amount }) => prisma.unitGroup.update({
