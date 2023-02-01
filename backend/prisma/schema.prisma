@@ -8,8 +8,9 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        String    @id @default(uuid())
   name      String
+  isBot     Boolean   @default(false)
   castles   Castle[]
   tribeType TribeType @relation(fields: [tribeId], references: [id])
   tribeId   String
@@ -46,9 +47,9 @@ model UnitType {
 }
 
 model TribeType {
-  id               String      @id @default(uuid())
-  name             String
-  users            User[]
+  id    String @id @default(uuid())
+  name  String
+  users User[]
 }
 
 model Attack {
@@ -71,4 +72,10 @@ model UnitGroup {
   ownerCastleId String?
   ownerAttack   Attack?  @relation(fields: [ownerAttackId], references: [id])
   ownerAttackId String?
+}
+
+model MapSettlement {
+  id               String @id @default(uuid())
+  direction        String
+  settleAngleIndex Int
 }
