@@ -7,10 +7,10 @@ import {
   getDistanceBetweenCastles
 } from './castle.controller';
 import validateGuard from '../../middlewares/validate';
-import { CastleCreateDto } from './dto/castleCreateDto';
-import { GetCastlesQueryDto } from './dto/getCastlesQueryDto';
-import { getCastleDetailsQueryDto } from './dto/getCastleDetailsQueryDto';
-import { GetDistanceBetweenCastlesQueryDto } from './dto/getDistanceBetweenPointsQueryDto';
+import { CastleCreateDto } from './dto/CastleCreateDto';
+import { GetCastlesQueryDto } from './dto/GetCastlesQueryDto';
+import { getCastleDetailsQueryDto } from './dto/GetCastleDetailsQueryDto';
+import { GetDistanceBetweenCastlesQueryDto } from './dto/GetDistanceBetweenPointsQueryDto';
 
 const router = express.Router();
 

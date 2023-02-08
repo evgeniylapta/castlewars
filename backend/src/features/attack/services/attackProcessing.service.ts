@@ -1,21 +1,16 @@
-import { prisma } from '../../config/prisma';
+import { prisma } from '../../../config/prisma';
 import {
-  findUnitTypes,
-  getUnitTypesMovingMinutes,
   findUnitGroupByUnitType,
   TUnitGroupDeleteModel,
   TUnitGroupUpdateAmountModel,
   getUnitGroupDeleteOperation,
   getUnitGroupUpdateAmountOperation,
   TUnitGroupCreateModel, getUnitGroupCreateOperation
-} from '../unit/unit.service';
+} from '../../unit/services/unitGroup.service';
 import { UnitGroup, UnitType, Attack, Castle } from '@prisma/client'
-import { calculateDistanceBetweenPoints } from '../castle/castle.service';
+import { calculateDistanceBetweenPoints } from '../../castle/castle.service';
 import { add } from 'date-fns';
-
-const ATTACK_LOG_TYPE = 'Attack'
-const DEFENCE_LOG_TYPE = 'Defence'
-const ATTACK_RETURN_LOG_TYPE = 'Attack returning'
+import { findUnitTypes, getUnitTypesMovingMinutes } from '../../unit/services/unitType.service';
 
 function findUnitTypeById (unitTypes: UnitType[], unitTypeId: string) {
   return unitTypes.find(({ id }) => id === unitTypeId)
@@ -49,14 +44,12 @@ function calculateSurvivedCoefficients(attackSum: number, defenceSum: number) {
   const defenceLosses = (defenceSum / 2) * attackCoefficient;
 
   return {
-    attackSurvivedCoefficient: (attackSum - attackLosses) /  attackSum,
-    defenceSurvivedCoefficient: (defenceSum - defenceLosses) / defenceSum
+    attackSurvivedCoefficient: ((attackSum - attackLosses) /  attackSum) || 0,
+    defenceSurvivedCoefficient: ((defenceSum - defenceLosses) / defenceSum) || 0
   }
 }
 
-function getAttackDeleteOperation(attackId: Attack['id'], type: string) {
-  console.log(`[${type}]`, 'Attack to delete. Id:', attackId);
-
+function getAttackDeleteOperation(attackId: Attack['id']) {
   return prisma.attack.delete({
     where: {
       id: attackId
@@ -77,8 +70,6 @@ function getAttackUpdateReturningDateOperation(
     }
   )
 
-  console.log('Set attack returning. Id:', attackId, 'Old date:', attackDate, 'New Date:', newDate);
-
   return prisma.attack.update({
     where: {
       id: attackId
@@ -90,20 +81,24 @@ function getAttackUpdateReturningDateOperation(
   })
 }
 
-function getUnitGroupsAlteringModels(unitGroups: UnitGroup[], survivedCoefficient: number, type: string) {
+function getUnitGroupsAlteringModels(
+  unitGroups: UnitGroup[],
+  survivedCoefficient: number,
+  removeOnEmpty = false
+) {
   const deleteModels: TUnitGroupDeleteModel[] = []
   const updateModels: TUnitGroupUpdateAmountModel[] = []
 
   unitGroups.forEach(({amount, id}) => {
-    const newAmount = survivedCoefficient <= 0 ? 0 : Math.floor(amount * survivedCoefficient)
+    const newAmount = Math.max(Math.floor(amount * survivedCoefficient), 0)
 
-    if (!newAmount) {
-      deleteModels.push({ unitGroupId: id, type})
+    if (!newAmount && removeOnEmpty) {
+      deleteModels.push({ unitGroupId: id })
 
       return
     }
 
-    updateModels.push({ unitGroupId: id, newAmount, type, oldAmount: amount })
+    updateModels.push({ unitGroupId: id, newAmount, oldAmount: amount })
   })
 
   return {
@@ -167,23 +162,19 @@ function getAttackOperations(
   } = getUnitGroupsAlteringModels(
     attackUnitGroups,
     attackSurvivedCoefficient,
-    ATTACK_LOG_TYPE
+    true
   )
 
-  const {
-    updateModels: defenceUpdateModels,
-    deleteModels: defenceUnitGroupIdsToDelete
-  } = getUnitGroupsAlteringModels(
+  const { updateModels: defenceUpdateModels } = getUnitGroupsAlteringModels(
     castleToUnitGroups,
     defenceSurvivedCoefficient,
-    DEFENCE_LOG_TYPE
+    false
   )
 
-  const hasTroopsToReturn = attackUpdateModels.length;
+  const hasTroopsToReturn = !!attackUpdateModels.length;
 
   const deleteUnitGroupsOperations = [
-    ...attackUnitGroupIdsToDelete,
-    ...defenceUnitGroupIdsToDelete
+    ...attackUnitGroupIdsToDelete
   ].map(getUnitGroupDeleteOperation)
 
   const updateUnitGroupsOperations = [
@@ -191,8 +182,9 @@ function getAttackOperations(
     ...defenceUpdateModels
   ].map(getUnitGroupUpdateAmountOperation)
 
+  // todo cascade remove unitGroups on attack remove
   const attackOperation = !hasTroopsToReturn
-    ? getAttackDeleteOperation(attackId, ATTACK_LOG_TYPE)
+    ? getAttackDeleteOperation(attackId)
     : getAttackUpdateReturningDateOperation(
       attackId,
       attackDate,
@@ -200,9 +192,18 @@ function getAttackOperations(
       distance
     )
 
+  console.log(`[Attack exec]`, {
+    attackId,
+    distance,
+    hasTroopsToReturn,
+    attackUnitGroupIdsToDelete,
+    attackUpdateModels,
+    defenceUpdateModels
+  })
+
   return [
-    ...deleteUnitGroupsOperations,
     ...updateUnitGroupsOperations,
+    ...deleteUnitGroupsOperations,
     attackOperation
   ]
 }
@@ -229,15 +230,13 @@ function getAttackReturningOperations(
       updateAmountModels.push({
         oldAmount: foundHomeUnitGroup.amount,
         newAmount: foundHomeUnitGroup.amount + foundAttackUnitGroup.amount,
-        unitGroupId: foundHomeUnitGroup.id,
-        type: ATTACK_RETURN_LOG_TYPE
+        unitGroupId: foundHomeUnitGroup.id
       })
     }
 
     if (foundOnlyAttackGroup) {
       createModels.push({
         amount: foundAttackUnitGroup.amount,
-        type: ATTACK_RETURN_LOG_TYPE,
         ownerCastleId: homeCastleId,
         unitTypeId: foundAttackUnitGroup.unitTypeId
       })
@@ -246,17 +245,23 @@ function getAttackReturningOperations(
     if (foundAttackUnitGroup) {
       // todo remove, use cascade
       deleteModels.push({
-        unitGroupId: foundAttackUnitGroup.id,
-        type: ATTACK_RETURN_LOG_TYPE
+        unitGroupId: foundAttackUnitGroup.id
       })
     }
+  })
+
+  console.log(`[Attack returning]`, {
+    attackId,
+    updateAmountModels,
+    createModels,
+    deleteModels
   })
 
   return [
     ...updateAmountModels.map(getUnitGroupUpdateAmountOperation),
     ...createModels.map(getUnitGroupCreateOperation),
     ...deleteModels.map(getUnitGroupDeleteOperation),
-    getAttackDeleteOperation(attackId, ATTACK_RETURN_LOG_TYPE)
+    getAttackDeleteOperation(attackId)
   ]
 }
 
@@ -287,10 +292,4 @@ export async function attacksProcessingTick() {
   }, [])
 
   await prisma.$transaction(operations)
-}
-
-export function startAttacksProcessing() {
-  setInterval(() => {
-    attacksProcessingTick()
-  }, 2000)
 }

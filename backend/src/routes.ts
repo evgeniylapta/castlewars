@@ -2,6 +2,7 @@ import express from 'express';
 import castleRoute from './features/castle/castle.route';
 import userRoute from './features/user/user.route';
 import attackRoute from './features/attack/attack.route';
+import unitRoute from './features/unit/unit.route';
 import dictionariesRouter from './features/dictionaries/dictionaries.route';
 import config from './config/config';
 
@@ -23,6 +24,10 @@ const defaultRoutes = [
   {
     path: '/attack',
     route: attackRoute,
+  },
+  {
+    path: '/unit',
+    route: unitRoute,
   }
 ];
 

@@ -1,15 +1,11 @@
-const SECTOR_STEP = 5;
-
-export type Sector = { startX: number, startY: number, endX: number, endY: number }
-
-export type TSide = 'leftTop' | 'rightTop' | 'leftBottom'  | 'rightBottom'
-
-
-function generateSectorKey(sector: Sector) {
-  return `${sector.startX}_${sector.startY}_${sector.endX}_${sector.endY}`
-}
+import { SECTOR_STEP } from '../config';
+import { Sector, TSide } from '../types';
 
 type MoveCommand = 'straight' | 'side'
+
+function getSectorKey(sector: Sector) {
+  return `${sector.startX}_${sector.startY}_${sector.endX}_${sector.endY}`
+}
 
 type TSectorsGenerationModel = {
   initialSectorByAngleModifier: (angleIndex: number) => Sector
@@ -171,7 +167,7 @@ export async function generateSectors(
   let angleIndex = angleInitialIndex
 
   const addSectorToList = async (sector: Sector, isLastSectorInAngle: boolean) => {
-    sectors[generateSectorKey(sector)] = sector
+    sectors[getSectorKey(sector)] = sector
     await onNextSector(sector, angleIndex, isLastSectorInAngle)
   }
 
@@ -217,7 +213,7 @@ export async function generateSectors(
     if (currentCommand === 'side') {
       const newSector: Sector = sideSectorModifier(currentSector)
       const isSectorInIgnoredArea = checkIsSectorInIgnoredArea(angleInitialIndex, newSector)
-      const isSectorPassed = sectors[generateSectorKey(newSector)]
+      const isSectorPassed = sectors[getSectorKey(newSector)]
       const isLastSectorInAngle = sideSectorResetCondition(newSector)
 
       if(!isSectorPassed && !isSectorInIgnoredArea) {

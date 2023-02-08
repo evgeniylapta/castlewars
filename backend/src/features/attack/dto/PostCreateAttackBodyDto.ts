@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsString, IsObject } from 'class-validator';
+import { TAttackCreationData } from '../types';
 
 export class PostCreateAttackBodyDto {
   @IsNotEmpty()
@@ -7,5 +8,5 @@ export class PostCreateAttackBodyDto {
 
   @IsNotEmpty()
   @IsObject()
-  data: object
+  data: TAttackCreationData
 }

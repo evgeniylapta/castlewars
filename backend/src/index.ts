@@ -1,15 +1,21 @@
 import config from './config/config'
 import logger from './config/logger'
 import app from './app'
-import { generateUsers } from './features/generation/generation.service';
-import { selectBotsAmount } from './features/user/user.service';
+import { attacksProcessingTick } from './features/attack/services/attackProcessing.service';
+import {
+  botsActionsCreatingTick,
+  botsActionsExecuteTick,
+} from './features/botsHandle/services/botsHandle.service';
+import { asyncTimerStart } from './utils/timer';
 
 const server = app.listen(config.port, async () => {
   logger.info(`Listening to port ${config.port}`);
 
-  const botsAmount = await selectBotsAmount()
+  asyncTimerStart(() => attacksProcessingTick(), 1000)
+  asyncTimerStart(() => botsActionsExecuteTick(), 1000)
+  asyncTimerStart(() => botsActionsCreatingTick(), 3000)
 
-  generateUsers({ limit: 10, isBot: true, nameFactory: (index) => `Bot user ${botsAmount + index}` })
+  // await generateBots(1000)
 });
 
 const exitHandler = () => {

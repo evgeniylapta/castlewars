@@ -3,9 +3,9 @@ import styles from './CastleInfo.module.scss';
 import { TClassNameable } from '../../../../shared/types';
 import { useAuthContext } from '../../../auth';
 import { useSelectedCastleDetailsContext } from '../../index';
-import { Tribe, TTribeType, useTribeTypesContext } from '../../../tribe';
+import { Tribe, useTribeTypeById } from '../../../tribe';
 import InfoSection from '../../../../shared/components/InfoSection/InfoSection';
-import { Unit } from '../../../unit';
+import { Unit, UnitsOrder } from '../../../unit';
 import { Gold } from '../../../resources';
 import { AttacksStatus, CreateAttack } from '../../../attack';
 
@@ -16,12 +16,7 @@ const CastleInfo: FC<TProps> = ({ className}) => {
 
   const { castleDetailsQuery: { data: castleDetails } } = useSelectedCastleDetailsContext()
 
-  const { tribeTypesQuery: { data: tribeTypes } } = useTribeTypesContext()
-
-  const tribeType: TTribeType | undefined = useMemo(
-    () => tribeTypes?.find(({ id }) => id === castleDetails?.user.tribeId)?.name,
-    [castleDetails, tribeTypes]
-  )
+  const tribeType = useTribeTypeById(castleDetails?.user.tribeId)
 
   if (!castleDetails) {
     return null
@@ -50,6 +45,10 @@ const CastleInfo: FC<TProps> = ({ className}) => {
         <div className={styles.units}>
           {castleDetails?.unitGroups?.map((unitGroup) => <Unit key={unitGroup.id} className={styles.unit} unitGroup={unitGroup} />)}
         </div>
+      </InfoSection>
+
+      <InfoSection title="Unit ordering">
+        <UnitsOrder />
       </InfoSection>
 
       <InfoSection title="War status">

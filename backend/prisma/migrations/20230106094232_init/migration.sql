@@ -27,25 +27,29 @@ CREATE TABLE "CastleResources" (
 );
 
 -- CreateTable
-CREATE TABLE "UnitType" (
-    "id" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
-    "attack" INTEGER NOT NULL,
-    "defence" INTEGER NOT NULL,
-    "speed" INTEGER NOT NULL,
-    "carryingCapacity" INTEGER NOT NULL,
-    "cropConsumption" INTEGER NOT NULL,
-
-    CONSTRAINT "UnitType_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "TribeType" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
 
     CONSTRAINT "TribeType_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateTable
+CREATE TABLE "UnitType" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "tribeTypeId" TEXT NOT NULL,
+    "attack" INTEGER NOT NULL,
+    "defence" INTEGER NOT NULL,
+    "speed" INTEGER NOT NULL,
+    "carryingCapacity" INTEGER NOT NULL,
+    "cropConsumption" INTEGER NOT NULL,
+    "creatingSpeed" INTEGER NOT NULL,
+
+    CONSTRAINT "UnitType_pkey" PRIMARY KEY ("id")
+);
+
+ALTER TABLE "UnitType" ADD CONSTRAINT "UnitType_tribeTypeId_fkey" FOREIGN KEY ("tribeTypeId") REFERENCES "TribeType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- CreateTable
 CREATE TABLE "Attack" (
@@ -94,22 +98,21 @@ ALTER TABLE "UnitGroup" ADD CONSTRAINT "UnitGroup_ownerCastleId_fkey" FOREIGN KE
 -- AddForeignKey
 ALTER TABLE "UnitGroup" ADD CONSTRAINT "UnitGroup_ownerAttackId_fkey" FOREIGN KEY ("ownerAttackId") REFERENCES "Attack"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
-
-INSERT INTO "UnitType" (id, name, attack, defence, speed, "carryingCapacity", "cropConsumption") VALUES
-    ('11111111-1111-1111-1111-111111111111', 'Legionnaire', 40, 35, 6, 50, 1),
-    ('11111111-1111-1111-1111-111111111112', 'Praetorian', 30, 65, 5, 20, 1),
-    ('11111111-1111-1111-1111-111111111113', 'Emperors cavalry', 120, 65, 14, 100, 3),
-    ('11111111-1111-1111-1111-111111111114', 'Phalanx', 15, 40, 7, 35, 1),
-    ('11111111-1111-1111-1111-111111111115', 'Swordsman', 65, 35, 6, 45, 1),
-    ('11111111-1111-1111-1111-111111111116', 'Theutates Thunder', 90, 25, 19, 75, 2),
-    ('11111111-1111-1111-1111-111111111117', 'Clubswinger', 40, 20, 7, 60, 1),
-    ('11111111-1111-1111-1111-111111111118', 'Spearfighter', 10, 35, 7, 40, 1),
-    ('11111111-1111-1111-1111-111111111119', 'Paladin', 55, 100, 10, 110, 2);
-
 INSERT INTO "TribeType" (id, name) VALUES
     ('591a413b-829e-4e92-a775-bdf620548710', 'Gaul'),
     ('591a413b-829e-4e92-a775-bdf620548711', 'Roman'),
     ('591a413b-829e-4e92-a775-bdf620548712', 'Teuton');
+
+INSERT INTO "UnitType" (id, name, attack, defence, speed, "carryingCapacity", "cropConsumption", "creatingSpeed", "tribeTypeId") VALUES
+    ('11111111-1111-1111-1111-111111111111', 'Legionnaire', 40, 35, 6, 50, 1, 5, '591a413b-829e-4e92-a775-bdf620548711'),
+    ('11111111-1111-1111-1111-111111111112', 'Praetorian', 30, 65, 5, 20, 1, 7, '591a413b-829e-4e92-a775-bdf620548711'),
+    ('11111111-1111-1111-1111-111111111113', 'Emperors cavalry', 120, 65, 14, 100, 3, 11, '591a413b-829e-4e92-a775-bdf620548711'),
+    ('11111111-1111-1111-1111-111111111114', 'Phalanx', 15, 40, 7, 35, 1, 4, '591a413b-829e-4e92-a775-bdf620548710'),
+    ('11111111-1111-1111-1111-111111111115', 'Swordsman', 65, 35, 6, 45, 1, 5, '591a413b-829e-4e92-a775-bdf620548710'),
+    ('11111111-1111-1111-1111-111111111116', 'Theutates Thunder', 90, 25, 19, 75, 2, 10, '591a413b-829e-4e92-a775-bdf620548710'),
+    ('11111111-1111-1111-1111-111111111117', 'Clubswinger', 40, 20, 7, 60, 1, 3, '591a413b-829e-4e92-a775-bdf620548712'),
+    ('11111111-1111-1111-1111-111111111118', 'Spearfighter', 10, 35, 7, 40, 1, 4, '591a413b-829e-4e92-a775-bdf620548712'),
+    ('11111111-1111-1111-1111-111111111119', 'Paladin', 55, 100, 10, 110, 2, 10, '591a413b-829e-4e92-a775-bdf620548712');
 
 INSERT INTO "User" (id, name, "tribeId") VALUES
     ('a54e7593-0aa1-4a7c-a8df-6b44cdfab190', 'TestUser', '591a413b-829e-4e92-a775-bdf620548710');

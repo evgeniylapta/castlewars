@@ -1,14 +1,14 @@
 import { prisma } from '../../config/prisma';
-import { CastleCreateDto } from './dto/castleCreateDto';
+import { CastleCreateDto } from './dto/CastleCreateDto';
 import { Request } from 'express';
 import { findCurrentUser } from '../user/user.service';
-import { GetCastlesQueryDto } from './dto/getCastlesQueryDto';
-import { getCastleDetailsQueryDto } from './dto/getCastleDetailsQueryDto';
+import { GetCastlesQueryDto } from './dto/GetCastlesQueryDto';
+import { getCastleDetailsQueryDto } from './dto/GetCastleDetailsQueryDto';
 import {
   calculateDistanceBetweenCastles,
   findCastlesByCoordsRanges,
 } from './castle.service';
-import { GetDistanceBetweenCastlesQueryDto } from './dto/getDistanceBetweenPointsQueryDto';
+import { GetDistanceBetweenCastlesQueryDto } from './dto/GetDistanceBetweenPointsQueryDto';
 
 export const getCastles = async (req: Request<object, object, object, GetCastlesQueryDto>, res) => {
   const { minX, minY, maxX, maxY } = req.query

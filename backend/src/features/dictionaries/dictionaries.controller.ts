@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { findUnitTypes } from '../unit/unit.service';
 import { findTribeTypes } from '../tribe/tribe.service';
+import { findUnitTypes } from '../unit/services/unitType.service';
 
 export const getUnitTypes = async (req: Request, res: Response) => {
   res.send(await findUnitTypes());

@@ -14,6 +14,7 @@ model User {
   castles   Castle[]
   tribeType TribeType @relation(fields: [tribeId], references: [id])
   tribeId   String
+  botAction BotAction?
 }
 
 model Castle {
@@ -26,6 +27,7 @@ model Castle {
   unitGroups      UnitGroup[]
   attacksFrom     Attack[]         @relation("AttackCastleFrom")
   attacksTo       Attack[]         @relation("AttackCastleTo")
+  unitOrders      UnitOrder[]
 }
 
 model CastleResources {
@@ -43,13 +45,18 @@ model UnitType {
   speed            Int
   carryingCapacity Int
   cropConsumption  Int
+  creatingSpeed    Int
   unitGroups       UnitGroup[]
+  unitOrders       UnitOrder[]
+  tribeType        TribeType  @relation(fields: [tribeTypeId], references: [id])
+  tribeTypeId      String
 }
 
 model TribeType {
   id    String @id @default(uuid())
   name  String
   users User[]
+  unitTypes UnitType[]
 }
 
 model Attack {
@@ -78,4 +85,21 @@ model MapSettlement {
   id               String @id @default(uuid())
   direction        String
   settleAngleIndex Int
+}
+
+model UnitOrder {
+  id         String   @id @default(uuid())
+  castle     Castle   @relation(fields: [castleId], references: [id])
+  castleId   String
+  unitType   UnitType @relation(fields: [unitTypeId], references: [id])
+  unitTypeId String
+  amount     Int
+  createDate DateTime
+}
+
+model BotAction {
+  id         String         @id @default(uuid())
+  user       User           @relation(fields: [userId], references: [id])
+  userId     String         @unique
+  date       DateTime
 }

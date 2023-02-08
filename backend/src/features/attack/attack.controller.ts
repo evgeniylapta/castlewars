@@ -1,9 +1,8 @@
 import { Request } from 'express';
-import { GetCastleAttacksQueryDto } from './dto/getCastleAttacksQueryDto';
-import { createAttack, findAttacksByUser } from './attack.service';
-import { PostCreateAttackBodyDto } from './dto/postCreateAttackBodyDto';
+import { GetCastleAttacksQueryDto } from './dto/GetCastleAttacksQueryDto';
+import { createAttack, findAttacksByUser } from './services/attack.service';
+import { PostCreateAttackBodyDto } from './dto/PostCreateAttackBodyDto';
 import { findCurrentUser } from '../user/user.service';
-import { findUnitTypes } from '../unit/unit.service';
 
 export const getAttacksController = async (req: Request<object, object, object, GetCastleAttacksQueryDto>, res) => {
   res.send(await findAttacksByUser(req.query.castleId));
