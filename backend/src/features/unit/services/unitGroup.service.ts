@@ -3,7 +3,7 @@ import { UnitType, UnitGroup, Castle, Attack } from '@prisma/client'
 
 export type TUnitGroupUpdateAmountModel = { unitGroupId: UnitGroup['id'], newAmount: number, oldAmount: number }
 export type TUnitGroupCreateModel = { amount: number, ownerCastleId?: Castle['id'], ownerAttackId?: Attack['id'], unitTypeId: UnitType['id'] }
-export type TUnitGroupDeleteModel = { unitGroupId: UnitGroup['id'] }
+// export type TUnitGroupDeleteModel = { unitGroupId: UnitGroup['id'] }
 
 export async function findUnitGroupsByCastleId(castleId: string) {
   return await prisma.unitGroup.findMany({
@@ -50,7 +50,7 @@ export function getUnitGroupUpdateAmountOperation({ unitGroupId, newAmount }: TU
   );
 }
 
-export function getUnitGroupDeleteOperation({ unitGroupId }: TUnitGroupDeleteModel) {
+export function getUnitGroupDeleteOperation(unitGroupId: UnitGroup['id']) {
   return (
     prisma.unitGroup.delete({
       where: {

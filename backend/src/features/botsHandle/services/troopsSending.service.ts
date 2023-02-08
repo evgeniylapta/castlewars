@@ -5,6 +5,7 @@ import { TAttackCreationData } from '../../attack/types';
 import { getUnitTypesByTribeType } from '../../unit/services/unitType.service';
 import { findUnitGroupByUnitType } from '../../unit/services/unitGroup.service';
 import { getCreateAttackOperations } from '../../attack/services/attack.service';
+import { callFormattedConsoleLog } from '../../../utils/console';
 
 async function getRandomCastleToAttack(castle: Castle) {
   const { x, y } = castle
@@ -100,7 +101,11 @@ export async function getTroopsSendOperations(
     return []
   }
 
-  console.log('[Bot send troops]', { castleFrom: { id: castle.id, x: castle.x, y:castle.y }, castleTo: { id: randomCastleToAttack.id, x: randomCastleToAttack.x, y: randomCastleToAttack.y }, unitsToAttack})
+  callFormattedConsoleLog('[BOT SEND TROOPS]', {
+    castleFrom: { id: castle.id, x: castle.x, y:castle.y },
+    castleTo: { id: randomCastleToAttack.id, x: randomCastleToAttack.x, y: randomCastleToAttack.y },
+    unitsToAttack
+  })
 
   return getCreateAttackOperations(
     castle.id,

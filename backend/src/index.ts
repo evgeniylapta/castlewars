@@ -7,16 +7,39 @@ import {
   botsActionsExecuteTick,
 } from './features/botsHandle/services/botsHandle.service';
 import { asyncTimerStart } from './utils/timer';
+import { generateBots } from './features/generation/services/generation.service';
 
 const server = app.listen(config.port, async () => {
   logger.info(`Listening to port ${config.port}`);
 
-  asyncTimerStart(() => attacksProcessingTick(), 1000)
-  asyncTimerStart(() => botsActionsExecuteTick(), 1000)
-  asyncTimerStart(() => botsActionsCreatingTick(), 3000)
-
-  // await generateBots(1000)
+  realTimeHandleStart()
+  // await generateBots(500)
 });
+
+// todo move to feature?
+function realTimeHandleStart() {
+  let counter = 1
+
+  asyncTimerStart(async () => {
+    const timerName = '[REAL TIME TICK DURATION]'
+
+    console.time(timerName)
+
+    await attacksProcessingTick()
+
+    // todo move to method
+    if (counter % 3 === 0) {
+      await botsActionsExecuteTick()
+    }
+
+    if (counter % 6 === 0) {
+      await botsActionsCreatingTick()
+    }
+
+    counter++
+    console.timeEnd(timerName)
+  }, 1000)
+}
 
 const exitHandler = () => {
   if (server) {

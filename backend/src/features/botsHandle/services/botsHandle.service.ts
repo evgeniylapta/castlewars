@@ -4,6 +4,7 @@ import { randomIntFromInterval } from '../../../utils/random';
 import { findUnitTypes } from '../../unit/services/unitType.service';
 import { getTroopsSendOperations } from './troopsSending.service';
 import { getOrderUnitsOperations } from './troopsOrdering.service';
+import { callFormattedConsoleLog } from '../../../utils/console';
 
 async function findActionsToExecute(date: Date) {
   return prisma.botAction.findMany({
@@ -93,5 +94,5 @@ export async function botsActionsCreatingTick() {
     })
   })
 
-  console.log(`[Bot create action]`, { actionsLength: bots.length })
+  callFormattedConsoleLog('[BOT CREATE ACTION]', { actionsLength: bots.length })
 }

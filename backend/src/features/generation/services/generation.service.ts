@@ -8,6 +8,7 @@ import { Sector, TSide } from '../types';
 import { selectBotsAmount } from '../../user/user.service';
 import { getRandomArrayItem, randomIntFromInterval } from '../../../utils/random';
 import { findUnitTypes, getUnitTypesByTribeType } from '../../unit/services/unitType.service';
+import { callFormattedConsoleLog } from '../../../utils/console';
 
 type TSidesAngleIndexesMap = { [key in TSide]: number }
 
@@ -259,7 +260,7 @@ export async function generateBots(limit: number) {
 
   const withTroops = true
 
-  console.log('[Bots generation]', { limit, withTroops });
+  callFormattedConsoleLog('[BOTS GENERATION]', { limit, withTroops })
 
   await generateUsers({
     limit,
@@ -268,7 +269,7 @@ export async function generateBots(limit: number) {
     withTroops
   })
 
-  console.log('[Bots generation end]');
+  callFormattedConsoleLog('[BOTS GENERATION END]')
 }
 
 export async function generateUser(name: string) {

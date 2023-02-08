@@ -1,7 +1,6 @@
 import { prisma } from '../../../config/prisma';
 import {
   findUnitGroupByUnitType,
-  TUnitGroupDeleteModel,
   TUnitGroupUpdateAmountModel,
   getUnitGroupDeleteOperation,
   getUnitGroupUpdateAmountOperation,
@@ -11,6 +10,7 @@ import { UnitGroup, UnitType, Attack, Castle } from '@prisma/client'
 import { calculateDistanceBetweenPoints } from '../../castle/castle.service';
 import { add } from 'date-fns';
 import { findUnitTypes, getUnitTypesMovingMinutes } from '../../unit/services/unitType.service';
+import { callFormattedConsoleLog } from '../../../utils/console';
 
 function findUnitTypeById (unitTypes: UnitType[], unitTypeId: string) {
   return unitTypes.find(({ id }) => id === unitTypeId)
@@ -54,6 +54,9 @@ function getAttackDeleteOperation(attackId: Attack['id']) {
     where: {
       id: attackId
     },
+    include: {
+      unitGroups: true
+    }
   })
 }
 
@@ -81,28 +84,29 @@ function getAttackUpdateReturningDateOperation(
   })
 }
 
+// todo only update
 function getUnitGroupsAlteringModels(
   unitGroups: UnitGroup[],
   survivedCoefficient: number,
-  removeOnEmpty = false
+  // removeOnEmpty = false
 ) {
-  const deleteModels: TUnitGroupDeleteModel[] = []
+  // const deleteModels: TUnitGroupDeleteModel[] = []
   const updateModels: TUnitGroupUpdateAmountModel[] = []
 
   unitGroups.forEach(({amount, id}) => {
     const newAmount = Math.max(Math.floor(amount * survivedCoefficient), 0)
 
-    if (!newAmount && removeOnEmpty) {
-      deleteModels.push({ unitGroupId: id })
-
-      return
-    }
+    // if (!newAmount && removeOnEmpty) {
+    //   deleteModels.push({ unitGroupId: id })
+    //
+    //   return
+    // }
 
     updateModels.push({ unitGroupId: id, newAmount, oldAmount: amount })
   })
 
   return {
-    deleteModels,
+    // deleteModels,
     updateModels
   }
 }
@@ -158,24 +162,25 @@ function getAttackOperations(
 
   const {
     updateModels: attackUpdateModels,
-    deleteModels: attackUnitGroupIdsToDelete
+    // deleteModels: attackUnitGroupIdsToDelete
   } = getUnitGroupsAlteringModels(
     attackUnitGroups,
     attackSurvivedCoefficient,
-    true
+    // true
   )
 
   const { updateModels: defenceUpdateModels } = getUnitGroupsAlteringModels(
     castleToUnitGroups,
     defenceSurvivedCoefficient,
-    false
+    // false
   )
 
   const hasTroopsToReturn = !!attackUpdateModels.length;
 
-  const deleteUnitGroupsOperations = [
-    ...attackUnitGroupIdsToDelete
-  ].map(getUnitGroupDeleteOperation)
+  // todo
+  // const deleteUnitGroupsOperations = [
+  //   ...attackUnitGroupIdsToDelete
+  // ].map(getUnitGroupDeleteOperation)
 
   const updateUnitGroupsOperations = [
     ...attackUpdateModels,
@@ -192,18 +197,18 @@ function getAttackOperations(
       distance
     )
 
-  console.log(`[Attack exec]`, {
+  callFormattedConsoleLog('[ATTACK EXEC]', {
     attackId,
     distance,
     hasTroopsToReturn,
-    attackUnitGroupIdsToDelete,
+    // attackUnitGroupIdsToDelete,
     attackUpdateModels,
     defenceUpdateModels
   })
 
   return [
     ...updateUnitGroupsOperations,
-    ...deleteUnitGroupsOperations,
+    // ...deleteUnitGroupsOperations,
     attackOperation
   ]
 }
@@ -216,7 +221,7 @@ function getAttackReturningOperations(
   homeCastleId: Castle['id']
 ) {
   const updateAmountModels: TUnitGroupUpdateAmountModel[] = []
-  const deleteModels: TUnitGroupDeleteModel[] = []
+  // const deleteModels: TUnitGroupDeleteModel[] = []
   const createModels: TUnitGroupCreateModel[] = []
 
   unitTypes.forEach((unitType) => {
@@ -242,25 +247,26 @@ function getAttackReturningOperations(
       })
     }
 
-    if (foundAttackUnitGroup) {
-      // todo remove, use cascade
-      deleteModels.push({
-        unitGroupId: foundAttackUnitGroup.id
-      })
-    }
+    // if (foundAttackUnitGroup) {
+    //   // todo remove, use cascade
+    //   deleteModels.push({
+    //     unitGroupId: foundAttackUnitGroup.id
+    //   })
+    // }
   })
 
-  console.log(`[Attack returning]`, {
+
+  callFormattedConsoleLog('[ATTACK RETURNING]', {
     attackId,
     updateAmountModels,
     createModels,
-    deleteModels
+    // deleteModels
   })
 
   return [
     ...updateAmountModels.map(getUnitGroupUpdateAmountOperation),
     ...createModels.map(getUnitGroupCreateOperation),
-    ...deleteModels.map(getUnitGroupDeleteOperation),
+    // ...deleteModels.map(getUnitGroupDeleteOperation),
     getAttackDeleteOperation(attackId)
   ]
 }
