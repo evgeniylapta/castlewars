@@ -1,5 +1,6 @@
 export * from './contexts/unitsContext'
 export * from './types'
-export { default as Unit } from './components/Unit/Unit'
+export * from './utils/unitTypeUtils'
 export { default as UnitIcon } from './components/UnitIcon/UnitIcon'
 export { default as UnitsOrder } from './components/order/UnitsOrder/UnitsOrder'
+export { default as Units } from './components/Units/Units'

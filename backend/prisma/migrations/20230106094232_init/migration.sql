@@ -22,6 +22,7 @@ CREATE TABLE "CastleResources" (
     "id" TEXT NOT NULL,
     "gold" INTEGER NOT NULL,
     "castleId" TEXT NOT NULL,
+    "goldLastUpdate" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "CastleResources_pkey" PRIMARY KEY ("id")
 );
@@ -45,6 +46,8 @@ CREATE TABLE "UnitType" (
     "carryingCapacity" INTEGER NOT NULL,
     "cropConsumption" INTEGER NOT NULL,
     "creatingSpeed" INTEGER NOT NULL,
+    "goldPrice" INTEGER NOT NULL,
+    "subsequence" INTEGER NOT NULL,
 
     CONSTRAINT "UnitType_pkey" PRIMARY KEY ("id")
 );
@@ -103,16 +106,16 @@ INSERT INTO "TribeType" (id, name) VALUES
     ('591a413b-829e-4e92-a775-bdf620548711', 'Roman'),
     ('591a413b-829e-4e92-a775-bdf620548712', 'Teuton');
 
-INSERT INTO "UnitType" (id, name, attack, defence, speed, "carryingCapacity", "cropConsumption", "creatingSpeed", "tribeTypeId") VALUES
-    ('11111111-1111-1111-1111-111111111111', 'Legionnaire', 40, 35, 6, 50, 1, 5, '591a413b-829e-4e92-a775-bdf620548711'),
-    ('11111111-1111-1111-1111-111111111112', 'Praetorian', 30, 65, 5, 20, 1, 7, '591a413b-829e-4e92-a775-bdf620548711'),
-    ('11111111-1111-1111-1111-111111111113', 'Emperors cavalry', 120, 65, 14, 100, 3, 11, '591a413b-829e-4e92-a775-bdf620548711'),
-    ('11111111-1111-1111-1111-111111111114', 'Phalanx', 15, 40, 7, 35, 1, 4, '591a413b-829e-4e92-a775-bdf620548710'),
-    ('11111111-1111-1111-1111-111111111115', 'Swordsman', 65, 35, 6, 45, 1, 5, '591a413b-829e-4e92-a775-bdf620548710'),
-    ('11111111-1111-1111-1111-111111111116', 'Theutates Thunder', 90, 25, 19, 75, 2, 10, '591a413b-829e-4e92-a775-bdf620548710'),
-    ('11111111-1111-1111-1111-111111111117', 'Clubswinger', 40, 20, 7, 60, 1, 3, '591a413b-829e-4e92-a775-bdf620548712'),
-    ('11111111-1111-1111-1111-111111111118', 'Spearfighter', 10, 35, 7, 40, 1, 4, '591a413b-829e-4e92-a775-bdf620548712'),
-    ('11111111-1111-1111-1111-111111111119', 'Paladin', 55, 100, 10, 110, 2, 10, '591a413b-829e-4e92-a775-bdf620548712');
+INSERT INTO "UnitType" (id, name, attack, defence, speed, "carryingCapacity", "cropConsumption", "creatingSpeed", "tribeTypeId", "goldPrice", "subsequence") VALUES
+    ('11111111-1111-1111-1111-111111111111', 'Legionnaire', 40, 35, 6, 50, 1, 5, '591a413b-829e-4e92-a775-bdf620548711', 50, 1),
+    ('11111111-1111-1111-1111-111111111112', 'Praetorian', 30, 65, 5, 20, 1, 7, '591a413b-829e-4e92-a775-bdf620548711', 70, 2),
+    ('11111111-1111-1111-1111-111111111113', 'Emperors cavalry', 120, 65, 14, 100, 3, 11, '591a413b-829e-4e92-a775-bdf620548711', 110, 3),
+    ('11111111-1111-1111-1111-111111111114', 'Phalanx', 15, 40, 7, 35, 1, 4, '591a413b-829e-4e92-a775-bdf620548710', 40, 1),
+    ('11111111-1111-1111-1111-111111111115', 'Swordsman', 65, 35, 6, 45, 1, 5, '591a413b-829e-4e92-a775-bdf620548710', 50, 2),
+    ('11111111-1111-1111-1111-111111111116', 'Theutates Thunder', 90, 25, 19, 75, 2, 10, '591a413b-829e-4e92-a775-bdf620548710', 100, 3),
+    ('11111111-1111-1111-1111-111111111117', 'Clubswinger', 40, 20, 7, 60, 1, 3, '591a413b-829e-4e92-a775-bdf620548712', 30, 1),
+    ('11111111-1111-1111-1111-111111111118', 'Spearfighter', 10, 35, 7, 40, 1, 4, '591a413b-829e-4e92-a775-bdf620548712', 40, 2),
+    ('11111111-1111-1111-1111-111111111119', 'Paladin', 55, 100, 10, 110, 2, 10, '591a413b-829e-4e92-a775-bdf620548712', 100, 3);
 
 INSERT INTO "User" (id, name, "tribeId") VALUES
     ('a54e7593-0aa1-4a7c-a8df-6b44cdfab190', 'TestUser', '591a413b-829e-4e92-a775-bdf620548710');
@@ -120,8 +123,8 @@ INSERT INTO "User" (id, name, "tribeId") VALUES
 INSERT INTO "Castle" (id, "userId", x, y) VALUES
     ('591a413b-829e-4e92-a775-bdf620548101', 'a54e7593-0aa1-4a7c-a8df-6b44cdfab190', 0, 0);
 
-INSERT INTO "CastleResources" (id, gold, "castleId") VALUES
-    (gen_random_uuid(), 120, '591a413b-829e-4e92-a775-bdf620548101');
+INSERT INTO "CastleResources" (id, gold, "castleId", "goldLastUpdate") VALUES
+    (gen_random_uuid(), 120, '591a413b-829e-4e92-a775-bdf620548101', now());
 
 INSERT INTO "UnitGroup" (id, "unitTypeId", amount, "ownerCastleId", "ownerAttackId") VALUES
     (gen_random_uuid(), '11111111-1111-1111-1111-111111111114', 21, '591a413b-829e-4e92-a775-bdf620548101', null),

@@ -8,11 +8,11 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(uuid())
+  id        String     @id @default(uuid())
   name      String
-  isBot     Boolean   @default(false)
+  isBot     Boolean    @default(false)
   castles   Castle[]
-  tribeType TribeType @relation(fields: [tribeId], references: [id])
+  tribeType TribeType  @relation(fields: [tribeId], references: [id])
   tribeId   String
   botAction BotAction?
 }
@@ -27,18 +27,19 @@ model Castle {
   unitGroups      UnitGroup[]
   attacksFrom     Attack[]         @relation("AttackCastleFrom")
   attacksTo       Attack[]         @relation("AttackCastleTo")
-  unitOrders      UnitOrder[]
+  unitsOrders     UnitsOrder[]
 }
 
 model CastleResources {
-  id       String @id @default(uuid())
-  gold     Int
-  castle   Castle @relation(fields: [castleId], references: [id])
-  castleId String @unique
+  id             String   @id @default(uuid())
+  gold           Int
+  goldLastUpdate DateTime
+  castle         Castle   @relation(fields: [castleId], references: [id])
+  castleId       String   @unique
 }
 
 model UnitType {
-  id               String      @id @default(uuid())
+  id               String           @id @default(uuid())
   name             String
   attack           Int
   defence          Int
@@ -46,16 +47,18 @@ model UnitType {
   carryingCapacity Int
   cropConsumption  Int
   creatingSpeed    Int
+  goldPrice        Int
   unitGroups       UnitGroup[]
-  unitOrders       UnitOrder[]
-  tribeType        TribeType  @relation(fields: [tribeTypeId], references: [id])
+  unitsOrderItem   UnitsOrderItem[]
+  tribeType        TribeType        @relation(fields: [tribeTypeId], references: [id])
   tribeTypeId      String
+  subsequence      Int
 }
 
 model TribeType {
-  id    String @id @default(uuid())
-  name  String
-  users User[]
+  id        String     @id @default(uuid())
+  name      String
+  users     User[]
   unitTypes UnitType[]
 }
 
@@ -75,9 +78,9 @@ model UnitGroup {
   unitType      UnitType @relation(fields: [unitTypeId], references: [id])
   unitTypeId    String
   amount        Int
-  ownerCastle   Castle?  @relation(fields: [ownerCastleId], references: [id])
+  ownerCastle   Castle?  @relation(fields: [ownerCastleId], references: [id], onDelete: Cascade)
   ownerCastleId String?
-  ownerAttack   Attack?  @relation(fields: [ownerAttackId], references: [id])
+  ownerAttack   Attack?  @relation(fields: [ownerAttackId], references: [id], onDelete: Cascade)
   ownerAttackId String?
 }
 
@@ -87,19 +90,27 @@ model MapSettlement {
   settleAngleIndex Int
 }
 
-model UnitOrder {
-  id         String   @id @default(uuid())
-  castle     Castle   @relation(fields: [castleId], references: [id])
-  castleId   String
-  unitType   UnitType @relation(fields: [unitTypeId], references: [id])
-  unitTypeId String
-  amount     Int
-  createDate DateTime
+model UnitsOrder {
+  id                  String           @id @default(uuid())
+  castle              Castle           @relation(fields: [castleId], references: [id])
+  castleId            String
+  lastCreationDate    DateTime
+  items               UnitsOrderItem[]
+}
+
+model UnitsOrderItem {
+  id          String     @id @default(uuid())
+  unitType    UnitType   @relation(fields: [unitTypeId], references: [id])
+  unitTypeId  String
+  order       UnitsOrder @relation(fields: [orderId], references: [id])
+  orderId     String
+  amount      Int
+  subsequence Int
 }
 
 model BotAction {
-  id         String         @id @default(uuid())
-  user       User           @relation(fields: [userId], references: [id])
-  userId     String         @unique
-  date       DateTime
+  id     String   @id @default(uuid())
+  user   User     @relation(fields: [userId], references: [id])
+  userId String   @unique
+  date   DateTime
 }

@@ -5,7 +5,7 @@ import { useAuthContext } from '../../../auth';
 import { useSelectedCastleDetailsContext } from '../../index';
 import { Tribe, useTribeTypeById } from '../../../tribe';
 import InfoSection from '../../../../shared/components/InfoSection/InfoSection';
-import { Unit, UnitsOrder } from '../../../unit';
+import { Units, UnitsOrder } from '../../../unit';
 import { Gold } from '../../../resources';
 import { AttacksStatus, CreateAttack } from '../../../attack';
 
@@ -42,9 +42,7 @@ const CastleInfo: FC<TProps> = ({ className}) => {
       </InfoSection>
 
       <InfoSection title="Troops">
-        <div className={styles.units}>
-          {castleDetails?.unitGroups?.map((unitGroup) => <Unit key={unitGroup.id} className={styles.unit} unitGroup={unitGroup} />)}
-        </div>
+        <Units />
       </InfoSection>
 
       <InfoSection title="Unit ordering">

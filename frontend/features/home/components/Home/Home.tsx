@@ -10,6 +10,7 @@ import {
 import { SelectedMapPointContextProvider, MapCenterContextProvider, MapSizeProvider } from '../../../map';
 import { UnitTypesContextProvider } from '../../../unit';
 import { TribeTypesContextProvider } from '../../../tribe';
+import { CastleResourcesProvider } from '../../../resources';
 import { useAuthContext } from '../../../auth';
 
 function Home() {
@@ -28,10 +29,12 @@ function Home() {
             <TribeTypesContextProvider>
               <UnitTypesContextProvider>
                 <SelectedCastleDetailsProvider>
-                  <div className={styles.container}>
-                    <Map />
-                    <CastleInfo className={styles.info} />
-                  </div>
+                    <div className={styles.container}>
+                      <Map />
+                      <CastleResourcesProvider>
+                        <CastleInfo className={styles.info} />
+                      </CastleResourcesProvider>
+                    </div>
                 </SelectedCastleDetailsProvider>
               </UnitTypesContextProvider>
             </TribeTypesContextProvider>

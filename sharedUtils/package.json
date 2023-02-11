@@ -1,0 +1,9 @@
+{
+  "name": "sharedutils",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "ISC",
+  "peerDependencies": {
+    "date-fns": "^2.29.3"
+  }
+}

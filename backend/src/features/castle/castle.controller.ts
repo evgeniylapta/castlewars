@@ -25,7 +25,7 @@ export const getCurrentUserCastle = async (req, res) => {
 export const getCastleDetails = async (req: Request<object, object, object, getCastleDetailsQueryDto>, res) => {
   const { castleId } = req.query
 
-  res.send(await prisma.castle.findFirst({
+  const castle = await prisma.castle.findFirst({
     where: {
       id: castleId
     },
@@ -34,7 +34,9 @@ export const getCastleDetails = async (req: Request<object, object, object, getC
       castleResources: true,
       user: true
     }
-  }));
+  })
+
+  res.send(castle);
 };
 
 export const createCastle = async (req: Request<object, object, CastleCreateDto>, res) => {

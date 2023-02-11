@@ -41,6 +41,10 @@ function getRandomUnitsAmount() {
   return randomIntFromInterval(10, 100)
 }
 
+function getRandomGoldAmount() {
+  return randomIntFromInterval(100, 3000)
+}
+
 function getUserOperation(
   point: TPoint,
   tribeType: TribeType,
@@ -64,7 +68,8 @@ function getUserOperation(
           y: point.y,
           castleResources: {
             create: {
-              gold: 0
+              gold: getRandomGoldAmount(),
+              goldLastUpdate: new Date()
             }
           },
           unitGroups: {
@@ -269,7 +274,7 @@ export async function generateBots(limit: number) {
     withTroops
   })
 
-  callFormattedConsoleLog('[BOTS GENERATION END]')
+  console.log('[BOTS GENERATION END]')
 }
 
 export async function generateUser(name: string) {

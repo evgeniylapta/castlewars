@@ -1,0 +1,4 @@
+export const ATTACKS_PROCESSING_TICK = 1
+export const HANDLE_UNIT_ORDERS_TICK = 1
+export const BOTS_ACTIONS_EXECUTE_TICK = 3
+export const BOTS_ACTIONS_CREATING_TICK = 6

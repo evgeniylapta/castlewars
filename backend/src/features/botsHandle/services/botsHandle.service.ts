@@ -5,6 +5,7 @@ import { findUnitTypes } from '../../unit/services/unitType.service';
 import { getTroopsSendOperations } from './troopsSending.service';
 import { getOrderUnitsOperations } from './troopsOrdering.service';
 import { callFormattedConsoleLog } from '../../../utils/console';
+import { INTERVAL_BETWEEN_ACTIONS_SECONDS_RANGE } from '../config';
 
 async function findActionsToExecute(date: Date) {
   return prisma.botAction.findMany({
@@ -20,7 +21,7 @@ async function findActionsToExecute(date: Date) {
             include: {
               castleResources: true,
               unitGroups: true,
-              unitOrders: true,
+              unitsOrders: true,
             }
           },
           tribeType: true
@@ -40,7 +41,7 @@ export async function botsActionsExecuteTick() {
 
   for (const action of actionsToPerform) {
     const { user: { castles: [castle], tribeType } } = action
-    const orderUnitsOperations = getOrderUnitsOperations(castle.castleResources, castle.unitOrders)
+    const orderUnitsOperations = await getOrderUnitsOperations(castle.castleResources, castle.unitsOrders, unitTypes, tribeType)
     const troopsSendOperations = await getTroopsSendOperations(castle.unitGroups, castle, tribeType, unitTypes)
 
     operations = [
@@ -80,16 +81,16 @@ async function findBotsWithNoActions() {
 export async function botsActionsCreatingTick() {
   const bots = await findBotsWithNoActions()
 
+  const newDate = new Date()
+
   await prisma.botAction.createMany({
     data: bots.map(({ id }) => {
-      const minutesToAdd = randomIntFromInterval(5, 15)
-      // date: addMinutes(new Date(), minutesToAdd),
-      // todo only for test
-      const date = addSeconds(new Date(), minutesToAdd)
+      const { min, max } = INTERVAL_BETWEEN_ACTIONS_SECONDS_RANGE
+      const secondsToAdd = randomIntFromInterval(min, max)
 
       return ({
         userId: id,
-        date
+        date: addSeconds(newDate, secondsToAdd)
       });
     })
   })

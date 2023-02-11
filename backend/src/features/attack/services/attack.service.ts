@@ -2,7 +2,7 @@ import { prisma } from '../../../config/prisma';
 import { findUnitGroupsByCastleId } from '../../unit/services/unitGroup.service';
 import { calculateDistanceBetweenCastles } from '../../castle/castle.service';
 import { add } from 'date-fns';
-import { findUnitTypes, getUnitTypesMovingMinutes } from '../../unit/services/unitType.service';
+import { findUnitTypes, getUnitTypesMovingSeconds } from '../../unit/services/unitType.service';
 import { UnitType } from '@prisma/client';
 import { TAttackCreationData } from '../types';
 
@@ -46,9 +46,9 @@ export async function getCreateAttackOperations(castleFromId: string, castleToId
   const requestUnitTypeKeys = Object.keys(data)
   const requestUnitTypes = requestUnitTypeKeys.map((key) => unitTypes.find(({ id }) => id === key))
 
-  const minutesToDestination = getUnitTypesMovingMinutes(requestUnitTypes, distance)
+  const secondsToDestination = getUnitTypesMovingSeconds(requestUnitTypes, distance)
   const destinationDate = add(new Date(), {
-    minutes: minutesToDestination
+    seconds: secondsToDestination
   })
 
   const unitGroupsToUpdate = (await findUnitGroupsByCastleId(castleFromId))

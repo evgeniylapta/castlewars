@@ -12,6 +12,7 @@ export type TUnitTypesResponseItem = {
   speed: number
   carryingCapacity: number
   cropConsumption: number
+  subsequence: number
 }
 
 export type TUnitTypesResponse = TUnitTypesResponseItem[]

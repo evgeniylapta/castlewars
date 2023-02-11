@@ -2,15 +2,14 @@ import { prisma } from '../../../config/prisma';
 import {
   findUnitGroupByUnitType,
   TUnitGroupUpdateAmountModel,
-  getUnitGroupDeleteOperation,
   getUnitGroupUpdateAmountOperation,
   TUnitGroupCreateModel, getUnitGroupCreateOperation
 } from '../../unit/services/unitGroup.service';
 import { UnitGroup, UnitType, Attack, Castle } from '@prisma/client'
-import { calculateDistanceBetweenPoints } from '../../castle/castle.service';
 import { add } from 'date-fns';
-import { findUnitTypes, getUnitTypesMovingMinutes } from '../../unit/services/unitType.service';
+import { findUnitTypes, getUnitTypesMovingSeconds } from '../../unit/services/unitType.service';
 import { callFormattedConsoleLog } from '../../../utils/console';
+import { calculateDistanceBetweenPoints } from 'sharedUtils';
 
 function findUnitTypeById (unitTypes: UnitType[], unitTypeId: string) {
   return unitTypes.find(({ id }) => id === unitTypeId)
@@ -69,7 +68,7 @@ function getAttackUpdateReturningDateOperation(
   const newDate = add(
     attackDate,
     {
-      minutes: getUnitTypesMovingMinutes(attackUnitTypesLeft, distance)
+      seconds: getUnitTypesMovingSeconds(attackUnitTypesLeft, distance)
     }
   )
 
@@ -90,18 +89,10 @@ function getUnitGroupsAlteringModels(
   survivedCoefficient: number,
   // removeOnEmpty = false
 ) {
-  // const deleteModels: TUnitGroupDeleteModel[] = []
   const updateModels: TUnitGroupUpdateAmountModel[] = []
 
   unitGroups.forEach(({amount, id}) => {
     const newAmount = Math.max(Math.floor(amount * survivedCoefficient), 0)
-
-    // if (!newAmount && removeOnEmpty) {
-    //   deleteModels.push({ unitGroupId: id })
-    //
-    //   return
-    // }
-
     updateModels.push({ unitGroupId: id, newAmount, oldAmount: amount })
   })
 

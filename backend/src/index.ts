@@ -1,45 +1,17 @@
 import config from './config/config'
 import logger from './config/logger'
 import app from './app'
-import { attacksProcessingTick } from './features/attack/services/attackProcessing.service';
-import {
-  botsActionsCreatingTick,
-  botsActionsExecuteTick,
-} from './features/botsHandle/services/botsHandle.service';
-import { asyncTimerStart } from './utils/timer';
+import { createUnitOrderItem } from './features/unit/services/unitsOrder.service';
+import { realTimeHandleStart } from './features/realTimeHandle/realTimeHandle.service';
 import { generateBots } from './features/generation/services/generation.service';
 
 const server = app.listen(config.port, async () => {
   logger.info(`Listening to port ${config.port}`);
 
+  // await createUnitOrderItem('11111111-1111-1111-1111-111111111116', '591a413b-829e-4e92-a775-bdf620548101', 1)
+  await generateBots(100)
   realTimeHandleStart()
-  // await generateBots(500)
 });
-
-// todo move to feature?
-function realTimeHandleStart() {
-  let counter = 1
-
-  asyncTimerStart(async () => {
-    const timerName = '[REAL TIME TICK DURATION]'
-
-    console.time(timerName)
-
-    await attacksProcessingTick()
-
-    // todo move to method
-    if (counter % 3 === 0) {
-      await botsActionsExecuteTick()
-    }
-
-    if (counter % 6 === 0) {
-      await botsActionsCreatingTick()
-    }
-
-    counter++
-    console.timeEnd(timerName)
-  }, 1000)
-}
 
 const exitHandler = () => {
   if (server) {

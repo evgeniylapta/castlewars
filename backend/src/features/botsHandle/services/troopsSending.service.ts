@@ -1,11 +1,12 @@
 import { Castle, TribeType, UnitGroup, UnitType } from '@prisma/client';
 import { findCastlesByCoordsRanges } from '../../castle/castle.service';
-import { getRandomArrayItem } from '../../../utils/random';
+import { getRandomArrayItem, rollChance } from '../../../utils/random';
 import { TAttackCreationData } from '../../attack/types';
 import { getUnitTypesByTribeType } from '../../unit/services/unitType.service';
 import { findUnitGroupByUnitType } from '../../unit/services/unitGroup.service';
 import { getCreateAttackOperations } from '../../attack/services/attack.service';
 import { callFormattedConsoleLog } from '../../../utils/console';
+import { CHANCE_TO_SEND_TROOPS } from '../config';
 
 async function getRandomCastleToAttack(castle: Castle) {
   const { x, y } = castle
@@ -87,13 +88,15 @@ export async function getTroopsSendOperations(
   tribeType: TribeType,
   unitTypes: UnitType[]
 ) {
+  if(!rollChance(CHANCE_TO_SEND_TROOPS)) {
+    return []
+  }
+
   const unitsToAttack = getUnitsToAttack(tribeType, unitTypes, castleUnitGroups)
 
   if (!unitsToAttack) {
     return []
   }
-
-  // todo logs
 
   const randomCastleToAttack = await getRandomCastleToAttack(castle)
 
@@ -107,7 +110,7 @@ export async function getTroopsSendOperations(
     unitsToAttack
   })
 
-  return getCreateAttackOperations(
+  return await getCreateAttackOperations(
     castle.id,
     randomCastleToAttack.id,
     unitsToAttack
