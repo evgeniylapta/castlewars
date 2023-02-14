@@ -1,25 +1,21 @@
 import constate from 'constate'
 import { getCalculatedCastleCold } from 'sharedUtils';
-import { useInterval } from 'react-use';
-import { useCallback, useEffect, useState } from 'react';
+import { useHarmonicIntervalFn, useInterval } from 'react-use';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { TCastleExtended, useSelectedCastleDetailsContext } from '../../castle';
+import { useNewDateInterval } from '../../../shared/hooks/useNewDateInterval';
 
 function useCastleCalculatedGold(castle?: TCastleExtended) {
-  const [gold, setGold] = useState<number>()
+  const newDate = useNewDateInterval()
 
-  const calculate = useCallback(() => setGold(
+  return useMemo(() => (
     castle
-    ? getCalculatedCastleCold(
-      castle.castleResources.gold,
-      new Date(castle.castleResources.goldLastUpdate)
-    )
-    : undefined
-  ), [castle])
-
-  useEffect(() => calculate(), [castle])
-  useInterval(() => calculate(), 1000)
-
-  return gold
+      ? getCalculatedCastleCold(
+        castle.castleResources.gold,
+        new Date(castle.castleResources.goldLastUpdate)
+      )
+      : undefined
+  ), [castle, newDate])
 }
 
 const useContext = () => {

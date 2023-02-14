@@ -1,4 +1,4 @@
-import { convertMinutesToSeconds } from '../../utils/time';
+import { convertMinutesToSeconds } from '../../../../sharedUtils/src/timeUtils';
 
 export const INTERVAL_BETWEEN_ACTIONS_SECONDS_RANGE = {
   // min: convertMinutesToSeconds(1),

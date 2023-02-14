@@ -7,9 +7,10 @@ import {
 } from '../../unit/services/unitGroup.service';
 import { UnitGroup, UnitType, Attack, Castle } from '@prisma/client'
 import { add } from 'date-fns';
-import { findUnitTypes, getUnitTypesMovingSeconds } from '../../unit/services/unitType.service';
+import { findUnitTypes } from '../../unit/services/unitType.service';
 import { callFormattedConsoleLog } from '../../../utils/console';
 import { calculateDistanceBetweenPoints } from 'sharedUtils';
+import { getUnitTypesMovingSeconds } from 'sharedUtils';
 
 function findUnitTypeById (unitTypes: UnitType[], unitTypeId: string) {
   return unitTypes.find(({ id }) => id === unitTypeId)

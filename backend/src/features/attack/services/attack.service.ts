@@ -2,8 +2,8 @@ import { prisma } from '../../../config/prisma';
 import { findUnitGroupsByCastleId } from '../../unit/services/unitGroup.service';
 import { calculateDistanceBetweenCastles } from '../../castle/castle.service';
 import { add } from 'date-fns';
-import { findUnitTypes, getUnitTypesMovingSeconds } from '../../unit/services/unitType.service';
-import { UnitType } from '@prisma/client';
+import { findUnitTypes } from '../../unit/services/unitType.service';
+import { getUnitTypesMovingSeconds } from 'sharedUtils';
 import { TAttackCreationData } from '../types';
 
 export async function findAttacksByUser(castleId: string) {

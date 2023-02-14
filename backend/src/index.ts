@@ -8,8 +8,7 @@ import { generateBots } from './features/generation/services/generation.service'
 const server = app.listen(config.port, async () => {
   logger.info(`Listening to port ${config.port}`);
 
-  // await createUnitOrderItem('11111111-1111-1111-1111-111111111116', '591a413b-829e-4e92-a775-bdf620548101', 1)
-  await generateBots(100)
+  // await generateBots(100)
   realTimeHandleStart()
 });
 

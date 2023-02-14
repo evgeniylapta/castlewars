@@ -3,7 +3,7 @@ import styles from './Units.module.scss';
 import { useSelectedCastleDetailsContext } from '../../../castle';
 import Unit from '../Unit/Unit';
 import { useUnitTypesContext } from '../../contexts/unitsContext';
-import { findUnitType } from '../../utils/unitTypeUtils';
+import { findUnitTypeById } from '../../utils/unitTypeUtils';
 import { TUnitGroup } from '../../types';
 
 function useUnitGroups() {
@@ -14,8 +14,8 @@ function useUnitGroups() {
     const result = [...unitGroups]
 
     result.sort(((first, second) => {
-      const firstUnitType = findUnitType(first.unitTypeId, unitTypes)
-      const secondUnitType = findUnitType(second.unitTypeId, unitTypes)
+      const firstUnitType = findUnitTypeById(first.unitTypeId, unitTypes)
+      const secondUnitType = findUnitTypeById(second.unitTypeId, unitTypes)
 
       if (!firstUnitType || !secondUnitType) {
         return 0

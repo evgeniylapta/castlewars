@@ -1,5 +1,5 @@
 import { TUnitTypesResponseItem } from '../types';
 
-export function findUnitType(unitTypeId: TUnitTypesResponseItem['id'], unitTypes?: TUnitTypesResponseItem[]) {
+export function findUnitTypeById(unitTypeId: TUnitTypesResponseItem['id'], unitTypes?: TUnitTypesResponseItem[]) {
   return unitTypes?.find(({ id }) => id === unitTypeId)
 }

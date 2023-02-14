@@ -6,6 +6,6 @@ export function useTribeTypeById(tribeTypeId?: TTribeItem['id'], ) {
 
   return useMemo(
     () => data?.find(({ id }) => id === tribeTypeId)?.name,
-    [data]
+    [data, tribeTypeId]
   )
 }
