@@ -14,7 +14,7 @@ const Unit: FC<TProps> = ({ unitGroup, className }) => {
 
   return (
     <div className={classNames(className, styles.wrap)}>
-      <UnitIcon unitGroup={unitGroup} />
+      <UnitIcon unitTypeId={unitGroup.unitTypeId} />
       <span>{amount}</span>
     </div>
   )

@@ -9,6 +9,8 @@ import { calculateDistanceBetweenPoints, getUnitTypesMovingSeconds } from 'share
 import { findUnitTypeById, TUnitTypesResponseItem, useUnitTypesContext } from '../../../../unit';
 import { addSeconds, format, formatDuration, intervalToDuration } from 'date-fns';
 import { useNewDateInterval } from '../../../../../shared/hooks/useNewDateInterval';
+import { usePreparedUnitGroups } from '../../../../unit/hooks/usePreparedUnitGroups';
+import { useUnitTypesByTribeId } from '../../../../unit/hooks/useUnitTypesByTribeId';
 
 function useDistance() {
   const { castleDetailsQuery: { data: selectedCastleDetails } } = useSelectedCastleDetailsContext()
@@ -47,10 +49,38 @@ function useAttackTime(distance: number, { watch }: UseFormReturn) {
       })
       : undefined
 
-    // console.log(duration);
-
     return duration ? formatDuration(duration) : undefined
   } , [newDate, formData])
+}
+
+function useSubmitHandle(cancel: () => void) {
+  const { castleDetailsQuery: { data: selectedCastleDetails } } = useSelectedCastleDetailsContext()
+  const { mutateAsync } = useCreateAttackMutation()
+  const { goToMyCastlePoint } = useMapCenterContext()
+
+  return useCallback(async (data: any) => {
+    if (!selectedCastleDetails) {
+      return null;
+    }
+
+    const preparedData = Object.fromEntries(Object.entries(data).filter(([,value]) => !!value))
+
+    await mutateAsync({
+      data: preparedData,
+      castleId: selectedCastleDetails.id
+    })
+
+    goToMyCastlePoint()
+    cancel()
+  }, [])
+}
+
+function useIsSubmitDisabled(useFormReturn: UseFormReturn) {
+  const { formState: { isValid }, watch } = useFormReturn
+
+  const noValue = !Object.entries(watch()).filter(([, value]) => !!value).length
+
+  return !isValid || noValue
 }
 
 type TProps = {
@@ -59,39 +89,30 @@ type TProps = {
 
 const Form: FC<TProps> = ({ onCancel }) => {
   const { myCastleDetailsQuery: { data: myCastleDetails } } = useMyCastleContext()
-  const { mutateAsync } = useCreateAttackMutation()
   const useFormReturn = useForm()
-  const { handleSubmit, formState: { isValid }, watch } = useFormReturn
-  const { castleDetailsQuery: { data: selectedCastleDetails } } = useSelectedCastleDetailsContext()
-  const { goToMyCastlePoint } = useMapCenterContext()
+  const { handleSubmit } = useFormReturn
   const distance = useDistance()
   const attackTime = useAttackTime(distance, useFormReturn)
-
-  const isDisabled = !isValid || !Object.entries(watch()).filter(([, value]) => !!value).length
+  const isSubmitDisabled = useIsSubmitDisabled(useFormReturn)
+  const submitHandle = useSubmitHandle(onCancel)
+  const preparedUnitGroups = usePreparedUnitGroups(myCastleDetails?.unitGroups)
+  const unitTypes = useUnitTypesByTribeId(myCastleDetails?.user.tribeId)
 
   return (
     <>
       <div>Distance: {distance}</div>
-      <form onSubmit={handleSubmit(async (data) => {
-        // todo move to method
-        if (!selectedCastleDetails) {
-          return null;
-        }
-
-        const preparedData = Object.fromEntries(Object.entries(data).filter(([,value]) => !!value))
-
-        await mutateAsync({
-          data: preparedData,
-          castleId: selectedCastleDetails.id
-        })
-
-        goToMyCastlePoint()
-      })}>
-        {myCastleDetails?.unitGroups.map((unitGroup) => (
-          <FormItem key={unitGroup.id} unitGroup={unitGroup} useFormReturn={useFormReturn} className={styles.item} />
+      <form onSubmit={handleSubmit(submitHandle)}>
+        {unitTypes?.map((unitType) => (
+          <FormItem
+            key={unitType.id}
+            unitGroup={preparedUnitGroups?.find(({ unitTypeId }) => unitType.id === unitTypeId)}
+            unitType={unitType}
+            useFormReturn={useFormReturn}
+            className={styles.item}
+          />
         ))}
-        {attackTime && !isDisabled && <div>Attack will happen in {attackTime}</div>}
-        <button type="submit" disabled={isDisabled} className={styles.button}>Send troops</button>
+        {attackTime && !isSubmitDisabled && <div>Attack will happen in {attackTime}</div>}
+        <button type="submit" disabled={isSubmitDisabled} className={styles.button}>Send troops</button>
         {' '}
         <button onClick={onCancel}>Cancel</button>
       </form>

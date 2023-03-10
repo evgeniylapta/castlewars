@@ -13,6 +13,8 @@ export type TUnitTypesResponseItem = {
   carryingCapacity: number
   cropConsumption: number
   subsequence: number
+  tribeTypeId: string
+  goldPrice: number
 }
 
 export type TUnitTypesResponse = TUnitTypesResponseItem[]

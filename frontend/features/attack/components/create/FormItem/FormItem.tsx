@@ -1,11 +1,15 @@
 import { FC } from 'react';
-import { TUnitGroup, UnitIcon } from '../../../../unit';
+import { TUnitGroup, TUnitTypesResponseItem, UnitIcon } from '../../../../unit';
 import styles from './FormItem.module.scss';
 import { UseFormReturn } from 'react-hook-form';
 import { TClassNameable } from '../../../../../shared/types';
 import classNames from 'classnames';
 
-function useRestValue({ watch }: UseFormReturn, unitGroup: TUnitGroup, fieldName: string) {
+function useRestValue({ watch }: UseFormReturn, fieldName: string, unitGroup?: TUnitGroup) {
+  if (!unitGroup) {
+    return 0
+  }
+
   const value = watch(fieldName)
 
   const restValue = unitGroup.amount - (value > 0 ? value : 0)
@@ -14,21 +18,22 @@ function useRestValue({ watch }: UseFormReturn, unitGroup: TUnitGroup, fieldName
 }
 
 type TProps = TClassNameable & {
-  unitGroup: TUnitGroup
+  unitType: TUnitTypesResponseItem
+  unitGroup?: TUnitGroup
   useFormReturn: UseFormReturn
 }
 
-const FormItem: FC<TProps> = ({unitGroup, className, useFormReturn}) => {
-  const name = unitGroup.unitTypeId
-  const { register, formState: { errors } } =  useFormReturn
-  const restValue = useRestValue(useFormReturn, unitGroup, name)
+const FormItem: FC<TProps> = ({unitGroup, unitType, className, useFormReturn}) => {
+  const name = unitType.id
+  const { register, formState: { errors } } = useFormReturn
+  const restValue = useRestValue(useFormReturn, name, unitGroup)
 
   return (
-    <div className={className} key={unitGroup.id}>
-      <UnitIcon unitGroup={unitGroup}/>
+    <div className={className}>
+      <UnitIcon unitTypeId={unitType.id}/>
       <input
         type="number"
-        {...register(name, { valueAsNumber: true, min: 0, max: unitGroup.amount })}
+        {...register(name, { valueAsNumber: true, min: 0, max: restValue })}
         className={classNames(styles.input, { [styles.error]: !!errors[name] })}
       />
       <span>/ {restValue}</span>

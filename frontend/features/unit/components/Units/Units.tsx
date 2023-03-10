@@ -1,48 +1,13 @@
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 import styles from './Units.module.scss';
 import { useSelectedCastleDetailsContext } from '../../../castle';
 import Unit from '../Unit/Unit';
-import { useUnitTypesContext } from '../../contexts/unitsContext';
-import { findUnitTypeById } from '../../utils/unitTypeUtils';
-import { TUnitGroup } from '../../types';
+import { usePreparedUnitGroups } from '../../hooks/usePreparedUnitGroups';
 
 function useUnitGroups() {
   const { castleDetailsQuery: { data: castleDetails } } = useSelectedCastleDetailsContext()
-  const { unitTypesQuery: { data: unitTypes } } = useUnitTypesContext()
 
-  const sort = (unitGroups: TUnitGroup[]) => {
-    const result = [...unitGroups]
-
-    result.sort(((first, second) => {
-      const firstUnitType = findUnitTypeById(first.unitTypeId, unitTypes)
-      const secondUnitType = findUnitTypeById(second.unitTypeId, unitTypes)
-
-      if (!firstUnitType || !secondUnitType) {
-        return 0
-      }
-
-      if (firstUnitType.subsequence < secondUnitType.subsequence) {
-        return -1;
-      }
-      if (firstUnitType.subsequence > secondUnitType.subsequence) {
-        return 1;
-      }
-      return 0;
-    }))
-
-    return result
-  }
-
-  return useMemo(
-    () => {
-      if (!castleDetails?.unitGroups) {
-        return undefined
-      }
-
-      return sort(castleDetails.unitGroups).filter(({ amount }) => !!amount);
-    },
-    [castleDetails, unitTypes]
-  )
+  return usePreparedUnitGroups(castleDetails?.unitGroups)
 }
 
 const Units: FC = () => {

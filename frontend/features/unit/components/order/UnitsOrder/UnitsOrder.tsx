@@ -1,22 +1,17 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { TClassNameable } from '../../../../../shared/types';
-import { useAuthContext } from '../../../../auth';
-import { useTribeTypeById } from '../../../../tribe';
-import { useSelectedCastleDetailsContext } from '../../../../castle';
-import { useUnitTypesContext } from '../../../contexts/unitsContext';
+import Form from '../Form/Form';
+import { useUnitTypesByTribeId } from '../../../hooks/useUnitTypesByTribeId';
 
 type TProps = TClassNameable
 
 const UnitsOrder: FC<TProps> = () => {
-  const { currentUserQuery: { data: currentUser } } = useAuthContext()
-  const { castleDetailsQuery: { data: castleDetails } } = useSelectedCastleDetailsContext()
-  const { unitTypesQuery: { data: unitTypes } } = useUnitTypesContext()
-
-  const tribeType = useTribeTypeById(currentUser?.tribeId)
+  const [activated, setActivated] = useState(false)
 
   return (
     <div>
-      <button onClick={() => {}}>Order units</button>
+      {!activated && <button type="button" onClick={() => setActivated(true)}>Select troops to order</button>}
+      {activated && <Form onCancel={() => setActivated(false)} />}
     </div>
   )
 }

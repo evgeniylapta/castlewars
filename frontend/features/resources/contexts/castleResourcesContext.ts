@@ -1,7 +1,6 @@
 import constate from 'constate'
 import { getCalculatedCastleCold } from 'sharedUtils';
-import { useHarmonicIntervalFn, useInterval } from 'react-use';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { TCastleExtended, useSelectedCastleDetailsContext } from '../../castle';
 import { useNewDateInterval } from '../../../shared/hooks/useNewDateInterval';
 

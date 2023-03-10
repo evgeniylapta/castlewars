@@ -22,13 +22,15 @@ const CastleInfo: FC<TProps> = ({ className}) => {
     return null
   }
 
+  const isMyCastle = castleDetails.user.id === currentUser?.id
+
   return (
     <div className={className}>
       <InfoSection noMargin title="Castle">
         <div>
           User name: {castleDetails.user.name}
           {' '}
-          <b>{castleDetails.user.id === currentUser?.id && ('(me)')}</b>
+          <b>{isMyCastle && ('(me)')}</b>
         </div>
         <div>Coords: [x: {castleDetails.x} y: {castleDetails.y}]</div>
       </InfoSection>
@@ -45,9 +47,11 @@ const CastleInfo: FC<TProps> = ({ className}) => {
         <Units />
       </InfoSection>
 
-      <InfoSection title="Unit ordering">
-        <UnitsOrder />
-      </InfoSection>
+      {isMyCastle && (
+        <InfoSection title="Troops ordering">
+          <UnitsOrder />
+        </InfoSection>
+      )}
 
       <InfoSection title="War status">
         <AttacksStatus />

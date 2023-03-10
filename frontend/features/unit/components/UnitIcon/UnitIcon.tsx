@@ -9,8 +9,8 @@ import spearfighterImg from '../../assets/Spearfighter.png';
 import swordsmanImg from '../../assets/Swordsman.png';
 import theutatesThunderImg from '../../assets/TheutatesThunder.png';
 import { TClassNameable } from '../../../../shared/types';
-import { TUnitGroup, TUnitName } from '../../types';
-import { useUnitTypeName } from '../../hooks/getUnitTypeName';
+import { TUnitGroup, TUnitName, TUnitTypesResponseItem } from '../../types';
+import { useUnitTypeName } from '../../hooks/useUnitTypeName';
 
 function useUnitIcon(type?: TUnitName) {
   switch (type) {
@@ -36,11 +36,11 @@ function useUnitIcon(type?: TUnitName) {
 }
 
 type TProps = {
-  unitGroup: TUnitGroup
+  unitTypeId: TUnitTypesResponseItem['id']
 } & TClassNameable
 
-const UnitIcon: FC<TProps> = ({ unitGroup, className }) => {
-  const foundType = useUnitTypeName(unitGroup)
+const UnitIcon: FC<TProps> = ({ unitTypeId, className }) => {
+  const foundType = useUnitTypeName(unitTypeId)
 
   const icon = useUnitIcon(foundType)
 
