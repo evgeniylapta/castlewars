@@ -1,6 +1,6 @@
-import { TUser } from '../auth';
-import { TUnitGroup } from '../unit';
-import { TCastleResources } from '../resources';
+import { TUser } from '../auth'
+import { TUnitGroup } from '../unit'
+import { TCastleResources } from '../resources'
 
 export type TCastle = {
   id: string

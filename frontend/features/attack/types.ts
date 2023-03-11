@@ -1,5 +1,5 @@
-import { TUnitGroup } from '../unit';
-import { TCastle, TCastleUserExtension } from '../castle';
+import { TUnitGroup } from '../unit'
+import { TCastle, TCastleUserExtension } from '../castle'
 
 export type TAttack = {
   id: string,
@@ -11,5 +11,3 @@ export type TAttack = {
   unitGroups: TUnitGroup[],
   isReturning: boolean
 }
-
-

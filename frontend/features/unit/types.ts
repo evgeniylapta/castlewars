@@ -26,4 +26,3 @@ export type TUnitGroup = {
   ownerCastleId: string | null
   ownerAttackId: string | null
 }
-

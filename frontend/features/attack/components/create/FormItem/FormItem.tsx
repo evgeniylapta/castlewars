@@ -1,9 +1,9 @@
-import { FC } from 'react';
-import { TUnitGroup, TUnitTypesResponseItem, UnitIcon } from '../../../../unit';
-import styles from './FormItem.module.scss';
-import { UseFormReturn } from 'react-hook-form';
-import { TClassNameable } from '../../../../../shared/types';
-import classNames from 'classnames';
+import { FC } from 'react'
+import { UseFormReturn } from 'react-hook-form'
+import classNames from 'classnames'
+import { TUnitGroup, TUnitTypesResponseItem, UnitIcon } from '../../../../unit'
+import styles from './FormItem.module.scss'
+import { TClassNameable } from '../../../../../shared/types'
 
 function useRestValue({ watch }: UseFormReturn, fieldName: string, unitGroup?: TUnitGroup) {
   if (!unitGroup) {
@@ -23,22 +23,27 @@ type TProps = TClassNameable & {
   useFormReturn: UseFormReturn
 }
 
-const FormItem: FC<TProps> = ({unitGroup, unitType, className, useFormReturn}) => {
+const FormItem: FC<TProps> = ({
+  unitGroup, unitType, className, useFormReturn
+}) => {
   const name = unitType.id
   const { register, formState: { errors } } = useFormReturn
   const restValue = useRestValue(useFormReturn, name, unitGroup)
 
   return (
     <div className={className}>
-      <UnitIcon unitTypeId={unitType.id}/>
+      <UnitIcon unitTypeId={unitType.id} />
       <input
         type="number"
         {...register(name, { valueAsNumber: true, min: 0, max: restValue })}
         className={classNames(styles.input, { [styles.error]: !!errors[name] })}
       />
-      <span>/ {restValue}</span>
+      <span>
+        /
+        {restValue}
+      </span>
     </div>
-  );
+  )
 }
 
 export default FormItem

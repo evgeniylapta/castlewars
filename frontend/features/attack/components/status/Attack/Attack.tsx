@@ -1,10 +1,10 @@
-import { FC, useMemo, useState } from 'react';
-import { TAttack } from '../../../types';
-import styles from './Attack.module.scss';
-import classNames from 'classnames';
-import { TClassNameable } from '../../../../../shared/types';
-import { formatDistanceStrict, isAfter } from 'date-fns';
-import { useHarmonicIntervalFn } from 'react-use';
+import { FC, useMemo, useState } from 'react'
+import classNames from 'classnames'
+import { formatDistanceStrict, isAfter } from 'date-fns'
+import { useHarmonicIntervalFn } from 'react-use'
+import { TAttack } from '../../../types'
+import styles from './Attack.module.scss'
+import { TClassNameable } from '../../../../../shared/types'
 
 type TProps = TClassNameable & {
   attack: TAttack,
@@ -47,8 +47,13 @@ function useTime({ dateTime }: TAttack) {
   )
 }
 
-const Attack: FC<TProps> = ({ attack, fromCurrentCastle, className, isReturning }) => {
-  const userName = useName(attack, fromCurrentCastle, isReturning);
+const Attack: FC<TProps> = ({
+  attack,
+  fromCurrentCastle,
+  className,
+  isReturning
+}) => {
+  const userName = useName(attack, fromCurrentCastle, isReturning)
   const { x, y } = useCoords(attack, fromCurrentCastle, isReturning)
 
   const time = useTime(attack)
@@ -59,22 +64,33 @@ const Attack: FC<TProps> = ({ attack, fromCurrentCastle, className, isReturning 
         styles.icon,
         {
           ...(isReturning ? {
-            [styles.isReturning]: isReturning,
+            [styles.isReturning]: isReturning
           } : {
             [styles.fromIcon]: fromCurrentCastle,
             [styles.toIcon]: !fromCurrentCastle
           })
         }
-      )}>
+      )}
+      >
         {fromCurrentCastle && !isReturning ? '>>>' : '<<<'}
       </span>
       {' '}
-      {isReturning ? 'Returning' : 'Attack'} {fromCurrentCastle && !isReturning ? 'to' : 'from'}
+      {isReturning ? 'Returning' : 'Attack'}
+      {' '}
+      {fromCurrentCastle && !isReturning ? 'to' : 'from'}
       {' '}
       {userName}
-      (x: {x}, y: {y})
+      (x:
       {' '}
-      in {time}
+      {x}
+      , y:
+      {' '}
+      {y}
+      )
+      {' '}
+      in
+      {' '}
+      {time}
     </div>
   )
 }

@@ -1,7 +1,7 @@
+import { FC } from 'react'
+import classNames from 'classnames'
 import styles from './Numbers.module.scss'
-import { FC } from 'react';
-import classNames from 'classnames';
-import { useMapPointsContext } from '../../contexts/mapPointsContext';
+import { useMapPointsContext } from '../../contexts/mapPointsContext'
 
 const Numbers: FC = () => {
   const { numbers: { x: xNumbers, y: yNumbers } } = useMapPointsContext()

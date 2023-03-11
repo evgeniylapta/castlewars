@@ -1,7 +1,7 @@
-import { useUnitTypesContext } from '../contexts/unitsContext';
-import { useMemo } from 'react';
-import { TUnitGroup, TUnitTypesResponseItem } from '../types';
-import { findUnitTypeById } from '../utils/unitTypeUtils';
+import { useMemo } from 'react'
+import { useUnitTypesContext } from '../contexts/unitsContext'
+import { TUnitGroup, TUnitTypesResponseItem } from '../types'
+import { findUnitTypeById } from '../utils/unitTypeUtils'
 
 const sort = (unitGroups: TUnitGroup[], unitTypes: TUnitTypesResponseItem[]) => {
   const result = [...unitGroups]
@@ -15,12 +15,12 @@ const sort = (unitGroups: TUnitGroup[], unitTypes: TUnitTypesResponseItem[]) => 
     }
 
     if (firstUnitType.subsequence < secondUnitType.subsequence) {
-      return -1;
+      return -1
     }
     if (firstUnitType.subsequence > secondUnitType.subsequence) {
-      return 1;
+      return 1
     }
-    return 0;
+    return 0
   }))
 
   return result
@@ -35,7 +35,7 @@ export function usePreparedUnitGroups(unitGroups?: TUnitGroup[]) {
         return undefined
       }
 
-      return sort(unitGroups, unitTypes).filter(({ amount }) => !!amount);
+      return sort(unitGroups, unitTypes).filter(({ amount }) => !!amount)
     },
     [unitGroups, unitTypes]
   )

@@ -1,5 +1,5 @@
 import constate from 'constate'
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react'
 
 function useExpandingHandle() {
   const [isExpandedMap, setIsExpandedMap] = useState(false)
@@ -12,10 +12,13 @@ function useExpandingHandle() {
 }
 
 function useMapSize(isExpandedMap: boolean) {
-  const minSize = 9;
-  const maxSize = 15;
+  const minSize = 9
+  const maxSize = 15
 
-  const mapSize = useMemo(() => isExpandedMap ? maxSize : minSize, [isExpandedMap, minSize, maxSize])
+  const mapSize = useMemo(
+    () => (isExpandedMap ? maxSize : minSize),
+    [isExpandedMap, minSize, maxSize]
+  )
 
   return {
     mapSizeHalf: useMemo(() => (mapSize - 1) / 2, []),
@@ -29,7 +32,7 @@ const useContext = () => {
 
   return {
     ...useMapSize(isExpandedMap),
-    ...useExpandingHandleReturn,
+    ...useExpandingHandleReturn
   }
 }
 

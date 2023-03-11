@@ -1,7 +1,6 @@
-import { FC, useState } from 'react';
-import { TClassNameable } from '../../../../../shared/types';
-import Form from '../Form/Form';
-import { useUnitTypesByTribeId } from '../../../hooks/useUnitTypesByTribeId';
+import { FC, useState } from 'react'
+import { TClassNameable } from '../../../../../shared/types'
+import Form from '../Form/Form'
 
 type TProps = TClassNameable
 

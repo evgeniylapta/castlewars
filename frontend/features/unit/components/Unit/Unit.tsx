@@ -1,9 +1,9 @@
-import { FC } from 'react';
-import { TClassNameable } from '../../../../shared/types';
-import classNames from 'classnames';
-import styles from './Unit.module.scss';
-import { TUnitGroup, TUnitName } from '../../types';
-import UnitIcon from '../UnitIcon/UnitIcon';
+import { FC } from 'react'
+import classNames from 'classnames'
+import { TClassNameable } from '../../../../shared/types'
+import styles from './Unit.module.scss'
+import { TUnitGroup } from '../../types'
+import UnitIcon from '../UnitIcon/UnitIcon'
 
 type TProps = {
   unitGroup: TUnitGroup

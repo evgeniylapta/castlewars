@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useHarmonicIntervalFn } from 'react-use';
+import { useState } from 'react'
+import { useHarmonicIntervalFn } from 'react-use'
 
 export function useNewDateInterval() {
   const [newDate, setNewDate] = useState(new Date())

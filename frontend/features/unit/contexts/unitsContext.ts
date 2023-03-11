@@ -1,10 +1,8 @@
 import constate from 'constate'
-import { useUnitTypesQuery } from '../query';
+import { useUnitTypesQuery } from '../query'
 
-const useContext = () => {
-  return {
-    unitTypesQuery: useUnitTypesQuery(),
-  }
-}
+const useContext = () => ({
+  unitTypesQuery: useUnitTypesQuery()
+})
 
 export const [UnitTypesContextProvider, useUnitTypesContext] = constate(useContext)

@@ -1,4 +1,4 @@
-import { TCastle } from '../castle';
+import { TCastle } from '../castle'
 
 export type TUser = {
   id: string

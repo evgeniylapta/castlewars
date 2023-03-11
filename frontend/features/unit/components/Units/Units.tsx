@@ -1,8 +1,8 @@
-import { FC } from 'react';
-import styles from './Units.module.scss';
-import { useSelectedCastleDetailsContext } from '../../../castle';
-import Unit from '../Unit/Unit';
-import { usePreparedUnitGroups } from '../../hooks/usePreparedUnitGroups';
+import { FC } from 'react'
+import styles from './Units.module.scss'
+import { useSelectedCastleDetailsContext } from '../../../castle'
+import Unit from '../Unit/Unit'
+import { usePreparedUnitGroups } from '../../hooks/usePreparedUnitGroups'
 
 function useUnitGroups() {
   const { castleDetailsQuery: { data: castleDetails } } = useSelectedCastleDetailsContext()

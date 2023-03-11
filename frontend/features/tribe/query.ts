@@ -1,6 +1,6 @@
-import { useQuery } from 'react-query';
-import { apiClient } from '../../shared/apiClient';
-import { TTribeItem } from './types';
+import { useQuery } from 'react-query'
+import { apiClient } from '../../shared/apiClient'
+import { TTribeItem } from './types'
 
 const unitTypesKey = () => 'tribeTypes'
 
@@ -11,5 +11,5 @@ async function getTribeTypes() {
 }
 
 export function useTribeTypesQuery() {
-  return useQuery(unitTypesKey(), () => getTribeTypes());
+  return useQuery(unitTypesKey(), () => getTribeTypes())
 }

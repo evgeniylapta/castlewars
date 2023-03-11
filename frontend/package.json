@@ -19,7 +19,7 @@
     "classnames": "^2.3.2",
     "constate": "^3.3.2",
     "date-fns": "^2.29.3",
-    "eslint": "8.29.0",
+    "eslint": "8.22.0",
     "eslint-config-next": "13.0.6",
     "lodash": "^4.17.21",
     "next": "13.0.6",
@@ -29,11 +29,14 @@
     "react-query": "^3.39.2",
     "react-use": "^17.4.0",
     "sass": "^1.57.1",
-    "typescript": "4.9.4",
-    "sharedUtils": "file:../sharedUtils"
+    "sharedUtils": "file:../sharedUtils",
+    "typescript": "4.9.4"
   },
   "devDependencies": {
     "@types/date-fns": "^2.6.0",
-    "@types/lodash": "^4.14.191"
+    "@types/lodash": "^4.14.191",
+    "@typescript-eslint/eslint-plugin": "^5.54.1",
+    "@typescript-eslint/parser": "^5.54.1",
+    "eslint-config-airbnb": "^19.0.4"
   }
 }

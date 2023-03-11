@@ -1,6 +1,6 @@
-import { useUnitTypesContext } from '../contexts/unitsContext';
-import { useMemo } from 'react';
-import { TUnitTypesResponseItem } from '../types';
+import { useMemo } from 'react'
+import { useUnitTypesContext } from '../contexts/unitsContext'
+import { TUnitTypesResponseItem } from '../types'
 
 export function useUnitTypeName(unitTypeId: TUnitTypesResponseItem['id']) {
   const { unitTypesQuery: { data: unitTypes } } = useUnitTypesContext()

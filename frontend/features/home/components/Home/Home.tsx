@@ -1,17 +1,18 @@
 import styles from './Home.module.scss'
-import { Map } from '../../../map';
+import {
+  Map, SelectedMapPointContextProvider, MapCenterContextProvider, MapSizeProvider
+} from '../../../map'
 import {
   CastlesRangeProvider,
   MyCastleProvider,
   useMyCastleContext,
   SelectedCastleDetailsProvider,
   CastleInfo
-} from '../../../castle';
-import { SelectedMapPointContextProvider, MapCenterContextProvider, MapSizeProvider } from '../../../map';
-import { UnitTypesContextProvider } from '../../../unit';
-import { TribeTypesContextProvider } from '../../../tribe';
-import { CastleResourcesProvider } from '../../../resources';
-import { useAuthContext } from '../../../auth';
+} from '../../../castle'
+import { UnitTypesContextProvider } from '../../../unit'
+import { TribeTypesContextProvider } from '../../../tribe'
+import { CastleResourcesProvider } from '../../../resources'
+import { useAuthContext } from '../../../auth'
 
 function Home() {
   const { currentUserQuery: { data: currentUser } } = useAuthContext()
@@ -29,12 +30,12 @@ function Home() {
             <TribeTypesContextProvider>
               <UnitTypesContextProvider>
                 <SelectedCastleDetailsProvider>
-                    <div className={styles.container}>
-                      <Map />
-                      <CastleResourcesProvider>
-                        <CastleInfo className={styles.info} />
-                      </CastleResourcesProvider>
-                    </div>
+                  <div className={styles.container}>
+                    <Map />
+                    <CastleResourcesProvider>
+                      <CastleInfo className={styles.info} />
+                    </CastleResourcesProvider>
+                  </div>
                 </SelectedCastleDetailsProvider>
               </UnitTypesContextProvider>
             </TribeTypesContextProvider>

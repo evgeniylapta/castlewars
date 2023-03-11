@@ -1,8 +1,8 @@
 import constate from 'constate'
-import { useMemo } from 'react';
-import { Point } from '../types';
-import { useMapCenterContext } from './mapCenterContext';
-import { useMapSizeContext } from './mapSizeContext';
+import { useMemo } from 'react'
+import { Point } from '../types'
+import { useMapCenterContext } from './mapCenterContext'
+import { useMapSizeContext } from './mapSizeContext'
 
 function usePoints(centerPoint: Point) {
   const { mapSize } = useMapSizeContext()
@@ -19,10 +19,10 @@ function usePoints(centerPoint: Point) {
 
   return {
     pointsList: useMemo(() => {
-      const result: Point[] = [];
+      const result: Point[] = []
 
-      for (let y = extremePoints.endPoint.y; y >= extremePoints.startPoint.y; y--) {
-        for (let x = extremePoints.startPoint.x; x <= extremePoints.endPoint.x; x++) {
+      for (let { y } = extremePoints.endPoint; y >= extremePoints.startPoint.y; y -= 1) {
+        for (let { x } = extremePoints.startPoint; x <= extremePoints.endPoint.x; x += 1) {
           result.push({ x, y })
         }
       }
@@ -37,19 +37,22 @@ function useNumbers(mapStartPoint: Point) {
   const { mapSize } = useMapSizeContext()
 
   const x = useMemo(() => {
-    let i = mapStartPoint.x;
-    return Array.from(Array(mapSize), () => i++);
-  }, [mapStartPoint, mapSize]);
+    let i = mapStartPoint.x
+    return Array.from(Array(mapSize), () => {
+      i += 1
+      return i
+    })
+  }, [mapStartPoint, mapSize])
 
   const y = useMemo(() => {
-    let i = mapStartPoint.y;
-    return Array.from(Array(mapSize), () => i++).reverse();
-  }, [mapStartPoint, mapSize]);
+    let i = mapStartPoint.y
+    return Array.from(Array(mapSize), () => {
+      i += 1
+      return i
+    }).reverse()
+  }, [mapStartPoint, mapSize])
 
-  return {
-    x,
-    y
-  }
+  return { x, y }
 }
 
 const useContext = () => {

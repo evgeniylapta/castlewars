@@ -1,22 +1,26 @@
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useMyCastleContext, useSelectedCastleDetailsContext } from '../../../../castle';
-import styles from './Form.module.scss';
-import { useForm, UseFormReturn } from 'react-hook-form';
-import FormItem from '../FormItem/FormItem';
-import { useCreateAttackMutation } from '../../../query';
-import { useMapCenterContext } from '../../../../map';
-import { calculateDistanceBetweenPoints, getUnitTypesMovingSeconds } from 'sharedUtils';
-import { findUnitTypeById, TUnitTypesResponseItem, useUnitTypesContext } from '../../../../unit';
-import { addSeconds, format, formatDuration, intervalToDuration } from 'date-fns';
-import { useNewDateInterval } from '../../../../../shared/hooks/useNewDateInterval';
-import { usePreparedUnitGroups } from '../../../../unit/hooks/usePreparedUnitGroups';
-import { useUnitTypesByTribeId } from '../../../../unit/hooks/useUnitTypesByTribeId';
+import {
+  FC, useCallback, useEffect, useMemo, useState
+} from 'react'
+import { useForm, UseFormReturn } from 'react-hook-form'
+import { calculateDistanceBetweenPoints, getUnitTypesMovingSeconds } from 'sharedUtils'
+import {
+  addSeconds, format, formatDuration, intervalToDuration
+} from 'date-fns'
+import { useMyCastleContext, useSelectedCastleDetailsContext } from '../../../../castle'
+import styles from './Form.module.scss'
+import FormItem from '../FormItem/FormItem'
+import { useCreateAttackMutation } from '../../../query'
+import { useMapCenterContext } from '../../../../map'
+import { findUnitTypeById, TUnitTypesResponseItem, useUnitTypesContext } from '../../../../unit'
+import { useNewDateInterval } from '../../../../../shared/hooks/useNewDateInterval'
+import { usePreparedUnitGroups } from '../../../../unit/hooks/usePreparedUnitGroups'
+import { useUnitTypesByTribeId } from '../../../../unit/hooks/useUnitTypesByTribeId'
 
 function useDistance() {
   const { castleDetailsQuery: { data: selectedCastleDetails } } = useSelectedCastleDetailsContext()
   const { myCastleDetailsQuery: { data: myCastleDetails } } = useMyCastleContext()
 
-  return  useMemo(() => {
+  return useMemo(() => {
     if (!selectedCastleDetails || !myCastleDetails) {
       return 0
     }
@@ -38,19 +42,26 @@ function useAttackTime(distance: number, { watch }: UseFormReturn) {
   const newDate = useNewDateInterval()
 
   return useMemo(() => {
-    const typeIds = Object.entries(formData).filter(([,value]) => value && !isNaN(value)).map(([type]) => type)
+    const typeIds = Object.entries(formData)
+      .filter(([, value]) => value && !Number.isNaN(value)).map(([type]) => type)
 
     const filledTypes = typeIds.map((typeId) => findUnitTypeById(typeId, unitTypes))
 
     const duration = filledTypes.length
       ? intervalToDuration({
         start: newDate,
-        end: addSeconds(newDate, getUnitTypesMovingSeconds(filledTypes as TUnitTypesResponseItem[], distance))
+        end: addSeconds(
+          newDate,
+          getUnitTypesMovingSeconds(
+            filledTypes as TUnitTypesResponseItem[],
+            distance
+          )
+        )
       })
       : undefined
 
     return duration ? formatDuration(duration) : undefined
-  } , [newDate, formData])
+  }, [newDate, formData])
 }
 
 function useSubmitHandle(cancel: () => void) {
@@ -60,10 +71,10 @@ function useSubmitHandle(cancel: () => void) {
 
   return useCallback(async (data: any) => {
     if (!selectedCastleDetails) {
-      return null;
+      return null
     }
 
-    const preparedData = Object.fromEntries(Object.entries(data).filter(([,value]) => !!value))
+    const preparedData = Object.fromEntries(Object.entries(data).filter(([, value]) => !!value))
 
     await mutateAsync({
       data: preparedData,
@@ -72,6 +83,8 @@ function useSubmitHandle(cancel: () => void) {
 
     goToMyCastlePoint()
     cancel()
+
+    return Promise.resolve()
   }, [])
 }
 
@@ -100,7 +113,10 @@ const Form: FC<TProps> = ({ onCancel }) => {
 
   return (
     <>
-      <div>Distance: {distance}</div>
+      <div>
+        Distance:
+        {distance}
+      </div>
       <form onSubmit={handleSubmit(submitHandle)}>
         {unitTypes?.map((unitType) => (
           <FormItem
@@ -111,10 +127,15 @@ const Form: FC<TProps> = ({ onCancel }) => {
             className={styles.item}
           />
         ))}
-        {attackTime && !isSubmitDisabled && <div>Attack will happen in {attackTime}</div>}
+        {attackTime && !isSubmitDisabled && (
+          <div>
+            Attack will happen in
+            {attackTime}
+          </div>
+        )}
         <button type="submit" disabled={isSubmitDisabled} className={styles.button}>Send troops</button>
         {' '}
-        <button onClick={onCancel}>Cancel</button>
+        <button type="button" onClick={onCancel}>Cancel</button>
       </form>
     </>
   )

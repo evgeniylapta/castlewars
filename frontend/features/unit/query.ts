@@ -1,6 +1,6 @@
-import { useMutation, useQuery } from 'react-query';
-import { apiClient } from '../../shared/apiClient';
-import { TUnitTypesResponse } from './types';
+import { useMutation, useQuery } from 'react-query'
+import { apiClient } from '../../shared/apiClient'
+import { TUnitTypesResponse } from './types'
 
 const unitTypesKey = () => 'unitTypes'
 
@@ -11,12 +11,12 @@ async function getUnitTypes() {
 }
 
 export function useUnitTypesQuery() {
-  return useQuery(unitTypesKey(), () => getUnitTypes());
+  return useQuery(unitTypesKey(), () => getUnitTypes())
 }
 
 export function useUnitsOrderMutation() {
   return useMutation<void, undefined, { castleId: string, unitTypeId: string, amount: number }>(
     'orderUnits',
-    async (data) => await apiClient.post('/attack', data)
-  );
+    async (data) => apiClient.post('/attack', data)
+  )
 }

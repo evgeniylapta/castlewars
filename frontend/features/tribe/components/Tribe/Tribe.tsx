@@ -1,18 +1,20 @@
-import { FC } from 'react';
-import styles from './Tribe.module.scss';
-import galusImg from '../../assets/galus.png';
-import romansImg from '../../assets/romans.png';
-import teautonsImg from '../../assets/teautons.png';
-import { TTribeType } from '../../index';
+import { FC } from 'react'
+import styles from './Tribe.module.scss'
+import galusImg from '../../assets/galus.png'
+import romansImg from '../../assets/romans.png'
+import teautonsImg from '../../assets/teautons.png'
+import { TTribeType } from '../../index'
 
 function useTribeIcon(type: TTribeType) {
   switch (type) {
-    case 'Gaul':
-      return galusImg
-    case 'Roman':
-      return romansImg
-    case 'Teuton':
-      return teautonsImg
+  case 'Gaul':
+    return galusImg
+  case 'Roman':
+    return romansImg
+  case 'Teuton':
+    return teautonsImg
+  default:
+    return undefined
   }
 }
 
@@ -25,7 +27,7 @@ const Tribe: FC<TProps> = ({ type }) => {
 
   return (
     <div className={styles.wrap}>
-      <img className={styles.img} src={icon.src} alt=""/>
+      {icon && <img className={styles.img} src={icon.src} alt="" />}
       <span>{type}</span>
     </div>
   )

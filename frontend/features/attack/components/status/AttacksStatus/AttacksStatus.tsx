@@ -1,10 +1,10 @@
-import { FC, useMemo } from 'react';
-import { TClassNameable } from '../../../../../shared/types';
-import { AttackContextProvider, useAttackContext } from '../../../contexts/attackContext';
-import { TAttack } from '../../../types';
-import { useSelectedCastleDetailsContext } from '../../../../castle';
-import Attack from '../Attack/Attack';
-import styles from './AttacksStatus.module.scss';
+import { FC, useMemo } from 'react'
+import { TClassNameable } from '../../../../../shared/types'
+import { AttackContextProvider, useAttackContext } from '../../../contexts/attackContext'
+import { TAttack } from '../../../types'
+import { useSelectedCastleDetailsContext } from '../../../../castle'
+import Attack from '../Attack/Attack'
+import styles from './AttacksStatus.module.scss'
 
 function getAttacks() {
   const { attacksListQuery: { data: attacksData } } = useAttackContext()
@@ -17,8 +17,11 @@ function getAttacks() {
       returningAttacksOfCurrentCastle: TAttack[]
     }
 
-    const initialData: TResult = { attackFromCurrentCastle: [], attackToCurrentCastle: [], returningAttacksOfCurrentCastle: [] }
-
+    const initialData: TResult = {
+      attackFromCurrentCastle: [],
+      attackToCurrentCastle: [],
+      returningAttacksOfCurrentCastle: []
+    }
 
     return attacksData?.reduce<TResult>(
       (result, attack) => {
@@ -28,10 +31,17 @@ function getAttacks() {
         ]
 
         return ({
-          attackFromCurrentCastle: attackFromCurrentCastle.filter(({ isReturning }) => !isReturning),
-          attackToCurrentCastle: [...result.attackToCurrentCastle, ...(attack.castleToId === selectedCastleId ? [attack] : [])],
-          returningAttacksOfCurrentCastle: [...result.returningAttacksOfCurrentCastle, ...attackFromCurrentCastle.filter(({ isReturning }) => isReturning)]
-        });
+          attackFromCurrentCastle: attackFromCurrentCastle
+            .filter(({ isReturning }) => !isReturning),
+          attackToCurrentCastle: [
+            ...result.attackToCurrentCastle,
+            ...(attack.castleToId === selectedCastleId ? [attack] : [])
+          ],
+          returningAttacksOfCurrentCastle: [
+            ...result.returningAttacksOfCurrentCastle,
+            ...attackFromCurrentCastle.filter(({ isReturning }) => isReturning)
+          ]
+        })
       },
       initialData
     ) || initialData
@@ -41,7 +51,11 @@ function getAttacks() {
 type TProps = TClassNameable
 
 const AttacksStatus: FC<TProps> = () => {
-  const { attackFromCurrentCastle, attackToCurrentCastle, returningAttacksOfCurrentCastle } = getAttacks()
+  const {
+    attackFromCurrentCastle,
+    attackToCurrentCastle,
+    returningAttacksOfCurrentCastle
+  } = getAttacks()
 
   if (!attackFromCurrentCastle.length && !attackToCurrentCastle.length) {
     return null
@@ -49,14 +63,20 @@ const AttacksStatus: FC<TProps> = () => {
 
   return (
     <>
-      {attackFromCurrentCastle.map((attack) => <Attack className={styles.item} key={attack.id} attack={attack} fromCurrentCastle={true} />)}
-      {attackToCurrentCastle.map((attack) => <Attack className={styles.item} key={attack.id} attack={attack} fromCurrentCastle={false} />)}
-      {returningAttacksOfCurrentCastle.map((attack) => <Attack className={styles.item} key={attack.id} attack={attack} isReturning />)}
+      {attackFromCurrentCastle.map((attack) => (
+        <Attack className={styles.item} key={attack.id} attack={attack} fromCurrentCastle />
+      ))}
+      {attackToCurrentCastle.map((attack) => (
+        <Attack className={styles.item} key={attack.id} attack={attack} fromCurrentCastle={false} />
+      ))}
+      {returningAttacksOfCurrentCastle.map((attack) => (
+        <Attack className={styles.item} key={attack.id} attack={attack} isReturning />
+      ))}
     </>
   )
 }
 
-export default ({...props}: TProps) => (
+export default ({ ...props }: TProps) => (
   <AttackContextProvider>
     <AttacksStatus {...props} />
   </AttackContextProvider>

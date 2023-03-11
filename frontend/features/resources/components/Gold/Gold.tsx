@@ -1,12 +1,9 @@
-import { FC } from 'react';
-import styles from './Gold.module.scss';
-import { TClassNameable } from '../../../../shared/types';
-import goldImg from '../../assets/gold.png';
-import { useCastleResourcesContext } from '../../contexts/castleResourcesContext';
+import { FC } from 'react'
+import styles from './Gold.module.scss'
+import goldImg from '../../assets/gold.png'
+import { useCastleResourcesContext } from '../../contexts/castleResourcesContext'
 
-type TProps = TClassNameable
-
-const Gold: FC<TProps> = ({ className}) => {
+const Gold: FC = () => {
   const { calculatedGold } = useCastleResourcesContext()
 
   if (calculatedGold === undefined) {
@@ -15,7 +12,7 @@ const Gold: FC<TProps> = ({ className}) => {
 
   return (
     <div className={styles.goldWrap}>
-      <img className={styles.gold} src={goldImg.src} alt=""/>
+      <img className={styles.gold} src={goldImg.src} alt="Gold" />
       <span>{calculatedGold}</span>
     </div>
   )

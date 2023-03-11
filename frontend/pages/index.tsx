@@ -1,9 +1,9 @@
-import { Home } from '../features/home';
-import { dehydrate, QueryClient } from 'react-query';
+import { Home } from '../features/home'
+// import { dehydrate, QueryClient } from 'react-query'
 // import { prefetchCastlesData } from '../features/castle';
-import { prefetchAuthData } from '../features/auth';
+// import { prefetchAuthData } from '../features/auth'
 
-export default function() {
+export default function () {
   return <Home />
 }
 

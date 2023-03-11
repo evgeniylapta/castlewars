@@ -1,8 +1,8 @@
 import constate from 'constate'
-import { getCalculatedCastleCold } from 'sharedUtils';
-import { useMemo } from 'react';
-import { TCastleExtended, useSelectedCastleDetailsContext } from '../../castle';
-import { useNewDateInterval } from '../../../shared/hooks/useNewDateInterval';
+import { getCalculatedCastleCold } from 'sharedUtils'
+import { useMemo } from 'react'
+import { TCastleExtended, useSelectedCastleDetailsContext } from '../../castle'
+import { useNewDateInterval } from '../../../shared/hooks/useNewDateInterval'
 
 function useCastleCalculatedGold(castle?: TCastleExtended) {
   const newDate = useNewDateInterval()
@@ -21,7 +21,7 @@ const useContext = () => {
   const { castleDetailsQuery: { data } } = useSelectedCastleDetailsContext()
 
   return {
-    calculatedGold: useCastleCalculatedGold(data),
+    calculatedGold: useCastleCalculatedGold(data)
   }
 }
 
