@@ -1,8 +1,14 @@
+-- CreateEnum
+CREATE TYPE "UserRole" AS ENUM ('ADMIN', 'USER');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "password" TEXT NOT NULL,
     "tribeId" TEXT NOT NULL,
+    "role" "UserRole" NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -117,8 +123,8 @@ INSERT INTO "UnitType" (id, name, attack, defence, speed, "carryingCapacity", "c
     ('11111111-1111-1111-1111-111111111118', 'Spearfighter', 10, 35, 7, 40, 1, 4, '591a413b-829e-4e92-a775-bdf620548712', 40, 2),
     ('11111111-1111-1111-1111-111111111119', 'Paladin', 55, 100, 10, 110, 2, 10, '591a413b-829e-4e92-a775-bdf620548712', 100, 3);
 
-INSERT INTO "User" (id, name, "tribeId") VALUES
-    ('a54e7593-0aa1-4a7c-a8df-6b44cdfab190', 'TestUser', '591a413b-829e-4e92-a775-bdf620548710');
+INSERT INTO "User" (id, name, "tribeId", email, password, role) VALUES
+    ('a54e7593-0aa1-4a7c-a8df-6b44cdfab190', 'TestUser', '591a413b-829e-4e92-a775-bdf620548710', 'somemail73@gmail.com', '$2b$10$xGlQRIs008HNsLgDhU840eu.eaIYuCd2OvssTxGUtlbF7TJ.kOS5O', 'ADMIN');
 
 INSERT INTO "Castle" (id, "userId", x, y) VALUES
     ('591a413b-829e-4e92-a775-bdf620548101', 'a54e7593-0aa1-4a7c-a8df-6b44cdfab190', 0, 0);

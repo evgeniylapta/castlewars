@@ -95,7 +95,7 @@ export async function getOrderUnitsOperations(
 
   const { resultUnitsToOrder, unitsCost } = getResultToOrder(goldAllowedToUse, availableUnitTypes)
 
-  callFormattedConsoleLog('[BOT ORDER TROOPS]', {
+  callFormattedConsoleLog('Bot order troops', 'info', {
     goldAllowedToUse,
     calculatedCastleCold,
     unitsCost,

@@ -1,3 +1,5 @@
+import { HttpStatus } from 'http-status';
+
 class ApiError extends Error {
   constructor(statusCode, message, isOperational = true, stack = '') {
     super(message);

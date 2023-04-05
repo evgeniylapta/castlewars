@@ -19,14 +19,14 @@ async function getErrors(Constructor: any, object: any): Promise<ValidationError
   return await validate(model)
 }
 
-const validateGuard = (
-  { Body, Query, Params }: { Body?: any, Query?: any, Params?: any }
+const validateRequest = (
+  { body, query, params }: { body?: object, query?: object, params?: object }
 ) => async (req: Request, res: Response, next) => {
 
   const errors: ValidationError[] = [
-    ...await getErrors(Body, req.body),
-    ...await getErrors(Query, req.query),
-    ...await getErrors(Params, req.params),
+    ...await getErrors(body, req.body),
+    ...await getErrors(query, req.query),
+    ...await getErrors(params, req.params),
   ]
 
   if (errors.length) {
@@ -43,4 +43,4 @@ const validateGuard = (
   return next();
 };
 
-export default validateGuard;
+export default validateRequest;

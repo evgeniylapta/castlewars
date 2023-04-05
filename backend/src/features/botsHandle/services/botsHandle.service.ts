@@ -95,5 +95,5 @@ export async function botsActionsCreatingTick() {
     })
   })
 
-  callFormattedConsoleLog('[BOT CREATE ACTION]', { actionsLength: bots.length })
+  callFormattedConsoleLog('Bot create action', 'info', { actionsLength: bots.length })
 }

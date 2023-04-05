@@ -5,7 +5,7 @@ import { TribeType, MapSettlement, UnitType } from '@prisma/client';
 import { findCastlesByCoordsRanges } from '../../castle/castle.service';
 import { USERS_IN_SECTOR_LIMIT } from '../config';
 import { Sector, TSide } from '../types';
-import { selectBotsAmount } from '../../user/user.service';
+import { encryptPassword, selectBotsAmount } from '../../user/user.service';
 import { getRandomArrayItem, randomIntFromInterval } from '../../../utils/random';
 import { findUnitTypes, getUnitTypesByTribeType } from '../../unit/services/unitType.service';
 import { callFormattedConsoleLog } from '../../../utils/console';
@@ -16,6 +16,8 @@ type TPoint = { x: number, y: number }
 
 type TGenerateUserConfig = {
   nameFactory: (index: number) => string
+  emailFactory: (index: number) => string
+  passwordFactory: (index: number) => string
   isBot: boolean
   limit: number
   withTroops: boolean
@@ -48,7 +50,7 @@ function getRandomGoldAmount() {
 function getUserOperation(
   point: TPoint,
   tribeType: TribeType,
-  { nameFactory, isBot, withTroops }: TGenerateUserConfig,
+  { nameFactory, isBot, withTroops, emailFactory, passwordFactory }: TGenerateUserConfig,
   index: number,
   unitTypes: UnitType[]
 ) {
@@ -62,6 +64,8 @@ function getUserOperation(
       tribeId: tribeType.id,
       isBot,
       name: nameFactory(index),
+      email: emailFactory(index),
+      password: passwordFactory(index),
       castles: {
         create: {
           x: point.x,
@@ -265,24 +269,31 @@ export async function generateBots(limit: number) {
 
   const withTroops = true
 
-  callFormattedConsoleLog('[BOTS GENERATION]', { limit, withTroops })
+  callFormattedConsoleLog('Bots generation', 'info', { limit, withTroops })
+  const encryptedPassword = await encryptPassword('password')
 
   await generateUsers({
     limit,
     isBot: true,
     nameFactory: (index) => `Bot user ${botsAmount + index}`,
-    withTroops
+    withTroops,
+    emailFactory: (index) => `botUser${botsAmount + index}@example.com`,
+    passwordFactory: () => encryptedPassword
   })
 
   console.log('[BOTS GENERATION END]')
 }
 
-export async function generateUser(name: string) {
+export async function generateUser(name: string, email: string, password: string) {
+  const encryptedPassword = await encryptPassword(password)
+
   const [user] = await generateUsers({
     limit: 1,
     isBot: false,
     nameFactory: () => name,
-    withTroops: true
+    withTroops: true,
+    passwordFactory: () => encryptedPassword,
+    emailFactory: () => email
   })
   return user
 }

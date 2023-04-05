@@ -1,5 +1,5 @@
 import { prisma } from '../../../config/prisma';
-import { UnitType, Castle, UnitsOrderItem, UnitsOrder, UnitGroup } from '@prisma/client';
+import { UnitType, UnitsOrderItem, UnitsOrder, UnitGroup } from '@prisma/client';
 import { addSeconds, subSeconds } from 'date-fns';
 import { findUnitTypes } from './unitType.service';
 import { callFormattedConsoleLog } from '../../../utils/console';
@@ -30,37 +30,37 @@ async function getActualUnitOrdersToHandle(unitTypes: UnitType[], newDate: Date)
   })
 }
 
+type TFoundUnitsOrder = Awaited<ReturnType<typeof getActualUnitOrdersToHandle>>[0];
+
 type TOrderItemUnitModel = {
   orderItem: UnitsOrderItem,
-  durationSeconds: number,
   unitType: UnitType
 }
 
-function getModelsToCreate(models: TOrderItemUnitModel[], nowDate: Date, lastUpdateDate: Date) {
-  let date = lastUpdateDate
+function getModelsToCreate(unitOrder: TFoundUnitsOrder, nowDate: Date) {
+  let date = unitOrder.lastCreationDate
 
   const result: TOrderItemUnitModel[] = []
 
-  models.forEach((model) => {
-    date = addSeconds(date, model.durationSeconds)
+  for (let i = 0; i < unitOrder.items.length; i++) {
+    const item = unitOrder.items[i]
+    for (let j = 0; j < item.amount; j++) {
+      const model = {
+        orderItem: item,
+        unitType: item.unitType
+      }
 
-    const isTimePassedForCurrentUnit = date <= nowDate
+      date = addSeconds(date, getUnitOrderItemDurationByUnitTypeInSeconds(item.unitType))
 
-    if (isTimePassedForCurrentUnit) {
-      result.push(model)
+      if (date <= nowDate) {
+        result.push(model)
+      } else {
+        break;
+      }
     }
-  })
+  }
 
   return result
-}
-
-function getOrderItemUnitModels(item: UnitsOrderItem, unitType: UnitType) {
-  const durationSeconds = getUnitOrderItemDurationByUnitTypeInSeconds(unitType)
-  return Array.from({length: item.amount}).map<TOrderItemUnitModel>(() => ({
-    durationSeconds,
-    orderItem: item,
-    unitType
-  }))
 }
 
 function getUnitOrderLastUpdateOperation(unitsOrder: UnitsOrder, nowDate: Date) {
@@ -74,11 +74,7 @@ function getUnitOrderLastUpdateOperation(unitsOrder: UnitsOrder, nowDate: Date) 
   })
 }
 
-function getUnitOrderOperations(
-  modelsToCreate: TOrderItemUnitModel[],
-  castle: Castle,
-  castleUnitGroups: UnitGroup[]
-) {
+function getUnitOrderOperations(modelsToCreate: TOrderItemUnitModel[], castleUnitGroups: UnitGroup[]) {
   type TModel = { orderItem: UnitsOrderItem, amountToCreate: number, unitType: UnitType }
 
   const toOperate = modelsToCreate.reduce<TModel[]>(
@@ -125,7 +121,7 @@ function getUnitOrderOperations(
       }
     })
 
-    callFormattedConsoleLog('[HANDLE UNITS ORDER ITEM]', {
+    callFormattedConsoleLog('Handle units order item', 'info', {
       orderItemId: orderItem.id,
       orderItemToRemove: !!orderItemToRemove,
       amountToCreate,
@@ -143,17 +139,12 @@ function getUnitOrderOperations(
 export async function handleUnitOrders() {
   const unitTypes = await findUnitTypes()
 
-  const date = new Date()
+  const nowDate = new Date()
 
-  const foundUnitOrders = await getActualUnitOrdersToHandle(unitTypes, date)
+  const foundUnitOrders = await getActualUnitOrdersToHandle(unitTypes, nowDate)
 
   const operations = foundUnitOrders.reduce((result, unitOrder) => {
-    const unitModels = unitOrder.items.reduce<TOrderItemUnitModel[]>(
-      (result, item) => result.concat(getOrderItemUnitModels(item, item.unitType)),
-      []
-    )
-
-    const modelsToCreate = getModelsToCreate(unitModels, date, unitOrder.lastCreationDate)
+    const modelsToCreate = getModelsToCreate(unitOrder, nowDate)
 
     if (!modelsToCreate.length) {
       return result
@@ -161,8 +152,8 @@ export async function handleUnitOrders() {
 
     return [
       ...result,
-      ...getUnitOrderOperations(modelsToCreate, unitOrder.castle, unitOrder.castle.unitGroups),
-      getUnitOrderLastUpdateOperation(unitOrder, date)
+      ...getUnitOrderOperations(modelsToCreate, unitOrder.castle.unitGroups),
+      getUnitOrderLastUpdateOperation(unitOrder, nowDate)
     ]
   }, [])
 

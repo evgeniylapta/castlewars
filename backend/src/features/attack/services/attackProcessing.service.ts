@@ -189,7 +189,7 @@ function getAttackOperations(
       distance
     )
 
-  callFormattedConsoleLog('[ATTACK EXEC]', {
+  callFormattedConsoleLog('Attack exec', 'info', {
     attackId,
     distance,
     hasTroopsToReturn,
@@ -238,27 +238,18 @@ function getAttackReturningOperations(
         unitTypeId: foundAttackUnitGroup.unitTypeId
       })
     }
-
-    // if (foundAttackUnitGroup) {
-    //   // todo remove, use cascade
-    //   deleteModels.push({
-    //     unitGroupId: foundAttackUnitGroup.id
-    //   })
-    // }
   })
 
 
-  callFormattedConsoleLog('[ATTACK RETURNING]', {
+  callFormattedConsoleLog('Attack returning', 'info', {
     attackId,
     updateAmountModels,
     createModels,
-    // deleteModels
   })
 
   return [
     ...updateAmountModels.map(getUnitGroupUpdateAmountOperation),
     ...createModels.map(getUnitGroupCreateOperation),
-    // ...deleteModels.map(getUnitGroupDeleteOperation),
     getAttackDeleteOperation(attackId)
   ]
 }

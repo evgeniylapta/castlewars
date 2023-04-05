@@ -7,14 +7,38 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum TokenType {
+  REFRESH
+  RESET_PASSWORD
+  VERIFY_EMAIL
+}
+
 model User {
   id        String     @id @default(uuid())
   name      String
+  email     String
+  password  String
+  role      UserRole
   isBot     Boolean    @default(false)
   castles   Castle[]
   tribeType TribeType  @relation(fields: [tribeId], references: [id])
   tribeId   String
   botAction BotAction?
+  tokens     Token[]
+}
+
+model Token {
+  token       String    @id
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  type        TokenType
+  expires     DateTime
+  blacklisted Boolean
 }
 
 model Castle {
@@ -91,11 +115,11 @@ model MapSettlement {
 }
 
 model UnitsOrder {
-  id                  String           @id @default(uuid())
-  castle              Castle           @relation(fields: [castleId], references: [id])
-  castleId            String
-  lastCreationDate    DateTime
-  items               UnitsOrderItem[]
+  id               String           @id @default(uuid())
+  castle           Castle           @relation(fields: [castleId], references: [id])
+  castleId         String
+  lastCreationDate DateTime
+  items            UnitsOrderItem[]
 }
 
 model UnitsOrderItem {

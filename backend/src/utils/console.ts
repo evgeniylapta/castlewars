@@ -1,3 +1,5 @@
-export function callFormattedConsoleLog(name: string, object: object) {
-  console.log(name, JSON.stringify(object))
+type TLevel = 'info' | 'warn' | 'error'
+
+export function callFormattedConsoleLog(name: string, level: TLevel, object: object) {
+  console.log(`[${new Date().toISOString()}]`, `[${level.toUpperCase()}]`, `[${name.toUpperCase()}]`, JSON.stringify(object))
 }

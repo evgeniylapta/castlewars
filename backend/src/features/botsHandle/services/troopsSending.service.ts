@@ -104,7 +104,7 @@ export async function getTroopsSendOperations(
     return []
   }
 
-  callFormattedConsoleLog('[BOT SEND TROOPS]', {
+  callFormattedConsoleLog('Bot send troops', 'info', {
     castleFrom: { id: castle.id, x: castle.x, y:castle.y },
     castleTo: { id: randomCastleToAttack.id, x: randomCastleToAttack.x, y: randomCastleToAttack.y },
     unitsToAttack
