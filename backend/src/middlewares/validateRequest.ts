@@ -1,11 +1,14 @@
-import httpStatus from 'http-status';
-import ApiError from '../utils/ApiError';
-import { validate } from 'class-validator';
-import { Request, Response } from 'express';
-import { ValidationError } from 'class-validator/types/validation/ValidationError';
+import httpStatus from 'http-status'
+import { validate, ValidationError } from 'class-validator'
+import { Request, Response } from 'express'
+import ApiError from '../utils/ApiError'
 
-async function getErrors(Constructor: any, object: any): Promise<ValidationError[]> {
-  const keys = Object.keys(object)
+// eslint-disable-next-line @typescript-eslint/ban-types
+async function getErrors(
+  Constructor: new () => object,
+  objectToValidate: object
+): Promise<ValidationError[]> {
+  const keys = Object.keys(objectToValidate)
 
   if (!keys.length || !Constructor) {
     return []
@@ -13,20 +16,25 @@ async function getErrors(Constructor: any, object: any): Promise<ValidationError
 
   const model = new Constructor()
   keys.forEach((key) => {
-    model[key] = object[key]
+    model[key] = objectToValidate[key]
   })
 
-  return await validate(model)
+  return validate(model)
+}
+
+type ValidateRequestConfig = {
+  BodyDto?: new () => object,
+  QueryDto?: new () => object,
+  ParamsDto?: new () => object
 }
 
 const validateRequest = (
-  { body, query, params }: { body?: object, query?: object, params?: object }
+  { BodyDto, QueryDto, ParamsDto }: ValidateRequestConfig
 ) => async (req: Request, res: Response, next) => {
-
   const errors: ValidationError[] = [
-    ...await getErrors(body, req.body),
-    ...await getErrors(query, req.query),
-    ...await getErrors(params, req.params),
+    ...await getErrors(BodyDto, req.body),
+    ...await getErrors(QueryDto, req.query),
+    ...await getErrors(ParamsDto, req.params)
   ]
 
   if (errors.length) {
@@ -37,10 +45,10 @@ const validateRequest = (
       ], [])
       .join(', ')
 
-    return next(new ApiError(httpStatus.BAD_REQUEST, message));
+    return next(new ApiError(httpStatus.BAD_REQUEST, message))
   }
 
-  return next();
-};
+  return next()
+}
 
-export default validateRequest;
+export default validateRequest

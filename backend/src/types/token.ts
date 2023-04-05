@@ -1,3 +1,3 @@
-import { TokenType } from '@prisma/client';
+import { TokenType } from '@prisma/client'
 
-export type TFullTokenType = TokenType | 'ACCESS'
+export type FullTokenType = TokenType | 'ACCESS'

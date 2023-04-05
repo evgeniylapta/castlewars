@@ -1,12 +1,12 @@
-type TRomanUnits = 'Legionnaire' | 'Praetorian' | 'Emperors cavalry'
-type TGaulUnits = 'Phalanx' | 'Swordsman' | 'Theutates Thunder'
-type TTeutonUnits = 'Clubswinger' | 'Spearfighter' | 'Paladin'
+type RomanUnits = 'Legionnaire' | 'Praetorian' | 'Emperors cavalry'
+type GaulUnits = 'Phalanx' | 'Swordsman' | 'Theutates Thunder'
+type TeutonUnits = 'Clubswinger' | 'Spearfighter' | 'Paladin'
 
-export type TUnitName = TRomanUnits | TGaulUnits | TTeutonUnits
+export type UnitName = RomanUnits | GaulUnits | TeutonUnits
 
-export type TUnitTypesResponseItem = {
+export type UnitTypesResponseItem = {
   id: string
-  name: TUnitName
+  name: UnitName
   attack: number
   defence: number
   speed: number
@@ -17,9 +17,9 @@ export type TUnitTypesResponseItem = {
   goldPrice: number
 }
 
-export type TUnitTypesResponse = TUnitTypesResponseItem[]
+export type UnitTypesResponse = UnitTypesResponseItem[]
 
-export type TUnitGroup = {
+export type UnitGroup = {
   id: string
   unitTypeId: string
   amount: number

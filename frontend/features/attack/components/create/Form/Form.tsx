@@ -11,7 +11,7 @@ import styles from './Form.module.scss'
 import FormItem from '../FormItem/FormItem'
 import { useCreateAttackMutation } from '../../../query'
 import { useMapCenterContext } from '../../../../map'
-import { findUnitTypeById, TUnitTypesResponseItem, useUnitTypesContext } from '../../../../unit'
+import { findUnitTypeById, UnitTypesResponseItem, useUnitTypesContext } from '../../../../unit'
 import { useNewDateInterval } from '../../../../../shared/hooks/useNewDateInterval'
 import { usePreparedUnitGroups } from '../../../../unit/hooks/usePreparedUnitGroups'
 import { useUnitTypesByTribeId } from '../../../../unit/hooks/useUnitTypesByTribeId'
@@ -53,10 +53,10 @@ function useAttackTime(distance: number, { watch }: UseFormReturn) {
         end: addSeconds(
           newDate,
           getUnitTypesMovingSeconds(
-            filledTypes as TUnitTypesResponseItem[],
+            filledTypes as UnitTypesResponseItem[],
             distance
           )
-        )
+        ),
       })
       : undefined
 
@@ -96,11 +96,11 @@ function useIsSubmitDisabled(useFormReturn: UseFormReturn) {
   return !isValid || noValue
 }
 
-type TProps = {
+type Props = {
   onCancel: () => void
 }
 
-const Form: FC<TProps> = ({ onCancel }) => {
+const Form: FC<Props> = ({ onCancel }) => {
   const { myCastleDetailsQuery: { data: myCastleDetails } } = useMyCastleContext()
   const useFormReturn = useForm()
   const { handleSubmit } = useFormReturn

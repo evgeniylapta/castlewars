@@ -2,28 +2,28 @@ import { FC, useMemo, useState } from 'react'
 import classNames from 'classnames'
 import { formatDistanceStrict, isAfter } from 'date-fns'
 import { useHarmonicIntervalFn } from 'react-use'
-import { TAttack } from '../../../types'
+import { Attack } from '../../../types'
 import styles from './Attack.module.scss'
-import { TClassNameable } from '../../../../../shared/types'
+import { ClassNameable } from '../../../../../shared/types'
 
-type TProps = TClassNameable & {
-  attack: TAttack,
+type Props = ClassNameable & {
+  attack: Attack,
   fromCurrentCastle?: boolean
   isReturning?: boolean
 }
 
-function useCoords(attack: TAttack, fromCurrentCastle?: boolean, isReturning?: boolean) {
+function useCoords(attack: Attack, fromCurrentCastle?: boolean, isReturning?: boolean) {
   return {
     x: fromCurrentCastle && !isReturning ? attack.castleTo.x : attack.castleFrom.x,
     y: fromCurrentCastle && !isReturning ? attack.castleTo.y : attack.castleFrom.y
   }
 }
 
-function useName(attack: TAttack, fromCurrentCastle?: boolean, isReturning?: boolean) {
+function useName(attack: Attack, fromCurrentCastle?: boolean, isReturning?: boolean) {
   return fromCurrentCastle || isReturning ? attack.castleTo.user.name : attack.castleFrom.user.name
 }
 
-function useTime({ dateTime }: TAttack) {
+function useTime({ dateTime }: Attack) {
   const [attacksTimerTickTime, setAttacksTimerTickTime] = useState<Date>()
 
   useHarmonicIntervalFn(
@@ -47,7 +47,7 @@ function useTime({ dateTime }: TAttack) {
   )
 }
 
-const Attack: FC<TProps> = ({
+const Attack: FC<Props> = ({
   attack,
   fromCurrentCastle,
   className,

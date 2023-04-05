@@ -7,7 +7,7 @@ CREATE TABLE "User" (
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
-    "tribeId" TEXT NOT NULL,
+    "tribeTypeId" TEXT NOT NULL,
     "role" "UserRole" NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
@@ -84,7 +84,7 @@ CREATE TABLE "UnitGroup" (
 CREATE UNIQUE INDEX "CastleResources_castleId_key" ON "CastleResources"("castleId");
 
 -- AddForeignKey
-ALTER TABLE "User" ADD CONSTRAINT "User_tribeId_fkey" FOREIGN KEY ("tribeId") REFERENCES "TribeType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "User" ADD CONSTRAINT "User_tribeTypeId_fkey" FOREIGN KEY ("tribeTypeId") REFERENCES "TribeType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Castle" ADD CONSTRAINT "Castle_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -123,7 +123,7 @@ INSERT INTO "UnitType" (id, name, attack, defence, speed, "carryingCapacity", "c
     ('11111111-1111-1111-1111-111111111118', 'Spearfighter', 10, 35, 7, 40, 1, 4, '591a413b-829e-4e92-a775-bdf620548712', 40, 2),
     ('11111111-1111-1111-1111-111111111119', 'Paladin', 55, 100, 10, 110, 2, 10, '591a413b-829e-4e92-a775-bdf620548712', 100, 3);
 
-INSERT INTO "User" (id, name, "tribeId", email, password, role) VALUES
+INSERT INTO "User" (id, name, "tribeTypeId", email, password, role) VALUES
     ('a54e7593-0aa1-4a7c-a8df-6b44cdfab190', 'TestUser', '591a413b-829e-4e92-a775-bdf620548710', 'somemail73@gmail.com', '$2b$10$xGlQRIs008HNsLgDhU840eu.eaIYuCd2OvssTxGUtlbF7TJ.kOS5O', 'ADMIN');
 
 INSERT INTO "Castle" (id, "userId", x, y) VALUES

@@ -3,9 +3,9 @@ import styles from './Tribe.module.scss'
 import galusImg from '../../assets/galus.png'
 import romansImg from '../../assets/romans.png'
 import teautonsImg from '../../assets/teautons.png'
-import { TTribeType } from '../../index'
+import { TribeType } from '../../index'
 
-function useTribeIcon(type: TTribeType) {
+function useTribeIcon(type: TribeType) {
   switch (type) {
   case 'Gaul':
     return galusImg
@@ -18,11 +18,11 @@ function useTribeIcon(type: TTribeType) {
   }
 }
 
-type TProps = {
-  type: TTribeType
+type Props = {
+  type: TribeType
 }
 
-const Tribe: FC<TProps> = ({ type }) => {
+const Tribe: FC<Props> = ({ type }) => {
   const icon = useTribeIcon(type)
 
   return (

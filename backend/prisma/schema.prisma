@@ -19,17 +19,17 @@ enum TokenType {
 }
 
 model User {
-  id        String     @id @default(uuid())
-  name      String
-  email     String
-  password  String
-  role      UserRole
-  isBot     Boolean    @default(false)
-  castles   Castle[]
-  tribeType TribeType  @relation(fields: [tribeId], references: [id])
-  tribeId   String
-  botAction BotAction?
-  tokens     Token[]
+  id          String     @id @default(uuid())
+  name        String
+  email       String
+  password    String
+  role        UserRole
+  isBot       Boolean    @default(false)
+  castles     Castle[]
+  tribeType   TribeType  @relation(fields: [tribeTypeId], references: [id])
+  tribeTypeId String
+  botAction   BotAction?
+  tokens      Token[]
 }
 
 model Token {

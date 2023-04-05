@@ -1,15 +1,15 @@
-import { IsNotEmpty, IsUUID, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsUUID, IsNumber } from 'class-validator'
 
 export class CastleCreateDto {
   @IsUUID(4)
   @IsNotEmpty()
-  userId: string;
+    userId: string
 
   @IsNotEmpty()
   @IsNumber()
-  x: number;
+    x: number
 
   @IsNotEmpty()
   @IsNumber()
-  y: number;
+    y: number
 }

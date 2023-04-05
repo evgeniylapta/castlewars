@@ -1,15 +1,15 @@
-import { IsNotEmpty, IsUUID, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsUUID, IsNumber } from 'class-validator'
 
 export class PostCreateUnitOrderDto {
   @IsUUID(4)
   @IsNotEmpty()
-  unitTypeId: string;
+    unitTypeId: string
 
   @IsUUID(4)
   @IsNotEmpty()
-  castleId: string;
+    castleId: string
 
   @IsNotEmpty()
   @IsNumber()
-  amount: number;
+    amount: number
 }

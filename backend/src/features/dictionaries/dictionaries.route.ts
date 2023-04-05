@@ -1,9 +1,9 @@
-import express from 'express';
-import { getTribeTypes, getUnitTypes } from './dictionaries.controller';
+import express from 'express'
+import { tribeTypesController, unitTypesController } from './dictionaries.controller'
 
-const router = express.Router();
+const router = express.Router()
 
-router.get('/unit-types', getUnitTypes);
-router.get('/tribe-types', getTribeTypes);
+router.get('/unit-types', unitTypesController)
+router.get('/tribe-types', tribeTypesController)
 
-export default router;
+export default router

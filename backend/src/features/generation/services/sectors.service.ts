@@ -1,13 +1,13 @@
-import { SECTOR_STEP } from '../config';
-import { Sector, TSide } from '../types';
+import { SECTOR_STEP } from '../config'
+import { Sector, Side } from '../types'
 
 type MoveCommand = 'straight' | 'side'
 
-function getSectorKey(sector: Sector) {
+function sectorKey(sector: Sector) {
   return `${sector.startX}_${sector.startY}_${sector.endX}_${sector.endY}`
 }
 
-type TSectorsGenerationModel = {
+type SectorsGenerationModel = {
   initialSectorByAngleModifier: (angleIndex: number) => Sector
   straightSectorModifier: (currentSector: Sector) => Sector
   sideSectorModifier: (currentSector: Sector) => Sector
@@ -15,7 +15,7 @@ type TSectorsGenerationModel = {
   checkIsSectorInIgnoredArea: (initialAngleIndex: number, sector: Sector) => boolean
 }
 
-const bottomRightModel: TSectorsGenerationModel = {
+const bottomRightModel: SectorsGenerationModel = {
   initialSectorByAngleModifier: (angleIndex: number): Sector => {
     const offset = angleIndex * SECTOR_STEP
 
@@ -26,30 +26,25 @@ const bottomRightModel: TSectorsGenerationModel = {
       endY: -SECTOR_STEP
     }
   },
-  straightSectorModifier: (currentSector: Sector): Sector => {
-    return {
-      ...currentSector,
-      startY: currentSector.startY - SECTOR_STEP,
-      endY: currentSector.endY - SECTOR_STEP
-    }
-  },
-  sideSectorModifier: (currentSector: Sector): Sector => {
-    return {
-      ...currentSector,
-      startX: currentSector.startX - SECTOR_STEP,
-      endX: currentSector.endX - SECTOR_STEP
-    }
-  },
-  sideSectorResetCondition: (sector: Sector): boolean => {
-    return sector.startX <= 0
-  },
-  checkIsSectorInIgnoredArea: (initialAngleIndex, sector) => {
-    return sector.endX <= (initialAngleIndex) * SECTOR_STEP
-      && sector.endY >= -(initialAngleIndex) * SECTOR_STEP
-  }
+  straightSectorModifier: (currentSector: Sector): Sector => ({
+    ...currentSector,
+    startY: currentSector.startY - SECTOR_STEP,
+    endY: currentSector.endY - SECTOR_STEP
+  }),
+  sideSectorModifier: (currentSector: Sector): Sector => ({
+    ...currentSector,
+    startX: currentSector.startX - SECTOR_STEP,
+    endX: currentSector.endX - SECTOR_STEP
+  }),
+  sideSectorResetCondition: (sector: Sector): boolean => sector.startX <= 0,
+  checkIsSectorInIgnoredArea: (
+    initialAngleIndex,
+    sector
+  ) => sector.endX <= (initialAngleIndex) * SECTOR_STEP
+    && sector.endY >= -(initialAngleIndex) * SECTOR_STEP
 }
 
-const topRightModel: TSectorsGenerationModel = {
+const topRightModel: SectorsGenerationModel = {
   initialSectorByAngleModifier: (angleIndex: number): Sector => {
     const offset = angleIndex * SECTOR_STEP
 
@@ -60,31 +55,26 @@ const topRightModel: TSectorsGenerationModel = {
       endY: SECTOR_STEP
     }
   },
-  straightSectorModifier: (currentSector: Sector): Sector => {
-    return {
-      ...currentSector,
-      startY: currentSector.startY + SECTOR_STEP,
-      endY: currentSector.endY + SECTOR_STEP
-    }
-  },
-  sideSectorModifier: (currentSector: Sector): Sector => {
-    return {
-      ...currentSector,
-      startX: currentSector.startX - SECTOR_STEP,
-      endX: currentSector.endX - SECTOR_STEP
-    }
-  },
-  sideSectorResetCondition: (sector: Sector): boolean => {
-    return sector.startX <= 0
-  },
-  checkIsSectorInIgnoredArea: (initialAngleIndex, sector) => {
-    return sector.endX <= (initialAngleIndex) * SECTOR_STEP
+  straightSectorModifier: (currentSector: Sector): Sector => ({
+    ...currentSector,
+    startY: currentSector.startY + SECTOR_STEP,
+    endY: currentSector.endY + SECTOR_STEP
+  }),
+  sideSectorModifier: (currentSector: Sector): Sector => ({
+    ...currentSector,
+    startX: currentSector.startX - SECTOR_STEP,
+    endX: currentSector.endX - SECTOR_STEP
+  }),
+  sideSectorResetCondition: (sector: Sector): boolean => sector.startX <= 0,
+  checkIsSectorInIgnoredArea: (
+    initialAngleIndex,
+    sector
+  ) => sector.endX <= (initialAngleIndex) * SECTOR_STEP
       && sector.endY <= (initialAngleIndex) * SECTOR_STEP
-  }
 }
 
-const topLeftModel: TSectorsGenerationModel = {
-  initialSectorByAngleModifier: (angleIndex: number): Sector =>{
+const topLeftModel: SectorsGenerationModel = {
+  initialSectorByAngleModifier: (angleIndex: number): Sector => {
     const offset = angleIndex * SECTOR_STEP
 
     return {
@@ -94,30 +84,25 @@ const topLeftModel: TSectorsGenerationModel = {
       endY: 0
     }
   },
-  straightSectorModifier: (currentSector: Sector): Sector => {
-    return {
-      ...currentSector,
-      startY: currentSector.startY + SECTOR_STEP,
-      endY: currentSector.endY + SECTOR_STEP
-    }
-  },
-  sideSectorModifier: (currentSector: Sector): Sector => {
-    return {
-      ...currentSector,
-      startX: currentSector.startX + SECTOR_STEP,
-      endX: currentSector.endX + SECTOR_STEP
-    }
-  },
-  sideSectorResetCondition: (sector: Sector): boolean => {
-    return sector.endX >= 0
-  },
-  checkIsSectorInIgnoredArea: (initialAngleIndex, sector) => {
-    return sector.startX >= -(initialAngleIndex) * SECTOR_STEP
+  straightSectorModifier: (currentSector: Sector): Sector => ({
+    ...currentSector,
+    startY: currentSector.startY + SECTOR_STEP,
+    endY: currentSector.endY + SECTOR_STEP
+  }),
+  sideSectorModifier: (currentSector: Sector): Sector => ({
+    ...currentSector,
+    startX: currentSector.startX + SECTOR_STEP,
+    endX: currentSector.endX + SECTOR_STEP
+  }),
+  sideSectorResetCondition: (sector: Sector): boolean => sector.endX >= 0,
+  checkIsSectorInIgnoredArea: (
+    initialAngleIndex,
+    sector
+  ) => sector.startX >= -(initialAngleIndex) * SECTOR_STEP
       && sector.startY <= (initialAngleIndex) * SECTOR_STEP
-  }
 }
 
-const bottomLeftModel: TSectorsGenerationModel = {
+const bottomLeftModel: SectorsGenerationModel = {
   initialSectorByAngleModifier: (angleIndex: number): Sector => {
     const offset = angleIndex * SECTOR_STEP
 
@@ -128,27 +113,22 @@ const bottomLeftModel: TSectorsGenerationModel = {
       endY: -SECTOR_STEP
     }
   },
-  straightSectorModifier: (currentSector: Sector): Sector => {
-    return {
-      ...currentSector,
-      startY: currentSector.startY - SECTOR_STEP,
-      endY: currentSector.endY - SECTOR_STEP
-    }
-  },
-  sideSectorModifier: (currentSector: Sector): Sector => {
-    return {
-      ...currentSector,
-      startX: currentSector.startX + SECTOR_STEP,
-      endX: currentSector.endX + SECTOR_STEP
-    }
-  },
-  sideSectorResetCondition: (sector: Sector): boolean => {
-    return sector.endX >= 0
-  },
-  checkIsSectorInIgnoredArea: (initialAngleIndex, sector) => {
-    return sector.endX >= -(initialAngleIndex) * SECTOR_STEP
+  straightSectorModifier: (currentSector: Sector): Sector => ({
+    ...currentSector,
+    startY: currentSector.startY - SECTOR_STEP,
+    endY: currentSector.endY - SECTOR_STEP
+  }),
+  sideSectorModifier: (currentSector: Sector): Sector => ({
+    ...currentSector,
+    startX: currentSector.startX + SECTOR_STEP,
+    endX: currentSector.endX + SECTOR_STEP
+  }),
+  sideSectorResetCondition: (sector: Sector): boolean => sector.endX >= 0,
+  checkIsSectorInIgnoredArea: (
+    initialAngleIndex,
+    sector
+  ) => sector.endX >= -(initialAngleIndex) * SECTOR_STEP
       && sector.endY >= -(initialAngleIndex) * SECTOR_STEP
-  }
 }
 
 export async function generateSectors(
@@ -157,8 +137,8 @@ export async function generateSectors(
     straightSectorModifier,
     sideSectorModifier,
     sideSectorResetCondition,
-    checkIsSectorInIgnoredArea,
-  }: TSectorsGenerationModel,
+    checkIsSectorInIgnoredArea
+  }: SectorsGenerationModel,
   onNextSector: (sector: Sector, angleIndex: number, isLastSectorInAngle: boolean) => Promise<void>,
   exitCondition: (angleIndex: number) => boolean,
   angleInitialIndex
@@ -167,27 +147,27 @@ export async function generateSectors(
   let angleIndex = angleInitialIndex
 
   const addSectorToList = async (sector: Sector, isLastSectorInAngle: boolean) => {
-    sectors[getSectorKey(sector)] = sector
+    sectors[sectorKey(sector)] = sector
     await onNextSector(sector, angleIndex, isLastSectorInAngle)
   }
 
   let currentSector: Sector = initialSectorByAngleModifier(angleIndex)
-  let currentCommand: MoveCommand | undefined = undefined
-  let flag = true;
+  let currentCommand: MoveCommand | undefined
+  let flag = true
 
   const incrementAngleIndex = () => {
-    angleIndex++
+    angleIndex += 1
     currentSector = initialSectorByAngleModifier(angleIndex)
     currentCommand = undefined
   }
 
-  while(flag) {
-    if(exitCondition(angleIndex)) {
+  while (flag) {
+    if (exitCondition(angleIndex)) {
       flag = false
       break
     }
 
-    if(!currentCommand) {
+    if (!currentCommand) {
       await addSectorToList(currentSector, !angleIndex)
 
       if (!angleIndex) {
@@ -213,10 +193,10 @@ export async function generateSectors(
     if (currentCommand === 'side') {
       const newSector: Sector = sideSectorModifier(currentSector)
       const isSectorInIgnoredArea = checkIsSectorInIgnoredArea(angleInitialIndex, newSector)
-      const isSectorPassed = sectors[getSectorKey(newSector)]
+      const isSectorPassed = sectors[sectorKey(newSector)]
       const isLastSectorInAngle = sideSectorResetCondition(newSector)
 
-      if(!isSectorPassed && !isSectorInIgnoredArea) {
+      if (!isSectorPassed && !isSectorInIgnoredArea) {
         await addSectorToList(newSector, isLastSectorInAngle)
         currentSector = newSector
         currentCommand = 'side'
@@ -231,11 +211,11 @@ export async function generateSectors(
   }
 }
 
-export const sectorsGenerateMap: { [key in TSide]: TSectorsGenerationModel } = {
+export const sectorsGenerateMap: { [key in Side]: SectorsGenerationModel } = {
   rightTop: topRightModel,
   rightBottom: bottomRightModel,
   leftTop: topLeftModel,
   leftBottom: bottomLeftModel
 }
 
-export const sidesList: TSide[] = ['leftTop', 'rightTop', 'leftBottom', 'rightBottom']
+export const sidesList: Side[] = ['leftTop', 'rightTop', 'leftBottom', 'rightBottom']

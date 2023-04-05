@@ -1,15 +1,15 @@
 import { FC } from 'react'
 import classNames from 'classnames'
-import { TClassNameable } from '../../../../shared/types'
+import { ClassNameable } from '../../../../shared/types'
 import styles from './Unit.module.scss'
-import { TUnitGroup } from '../../types'
+import { UnitGroup } from '../../types'
 import UnitIcon from '../UnitIcon/UnitIcon'
 
-type TProps = {
-  unitGroup: TUnitGroup
-} & TClassNameable
+type Props = {
+  unitGroup: UnitGroup
+} & ClassNameable
 
-const Unit: FC<TProps> = ({ unitGroup, className }) => {
+const Unit: FC<Props> = ({ unitGroup, className }) => {
   const { amount } = unitGroup
 
   return (

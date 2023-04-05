@@ -1,7 +1,6 @@
-import { Request, Response } from 'express';
-import { findCurrentUser } from './user.service';
+import { Request, Response } from 'express'
+import { currentUser } from './user.service'
 
-export const getUser = async (req: Request, res: Response) => {
-  res.send(await findCurrentUser());
-};
-
+export const userController = async (req: Request, res: Response) => {
+  res.send(await currentUser())
+}

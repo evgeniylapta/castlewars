@@ -1,24 +1,25 @@
-import { prisma } from '../../../config/prisma';
 import {
-  findUnitGroupByUnitType,
-  TUnitGroupUpdateAmountModel,
-  getUnitGroupUpdateAmountOperation,
-  TUnitGroupCreateModel, getUnitGroupCreateOperation
-} from '../../unit/services/unitGroup.service';
-import { UnitGroup, UnitType, Attack, Castle } from '@prisma/client'
-import { add } from 'date-fns';
-import { findUnitTypes } from '../../unit/services/unitType.service';
-import { callFormattedConsoleLog } from '../../../utils/console';
-import { calculateDistanceBetweenPoints } from 'sharedUtils';
-import { getUnitTypesMovingSeconds } from 'sharedUtils';
+  UnitGroup, UnitType, Attack, Castle
+} from '@prisma/client'
+import { add } from 'date-fns'
+import { calculateDistanceBetweenPoints, unitTypesMovingSeconds } from 'sharedUtils'
+import { prisma } from '../../../config/prisma'
+import {
+  unitGroupByUnitType,
+  UnitGroupUpdateAmountModel,
+  unitGroupUpdateAmountOperation,
+  UnitGroupCreateModel, unitGroupCreateOperation
+} from '../../unit/services/unitGroup.service'
+import { unitTypes as findUnitTypes } from '../../unit/services/unitType.service'
+import { callFormattedConsoleLog } from '../../../utils/console'
 
-function findUnitTypeById (unitTypes: UnitType[], unitTypeId: string) {
+function unitTypeById(unitTypes: UnitType[], unitTypeId: string) {
   return unitTypes.find(({ id }) => id === unitTypeId)
 }
 
 function calculateAttackValueByUnitGroups(unitGroups: UnitGroup[], unitTypes: UnitType[]) {
   return unitGroups.reduce((result, { amount, unitTypeId }) => {
-    const unitType = findUnitTypeById(unitTypes, unitTypeId)
+    const unitType = unitTypeById(unitTypes, unitTypeId)
 
     const value = unitType.attack * amount
 
@@ -28,7 +29,7 @@ function calculateAttackValueByUnitGroups(unitGroups: UnitGroup[], unitTypes: Un
 
 function calculateDefenceValueByUnitGroups(unitGroups: UnitGroup[], unitTypes: UnitType[]) {
   return unitGroups.reduce<number>((result, { amount, unitTypeId }) => {
-    const unitType = findUnitTypeById(unitTypes, unitTypeId)
+    const unitType = unitTypeById(unitTypes, unitTypeId)
 
     const value = unitType.defence * amount
 
@@ -37,19 +38,19 @@ function calculateDefenceValueByUnitGroups(unitGroups: UnitGroup[], unitTypes: U
 }
 
 function calculateSurvivedCoefficients(attackSum: number, defenceSum: number) {
-  const attackCoefficient = attackSum / defenceSum;
-  const defenceCoefficient = defenceSum / attackSum;
+  const attackCoefficient = attackSum / defenceSum
+  const defenceCoefficient = defenceSum / attackSum
 
-  const attackLosses = (attackSum / 2) * defenceCoefficient;
-  const defenceLosses = (defenceSum / 2) * attackCoefficient;
+  const attackLosses = (attackSum / 2) * defenceCoefficient
+  const defenceLosses = (defenceSum / 2) * attackCoefficient
 
   return {
-    attackSurvivedCoefficient: ((attackSum - attackLosses) /  attackSum) || 0,
+    attackSurvivedCoefficient: ((attackSum - attackLosses) / attackSum) || 0,
     defenceSurvivedCoefficient: ((defenceSum - defenceLosses) / defenceSum) || 0
   }
 }
 
-function getAttackDeleteOperation(attackId: Attack['id']) {
+function attackDeleteOperation(attackId: Attack['id']) {
   return prisma.attack.delete({
     where: {
       id: attackId
@@ -60,7 +61,7 @@ function getAttackDeleteOperation(attackId: Attack['id']) {
   })
 }
 
-function getAttackUpdateReturningDateOperation(
+function attackUpdateReturningDateOperation(
   attackId: Attack['id'],
   attackDate: Date,
   attackUnitTypesLeft: UnitType[],
@@ -69,7 +70,7 @@ function getAttackUpdateReturningDateOperation(
   const newDate = add(
     attackDate,
     {
-      seconds: getUnitTypesMovingSeconds(attackUnitTypesLeft, distance)
+      seconds: unitTypesMovingSeconds(attackUnitTypesLeft, distance)
     }
   )
 
@@ -85,14 +86,14 @@ function getAttackUpdateReturningDateOperation(
 }
 
 // todo only update
-function getUnitGroupsAlteringModels(
+function unitGroupsAlteringModels(
   unitGroups: UnitGroup[],
-  survivedCoefficient: number,
+  survivedCoefficient: number
   // removeOnEmpty = false
 ) {
-  const updateModels: TUnitGroupUpdateAmountModel[] = []
+  const updateModels: UnitGroupUpdateAmountModel[] = []
 
-  unitGroups.forEach(({amount, id}) => {
+  unitGroups.forEach(({ amount, id }) => {
     const newAmount = Math.max(Math.floor(amount * survivedCoefficient), 0)
     updateModels.push({ unitGroupId: id, newAmount, oldAmount: amount })
   })
@@ -103,22 +104,22 @@ function getUnitGroupsAlteringModels(
   }
 }
 
-function getLeftAttackUpdateUnitTypes(
-  attackUpdateModels: TUnitGroupUpdateAmountModel[],
+function leftAttackUpdateUnitTypes(
+  attackUpdateModels: UnitGroupUpdateAmountModel[],
   attackUnitGroups: UnitGroup[],
   unitTypes: UnitType[]
 ) {
   return attackUnitGroups
     .filter(({ id }) => attackUpdateModels.some(({ unitGroupId }) => unitGroupId === id))
-    .map(({ unitTypeId }) => findUnitTypeById(unitTypes, unitTypeId))
+    .map(({ unitTypeId }) => unitTypeById(unitTypes, unitTypeId))
 }
 
-async function getAttacks() {
-  return await prisma.attack.findMany({
+async function attacks() {
+  return prisma.attack.findMany({
     where: {
       dateTime: {
         lte: new Date()
-      },
+      }
     },
     include: {
       unitGroups: true,
@@ -136,7 +137,7 @@ async function getAttacks() {
   })
 }
 
-function getAttackOperations(
+function attackOperations(
   castleToUnitGroups: UnitGroup[],
   attackUnitGroups: UnitGroup[],
   attackId: Attack['id'],
@@ -153,21 +154,21 @@ function getAttackOperations(
   } = calculateSurvivedCoefficients(attackSum, defenceSum)
 
   const {
-    updateModels: attackUpdateModels,
+    updateModels: attackUpdateModels
     // deleteModels: attackUnitGroupIdsToDelete
-  } = getUnitGroupsAlteringModels(
+  } = unitGroupsAlteringModels(
     attackUnitGroups,
-    attackSurvivedCoefficient,
+    attackSurvivedCoefficient
     // true
   )
 
-  const { updateModels: defenceUpdateModels } = getUnitGroupsAlteringModels(
+  const { updateModels: defenceUpdateModels } = unitGroupsAlteringModels(
     castleToUnitGroups,
-    defenceSurvivedCoefficient,
+    defenceSurvivedCoefficient
     // false
   )
 
-  const hasTroopsToReturn = !!attackUpdateModels.length;
+  const hasTroopsToReturn = !!attackUpdateModels.length
 
   // todo
   // const deleteUnitGroupsOperations = [
@@ -177,15 +178,15 @@ function getAttackOperations(
   const updateUnitGroupsOperations = [
     ...attackUpdateModels,
     ...defenceUpdateModels
-  ].map(getUnitGroupUpdateAmountOperation)
+  ].map(unitGroupUpdateAmountOperation)
 
   // todo cascade remove unitGroups on attack remove
   const attackOperation = !hasTroopsToReturn
-    ? getAttackDeleteOperation(attackId)
-    : getAttackUpdateReturningDateOperation(
+    ? attackDeleteOperation(attackId)
+    : attackUpdateReturningDateOperation(
       attackId,
       attackDate,
-      getLeftAttackUpdateUnitTypes(attackUpdateModels, attackUnitGroups, unitTypes),
+      leftAttackUpdateUnitTypes(attackUpdateModels, attackUnitGroups, unitTypes),
       distance
     )
 
@@ -205,20 +206,20 @@ function getAttackOperations(
   ]
 }
 
-function getAttackReturningOperations(
+function attackReturningOperations(
   attackId: Attack['id'],
   homeCastleUnitGroups: UnitGroup[],
   attackUnitGroups: UnitGroup[],
   unitTypes: UnitType[],
   homeCastleId: Castle['id']
 ) {
-  const updateAmountModels: TUnitGroupUpdateAmountModel[] = []
+  const updateAmountModels: UnitGroupUpdateAmountModel[] = []
   // const deleteModels: TUnitGroupDeleteModel[] = []
-  const createModels: TUnitGroupCreateModel[] = []
+  const createModels: UnitGroupCreateModel[] = []
 
   unitTypes.forEach((unitType) => {
-    const foundHomeUnitGroup = findUnitGroupByUnitType(homeCastleUnitGroups, unitType)
-    const foundAttackUnitGroup = findUnitGroupByUnitType(attackUnitGroups, unitType)
+    const foundHomeUnitGroup = unitGroupByUnitType(homeCastleUnitGroups, unitType)
+    const foundAttackUnitGroup = unitGroupByUnitType(attackUnitGroups, unitType)
 
     const foundHomeAndAttackGroups = foundHomeUnitGroup && foundAttackUnitGroup
     const foundOnlyAttackGroup = !foundHomeUnitGroup && foundAttackUnitGroup
@@ -240,22 +241,21 @@ function getAttackReturningOperations(
     }
   })
 
-
   callFormattedConsoleLog('Attack returning', 'info', {
     attackId,
     updateAmountModels,
-    createModels,
+    createModels
   })
 
   return [
-    ...updateAmountModels.map(getUnitGroupUpdateAmountOperation),
-    ...createModels.map(getUnitGroupCreateOperation),
-    getAttackDeleteOperation(attackId)
+    ...updateAmountModels.map(unitGroupUpdateAmountOperation),
+    ...createModels.map(unitGroupCreateOperation),
+    attackDeleteOperation(attackId)
   ]
 }
 
 export async function attacksProcessingTick() {
-  const foundAttacks = await getAttacks()
+  const foundAttacks = await attacks()
   const unitTypes = await findUnitTypes()
 
   const operations = foundAttacks.reduce((result, {
@@ -264,9 +264,14 @@ export async function attacksProcessingTick() {
     castleFrom,
     dateTime,
     id: attackId,
-    unitGroups: attackUnitGroups,
+    unitGroups: attackUnitGroups
   }) => {
-    const distance = calculateDistanceBetweenPoints(castleFrom.x, castleFrom.y, castleTo.x, castleTo.y)
+    const distance = calculateDistanceBetweenPoints(
+      castleFrom.x,
+      castleFrom.y,
+      castleTo.x,
+      castleTo.y
+    )
     const { unitGroups: castleToUnitGroups } = castleTo
     const { unitGroups: castleFromUnitGroups, id: castleFromId } = castleFrom
 
@@ -274,8 +279,21 @@ export async function attacksProcessingTick() {
       ...result,
       ...(
         isReturning
-          ? getAttackReturningOperations(attackId, castleFromUnitGroups, attackUnitGroups, unitTypes, castleFromId)
-          : getAttackOperations(castleToUnitGroups, attackUnitGroups, attackId, unitTypes, dateTime, distance)
+          ? attackReturningOperations(
+            attackId,
+            castleFromUnitGroups,
+            attackUnitGroups,
+            unitTypes,
+            castleFromId
+          )
+          : attackOperations(
+            castleToUnitGroups,
+            attackUnitGroups,
+            attackId,
+            unitTypes,
+            dateTime,
+            distance
+          )
       )
     ]
   }, [])

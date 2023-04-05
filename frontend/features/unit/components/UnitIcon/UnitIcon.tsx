@@ -8,10 +8,10 @@ import praetorianImg from '../../assets/Praetorian.png'
 import spearfighterImg from '../../assets/Spearfighter.png'
 import swordsmanImg from '../../assets/Swordsman.png'
 import theutatesThunderImg from '../../assets/TheutatesThunder.png'
-import { TUnitName, TUnitTypesResponseItem } from '../../types'
+import { UnitName, UnitTypesResponseItem } from '../../types'
 import { useUnitTypeName } from '../../hooks/useUnitTypeName'
 
-function useUnitIcon(type?: TUnitName) {
+function useUnitIcon(type?: UnitName) {
   switch (type) {
   case 'Clubswinger':
     return clubswingerImg
@@ -36,11 +36,11 @@ function useUnitIcon(type?: TUnitName) {
   }
 }
 
-type TProps = {
-  unitTypeId: TUnitTypesResponseItem['id']
+type Props = {
+  unitTypeId: UnitTypesResponseItem['id']
 }
 
-const UnitIcon: FC<TProps> = ({ unitTypeId }) => {
+const UnitIcon: FC<Props> = ({ unitTypeId }) => {
   const foundType = useUnitTypeName(unitTypeId)
 
   const icon = useUnitIcon(foundType)

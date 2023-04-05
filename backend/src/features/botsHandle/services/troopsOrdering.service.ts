@@ -1,31 +1,31 @@
-import { Castle, CastleResources, TribeType, UnitsOrder, UnitType } from '@prisma/client';
-import { getRandomArrayItem, rollChance } from '../../../utils/random';
-import { CHANCE_TO_ORDER_TROOPS, GOLD_TO_ORDER_TROOPS_COEFFICIENT } from '../config';
-import { getAddCastleGoldOperation } from '../../resources/resources.service';
-import { getUnitTypesByTribeType } from '../../unit/services/unitType.service';
-import { createUnitOrderItem, getCreateUnitOrderItemOperations } from '../../unit/services/unitsOrder.service';
-import { callFormattedConsoleLog } from '../../../utils/console';
-import { getCalculatedCastleCold } from 'sharedUtils';
+import {
+  CastleResources, TribeType, UnitsOrder, UnitType
+} from '@prisma/client'
+import { calculatedCastleCold } from 'sharedUtils'
+import { randomArrayItem, rollChance } from '../../../utils/random'
+import { CHANCE_TO_ORDER_TROOPS, GOLD_TO_ORDER_TROOPS_COEFFICIENT } from '../config'
+import { operationAddCastleGold } from '../../resources/resources.service'
+import { unitTypesByTribeType } from '../../unit/services/unitType.service'
+import { operationsCreateUnitOrderItem } from '../../unit/services/unitsOrder.service'
+import { callFormattedConsoleLog } from '../../../utils/console'
 
-type TModel = {[key: UnitType['id']]: {
+type Model = {[key: UnitType['id']]: {
   amount: number,
   unitType: UnitType
 }}
 
-function getRandomUnitTypeToOrder(unitTypes: UnitType[]) {
-  return getRandomArrayItem<UnitType>(unitTypes)
+function randomUnitTypeToOrder(unitTypes: UnitType[]) {
+  return randomArrayItem<UnitType>(unitTypes)
 }
 
-function getResultToOrder(goldAllowedToUse: number, unitTypes: UnitType[]) {
+function resultToOrder(goldAllowedToUse: number, unitTypes: UnitType[]) {
   let flag = true
 
-  const resultUnitsToOrder: TModel = {}
+  const resultUnitsToOrder: Model = {}
   let currentUnitsCost = 0
 
-  while(flag) {
-    const unitType = getRandomUnitTypeToOrder(unitTypes)
-
-    unitType.goldPrice
+  while (flag) {
+    const unitType = randomUnitTypeToOrder(unitTypes)
 
     const newCurrentUnitsCost = currentUnitsCost + unitType.goldPrice
 
@@ -38,7 +38,7 @@ function getResultToOrder(goldAllowedToUse: number, unitTypes: UnitType[]) {
 
     const foundItem = resultUnitsToOrder[unitType.id]
     resultUnitsToOrder[unitType.id] = foundItem
-      ? {...foundItem, amount: foundItem.amount + 1}
+      ? { ...foundItem, amount: foundItem.amount + 1 }
       : { unitType, amount: 1 }
   }
 
@@ -48,7 +48,11 @@ function getResultToOrder(goldAllowedToUse: number, unitTypes: UnitType[]) {
   }
 }
 
-async function getOperationsByModel(resultUnitsToOrder: TModel, unitsCost: number, castleResources: CastleResources) {
+async function operationsByModel(
+  resultUnitsToOrder: Model,
+  unitsCost: number,
+  castleResources: CastleResources
+) {
   let result = []
 
   const entries = Object.entries(resultUnitsToOrder)
@@ -62,45 +66,51 @@ async function getOperationsByModel(resultUnitsToOrder: TModel, unitsCost: numbe
 
     result = [
       ...result,
-      ...await getCreateUnitOrderItemOperations(
+      ...await operationsCreateUnitOrderItem(
         item.unitType,
         castleResources.castleId,
         item.amount,
         false,
-        entries.findIndex(entryItem => entryItem === entry)
+        entries.findIndex((entryItem) => entryItem === entry)
       )
     ]
   }
 
   return [
     ...result,
-    getAddCastleGoldOperation(castleResources, -unitsCost)
+    operationAddCastleGold(castleResources, -unitsCost)
   ]
 }
 
-export async function getOrderUnitsOperations(
+export async function orderUnitsOperations(
   castleResources: CastleResources,
   unitOrder: UnitsOrder[],
   unitTypes: UnitType[],
-  tribeType: TribeType,
+  tribeType: TribeType
 ) {
-  if(!rollChance(CHANCE_TO_ORDER_TROOPS)) {
+  if (!rollChance(CHANCE_TO_ORDER_TROOPS)) {
     return []
   }
 
-  const availableUnitTypes = getUnitTypesByTribeType(unitTypes, tribeType)
-  const calculatedCastleCold = getCalculatedCastleCold(castleResources.gold, castleResources.goldLastUpdate)
+  const availableUnitTypes = unitTypesByTribeType(unitTypes, tribeType)
 
-  const goldAllowedToUse = calculatedCastleCold * GOLD_TO_ORDER_TROOPS_COEFFICIENT
+  const goldAllowedToUse = calculatedCastleCold(
+    castleResources.gold,
+    castleResources.goldLastUpdate
+  ) * GOLD_TO_ORDER_TROOPS_COEFFICIENT
 
-  const { resultUnitsToOrder, unitsCost } = getResultToOrder(goldAllowedToUse, availableUnitTypes)
+  const { resultUnitsToOrder, unitsCost } = resultToOrder(goldAllowedToUse, availableUnitTypes)
 
   callFormattedConsoleLog('Bot order troops', 'info', {
     goldAllowedToUse,
-    calculatedCastleCold,
+    calculatedCastleCold: calculatedCastleCold(
+      castleResources.gold,
+      castleResources.goldLastUpdate
+    ),
     unitsCost,
-    resultUnitsToOrder: Object.entries(resultUnitsToOrder).map(([, item]) => ({ unitType: item.unitType.name, amount: item.amount })),
+    resultUnitsToOrder: Object.entries(resultUnitsToOrder)
+      .map(([, item]) => ({ unitType: item.unitType.name, amount: item.amount }))
   })
 
-  return await getOperationsByModel(resultUnitsToOrder, unitsCost, castleResources)
+  return operationsByModel(resultUnitsToOrder, unitsCost, castleResources)
 }

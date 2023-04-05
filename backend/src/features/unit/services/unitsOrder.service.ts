@@ -1,6 +1,8 @@
-import { prisma } from '../../../config/prisma';
-import { UnitType, Castle, UnitsOrder, UnitsOrderItem } from '@prisma/client';
-import { getAddCastleGoldOperation } from '../../resources/resources.service';
+import {
+  UnitType, Castle, UnitsOrder, UnitsOrderItem
+} from '@prisma/client'
+import { prisma } from '../../../config/prisma'
+import { operationAddCastleGold } from '../../resources/resources.service'
 
 async function createUnitsOrder(castleId) {
   return prisma.unitsOrder.create({
@@ -11,10 +13,10 @@ async function createUnitsOrder(castleId) {
     include: {
       items: true
     }
-  });
+  })
 }
 
-async function getUnitsOrderItemCreatingOperations(
+async function unitsOrderItemCreatingOperations(
   unitsOrder: UnitsOrder,
   unitTypeId: UnitType['id'],
   amount: number,
@@ -27,7 +29,7 @@ async function getUnitsOrderItemCreatingOperations(
     orderBy: {
       subsequence: 'desc'
     }
-  });
+  })
 
   return [
     prisma.unitsOrderItem.create({
@@ -35,29 +37,41 @@ async function getUnitsOrderItemCreatingOperations(
         amount,
         unitTypeId,
         orderId: unitsOrder.id,
-        subsequence: (lastUnitOrderItem ? lastUnitOrderItem.subsequence + 1 : 1) + extraSubsequenceIndex
+        subsequence: (
+          lastUnitOrderItem
+            ? lastUnitOrderItem.subsequence + 1
+            : 1
+        ) + extraSubsequenceIndex
       }
     })
   ]
 }
 
-export async function createUnitOrderItem(
-  unitType: UnitType,
-  castleId: Castle['id'],
-  amount: number,
-  subtractGold = true
+function updateUnitsOrderLastCreationDateOperation(
+  unitOrder: UnitsOrder,
+  unitOrderItems: UnitsOrderItem[]
 ) {
-  return prisma.$transaction(await getCreateUnitOrderItemOperations(unitType, castleId, amount, subtractGold));
+  if (unitOrderItems.length) {
+    return undefined
+  }
+
+  return prisma.unitsOrder.update({
+    where: {
+      id: unitOrder.id
+    },
+    data: {
+      lastCreationDate: new Date()
+    }
+  })
 }
 
-export async function getCreateUnitOrderItemOperations(
+export async function operationsCreateUnitOrderItem(
   unitType: UnitType,
   castleId: Castle['id'],
   amount: number,
   subtractGold = true,
   extraSubsequenceIndex = 0
 ) {
-
   // todo option to optimize
 
   const castle = await prisma.castle.findFirst({
@@ -76,29 +90,37 @@ export async function getCreateUnitOrderItemOperations(
 
   let unitOrder = castle.unitsOrders[0]
   if (!unitOrder) {
-    unitOrder = await createUnitsOrder(castleId);
+    unitOrder = await createUnitsOrder(castleId)
   }
 
-  const updateLastCreationDateOperation = getUpdateUnitsOrderLastCreationDateOperation(unitOrder, unitOrder.items)
+  const updateLastCreationDateOperation = updateUnitsOrderLastCreationDateOperation(
+    unitOrder,
+    unitOrder.items
+  )
 
   return [
-    ...await getUnitsOrderItemCreatingOperations(unitOrder, unitType.id, amount, extraSubsequenceIndex),
+    ...await unitsOrderItemCreatingOperations(
+      unitOrder,
+      unitType.id,
+      amount,
+      extraSubsequenceIndex
+    ),
     ...(updateLastCreationDateOperation ? [updateLastCreationDateOperation] : []),
-    ...(subtractGold ? [getAddCastleGoldOperation(castle.castleResources, -unitType.goldPrice)] : []),
+    ...(
+      subtractGold
+        ? [operationAddCastleGold(castle.castleResources, -unitType.goldPrice)]
+        : []
+    )
   ]
 }
 
-function getUpdateUnitsOrderLastCreationDateOperation(unitOrder: UnitsOrder, unitOrderItems: UnitsOrderItem[]) {
-  if (unitOrderItems.length) {
-    return
-  }
-
-  return prisma.unitsOrder.update({
-    where: {
-      id: unitOrder.id
-    },
-    data: {
-      lastCreationDate: new Date()
-    }
-  })
+export async function createUnitOrderItem(
+  unitType: UnitType,
+  castleId: Castle['id'],
+  amount: number,
+  subtractGold = true
+) {
+  return prisma.$transaction(
+    await operationsCreateUnitOrderItem(unitType, castleId, amount, subtractGold)
+  )
 }

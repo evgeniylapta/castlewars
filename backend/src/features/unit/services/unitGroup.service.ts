@@ -1,20 +1,26 @@
-import { prisma } from '../../../config/prisma';
-import { UnitType, UnitGroup, Castle, Attack } from '@prisma/client'
+import {
+  UnitType, UnitGroup, Castle, Attack
+} from '@prisma/client'
+import { prisma } from '../../../config/prisma'
 
-export type TUnitGroupUpdateAmountModel = { unitGroupId: UnitGroup['id'], newAmount: number, oldAmount: number }
-export type TUnitGroupCreateModel = { amount: number, ownerCastleId?: Castle['id'], ownerAttackId?: Attack['id'], unitTypeId: UnitType['id'] }
+export type UnitGroupUpdateAmountModel = { unitGroupId: UnitGroup['id'], newAmount: number, oldAmount: number }
+export type UnitGroupCreateModel = { amount: number, ownerCastleId?: Castle['id'], ownerAttackId?: Attack['id'], unitTypeId: UnitType['id'] }
 // export type TUnitGroupDeleteModel = { unitGroupId: UnitGroup['id'] }
 
-export async function findUnitGroupsByCastleId(castleId: string) {
-  return await prisma.unitGroup.findMany({
+export async function unitGroupsByCastleId(castleId: string) {
+  return prisma.unitGroup.findMany({
     where: {
       ownerCastleId: castleId
-    },
-  });
+    }
+  })
 }
 
-export async function findUnitGroupsByAttacksIdOrCastleId(attackIds: string | string[], castleIds: string | string[]) {
-  return await prisma.unitGroup.findMany({
+// todo delete?
+export async function unitGroupsByAttacksIdOrCastleId(
+  attackIds: string | string[],
+  castleIds: string | string[]
+) {
+  return prisma.unitGroup.findMany({
     where: {
       OR: [
         {
@@ -28,16 +34,17 @@ export async function findUnitGroupsByAttacksIdOrCastleId(attackIds: string | st
           }
         }
       ]
-    },
-  });
+    }
+  })
 }
 
-export function findUnitGroupByUnitType(unitGroups: UnitGroup[], unitType: UnitType) {
+export function unitGroupByUnitType(unitGroups: UnitGroup[], unitType: UnitType) {
   return unitGroups.find(({ unitTypeId }) => unitTypeId === unitType.id)
 }
 
-export function getUnitGroupUpdateAmountOperation({ unitGroupId, newAmount }: TUnitGroupUpdateAmountModel) {
-
+export function unitGroupUpdateAmountOperation(
+  { unitGroupId, newAmount }: UnitGroupUpdateAmountModel
+) {
   return (
     prisma.unitGroup.update({
       where: {
@@ -47,20 +54,23 @@ export function getUnitGroupUpdateAmountOperation({ unitGroupId, newAmount }: TU
         amount: newAmount
       }
     })
-  );
+  )
 }
 
-export function getUnitGroupDeleteOperation(unitGroupId: UnitGroup['id']) {
+// todo delete?
+export function unitGroupDeleteOperation(unitGroupId: UnitGroup['id']) {
   return (
     prisma.unitGroup.delete({
       where: {
         id: unitGroupId
       }
     })
-  );
+  )
 }
 
-export function getUnitGroupCreateOperation({ amount, ownerCastleId, ownerAttackId, unitTypeId }: TUnitGroupCreateModel) {
+export function unitGroupCreateOperation({
+  amount, ownerCastleId, ownerAttackId, unitTypeId
+}: UnitGroupCreateModel) {
   if (!ownerCastleId && !ownerAttackId) {
     throw new Error('Props ownerCastleId and ownerAttackId are not defined')
   }
@@ -71,8 +81,8 @@ export function getUnitGroupCreateOperation({ amount, ownerCastleId, ownerAttack
         amount,
         ownerCastleId,
         ownerAttackId,
-        unitTypeId,
+        unitTypeId
       }
     })
-  );
+  )
 }

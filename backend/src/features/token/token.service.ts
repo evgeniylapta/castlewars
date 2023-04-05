@@ -1,41 +1,59 @@
-import jwt from 'jsonwebtoken';
-import { User } from '@prisma/client';
-import { addMinutes, getUnixTime, addDays } from 'date-fns';
-import { TJwtPayloadType } from '../../config/passport';
-import { TFullTokenType } from '../../types/token';
-import { prisma } from '../../config/prisma';
+import jwt from 'jsonwebtoken'
+import { User } from '@prisma/client'
+import { addMinutes, getUnixTime, addDays } from 'date-fns'
+import { JwtPayloadType } from '../../config/passport'
+import { FullTokenType } from '../../types/token'
+import { prisma } from '../../config/prisma'
 
-const generateToken = (userId: string, expires: Date, type: TFullTokenType, secret = process.env.JWT_SECRET) => {
-  const payload: TJwtPayloadType = {
+const generateToken = (
+  userId: string,
+  expires: Date,
+  type: FullTokenType,
+  secret = process.env.JWT_SECRET
+) => {
+  const payload: JwtPayloadType = {
     userId,
     type,
     exp: getUnixTime(expires),
-    iat: getUnixTime(new Date()),
-  };
+    iat: getUnixTime(new Date())
+  }
 
-  return jwt.sign(payload, secret);
-};
+  return jwt.sign(payload, secret)
+}
+
+function accessTokenError() {
+  return new Error('ACCESS token can not be saved in DB')
+}
 
 const saveToken = async (
   token: string,
   userId: string,
   expires: Date,
-  type: TFullTokenType,
+  type: FullTokenType,
   blacklisted = false
 ) => {
-  return await prisma.token.create({
+  if (type === 'ACCESS') {
+    throw accessTokenError()
+  }
+
+  return prisma.token.create({
     data: {
       token,
-      userId: userId,
-      expires: expires,
+      userId,
+      expires,
       type,
-      blacklisted,
+      blacklisted
     }
   })
-};
+}
 
-export const verifyToken = async (token: string, type: TFullTokenType) => {
-  const payload = jwt.verify(token, process.env.JWT_SECRET) as TJwtPayloadType;
+export const verifyToken = async (token: string, type: FullTokenType) => {
+  const payload = jwt.verify(token, process.env.JWT_SECRET) as JwtPayloadType
+
+  if (type === 'ACCESS') {
+    throw accessTokenError()
+  }
+
   const tokenDoc = await prisma.token.findFirst({
     where: {
       token,
@@ -44,50 +62,52 @@ export const verifyToken = async (token: string, type: TFullTokenType) => {
       userId: payload.userId,
       blacklisted: false
     }
-  });
+  })
   if (!tokenDoc) {
-    throw new Error('Token not found');
+    throw new Error('Token not found')
   }
-  return tokenDoc;
-};
+  return tokenDoc
+}
 
-export const removeToken = async (token: string) => {
-  return await prisma.token.delete({
-    where: {
-      token
-    }
-  });
-};
+export const removeToken = async (token: string) => prisma.token.delete({
+  where: {
+    token
+  }
+})
 
 export const generateAuthTokens = async (user: User) => {
-  const accessTokenExpires = addMinutes(new Date(), Number(process.env.JWT_ACCESS_EXPIRATION_MINUTES));
-  const accessToken = generateToken(user.id, accessTokenExpires, 'ACCESS');
+  const accessTokenExpires = addMinutes(
+    new Date(),
+    Number(process.env.JWT_ACCESS_EXPIRATION_MINUTES)
+  )
+  const accessToken = generateToken(user.id, accessTokenExpires, 'ACCESS')
 
-  const refreshTokenExpires = addDays(new Date(), Number(process.env.JWT_ACCESS_EXPIRATION_MINUTES));
-  const refreshToken = generateToken(user.id, refreshTokenExpires, 'REFRESH');
-  await saveToken(refreshToken, user.id, refreshTokenExpires, 'REFRESH');
-
-  console.log(accessTokenExpires);
+  const refreshTokenExpires = addDays(new Date(), Number(process.env.JWT_ACCESS_EXPIRATION_MINUTES))
+  const refreshToken = generateToken(user.id, refreshTokenExpires, 'REFRESH')
+  await saveToken(refreshToken, user.id, refreshTokenExpires, 'REFRESH')
 
   return {
     access: {
       token: accessToken,
-      expires: accessTokenExpires.toString(),
+      expires: accessTokenExpires.toString()
     },
     refresh: {
       token: refreshToken,
-      expires: refreshTokenExpires.toString(),
-    },
-  };
-};
-
-export async function removeUserTokens(user: User) {
-  const foundUser = await prisma.user.findUnique({ where: { id: user.id }, include: { tokens: true } })
-
-  foundUser.tokens.forEach(() => {
-
-  })
+      expires: refreshTokenExpires.toString()
+    }
+  }
 }
+
+// export async function removeUserTokens(user: User) {
+// const foundUser = await prisma.user.findUnique({
+//   where: { id: user.id },
+//   include: { tokens: true }
+// })
+
+// foundUser.tokens.forEach(() => {
+//
+// })
+// }
 
 // const generateResetPasswordToken = async (email: string) => {
 //   const user = await userByEmail(email);

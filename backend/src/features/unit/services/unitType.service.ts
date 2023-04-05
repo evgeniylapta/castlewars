@@ -1,14 +1,14 @@
-import { prisma } from '../../../config/prisma';
 import { UnitType, TribeType } from '@prisma/client'
+import { prisma } from '../../../config/prisma'
 
-export async function findUnitTypes() {
-  return await prisma.unitType.findMany();
+export async function unitTypes() {
+  return prisma.unitType.findMany()
 }
 
-export async function findUnitTypeById(typeById: UnitType['id']) {
-  return (await findUnitTypes()).find(({ id }) => id === typeById)
+export async function unitTypeById(typeById: UnitType['id']) {
+  return (await unitTypes()).find(({ id }) => id === typeById)
 }
 
-export function getUnitTypesByTribeType(unitTypes: UnitType[], tribeType: TribeType) {
-  return unitTypes.filter(({ tribeTypeId }) => tribeTypeId === tribeType.id);
+export function unitTypesByTribeType(types: UnitType[], tribeType: TribeType) {
+  return types.filter(({ tribeTypeId }) => tribeTypeId === tribeType.id)
 }

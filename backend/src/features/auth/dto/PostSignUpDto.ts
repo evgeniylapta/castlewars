@@ -1,23 +1,25 @@
-import { IsNotEmpty, IsString, MinLength, MaxLength, IsUUID, IsEmail } from 'class-validator';
+import {
+  IsNotEmpty, IsString, MinLength, MaxLength, IsUUID, IsEmail
+} from 'class-validator'
 
 export class PostSignUpDto {
   @IsNotEmpty()
   @IsString()
   @IsEmail()
-  email: string
+    email: string
 
   @IsString()
   @IsNotEmpty()
   @MinLength(4)
   @MaxLength(20)
-  password: string;
+    password: string
 
   @IsNotEmpty()
   @IsString()
-  name: string
+    name: string
 
   @IsNotEmpty()
   @IsString()
   @IsUUID()
-  tribeTypeId: string
+    tribeTypeId: string
 }

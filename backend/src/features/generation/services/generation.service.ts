@@ -1,68 +1,76 @@
-import { generateSectors, sectorsGenerateMap, sidesList } from './sectors.service';
-import { prisma } from '../../../config/prisma';
-import { findTribeTypes } from '../../tribe/tribe.service';
-import { TribeType, MapSettlement, UnitType } from '@prisma/client';
-import { findCastlesByCoordsRanges } from '../../castle/castle.service';
-import { USERS_IN_SECTOR_LIMIT } from '../config';
-import { Sector, TSide } from '../types';
-import { encryptPassword, selectBotsAmount } from '../../user/user.service';
-import { getRandomArrayItem, randomIntFromInterval } from '../../../utils/random';
-import { findUnitTypes, getUnitTypesByTribeType } from '../../unit/services/unitType.service';
-import { callFormattedConsoleLog } from '../../../utils/console';
+import {
+  TribeType, MapSettlement, UnitType, UserRole
+} from '@prisma/client'
+import { generateSectors, sectorsGenerateMap, sidesList } from './sectors.service'
+import { prisma } from '../../../config/prisma'
+import { tribeTypes as findTribeTypes } from '../../tribe/tribe.service'
+import { castlesByCoordsRanges } from '../../castle/castle.service'
+import { USERS_IN_SECTOR_LIMIT } from '../config'
+import { Sector, Side } from '../types'
+import { encryptPassword, selectBotsAmount } from '../../user/user.service'
+import { randomArrayItem, randomIntFromInterval } from '../../../utils/random'
+import { unitTypes as findUnitTypes, unitTypesByTribeType } from '../../unit/services/unitType.service'
+import { callFormattedConsoleLog } from '../../../utils/console'
 
-type TSidesAngleIndexesMap = { [key in TSide]: number }
+type SidesAngleIndexesMap = { [key in Side]: number }
 
-type TPoint = { x: number, y: number }
+type Point = { x: number, y: number }
 
-type TGenerateUserConfig = {
+type GenerateUserConfig = {
   nameFactory: (index: number) => string
   emailFactory: (index: number) => string
   passwordFactory: (index: number) => string
   isBot: boolean
+  role: UserRole
   limit: number
   withTroops: boolean
 }
 
-async function getSidesAngleIndexes(mapSettlement: MapSettlement[]): Promise<TSidesAngleIndexesMap> {
+function sidesAngleIndexes(
+  mapSettlement: MapSettlement[]
+): SidesAngleIndexesMap {
   return {
-    leftBottom: mapSettlement.find(({ direction }) => direction === <TSide>'leftBottom').settleAngleIndex,
-    leftTop: mapSettlement.find(({ direction }) => direction === <TSide>'leftTop').settleAngleIndex,
-    rightBottom: mapSettlement.find(({ direction }) => direction === <TSide>'rightBottom').settleAngleIndex,
-    rightTop: mapSettlement.find(({ direction }) => direction === <TSide>'rightTop').settleAngleIndex
+    leftBottom: mapSettlement.find(({ direction }) => direction === <Side>'leftBottom').settleAngleIndex,
+    leftTop: mapSettlement.find(({ direction }) => direction === <Side>'leftTop').settleAngleIndex,
+    rightBottom: mapSettlement.find(({ direction }) => direction === <Side>'rightBottom').settleAngleIndex,
+    rightTop: mapSettlement.find(({ direction }) => direction === <Side>'rightTop').settleAngleIndex
   }
 }
 
-function getSectorRandomPoint(sector: Sector) {
+function sectorRandomPoint(sector: Sector) {
   return {
     x: randomIntFromInterval(sector.startX, sector.endX),
     y: randomIntFromInterval(sector.startY, sector.endY)
   }
 }
 
-function getRandomUnitsAmount() {
+function randomUnitsAmount() {
   return randomIntFromInterval(10, 100)
 }
 
-function getRandomGoldAmount() {
+function randomGoldAmount() {
   return randomIntFromInterval(100, 3000)
 }
 
-function getUserOperation(
-  point: TPoint,
+function userOperation(
+  point: Point,
   tribeType: TribeType,
-  { nameFactory, isBot, withTroops, emailFactory, passwordFactory }: TGenerateUserConfig,
+  {
+    nameFactory, isBot, withTroops, emailFactory, passwordFactory
+  }: GenerateUserConfig,
   index: number,
   unitTypes: UnitType[]
 ) {
-  const availableUnitTypes = getUnitTypesByTribeType(unitTypes, tribeType)
+  const availableUnitTypes = unitTypesByTribeType(unitTypes, tribeType)
 
   return prisma.user.create({
     include: {
       castles: true
     },
     data: {
-      tribeId: tribeType.id,
+      tribeTypeId: tribeType.id,
       isBot,
+      role: 'ADMIN',
       name: nameFactory(index),
       email: emailFactory(index),
       password: passwordFactory(index),
@@ -72,7 +80,7 @@ function getUserOperation(
           y: point.y,
           castleResources: {
             create: {
-              gold: getRandomGoldAmount(),
+              gold: randomGoldAmount(),
               goldLastUpdate: new Date()
             }
           },
@@ -81,8 +89,8 @@ function getUserOperation(
               data: withTroops
                 ? availableUnitTypes.map(({ id }) => ({
                   unitTypeId: id,
-                  amount: getRandomUnitsAmount(),
-                  ownerAttackId: null,
+                  amount: randomUnitsAmount(),
+                  ownerAttackId: null
                 }))
                 : []
             }
@@ -93,26 +101,26 @@ function getUserOperation(
   })
 }
 
-function getRandomTribeType(tribeTypes: TribeType[]) {
-  return getRandomArrayItem<TribeType>(tribeTypes)
+function randomTribeType(tribeTypes: TribeType[]) {
+  return randomArrayItem<TribeType>(tribeTypes)
 }
 
 async function sectorUsersGenerate(
   sector: Sector,
   pointsToCreateLimit: number,
-  existingPoints: TPoint[],
+  existingPoints: Point[],
   tribeTypes: TribeType[],
-  config: TGenerateUserConfig,
+  config: GenerateUserConfig,
   alreadyGeneratedUsersLength: number,
   unitTypes: UnitType[]
 ) {
-  const models: { point : TPoint, tribeType: TribeType }[] = []
+  const models: { point : Point, tribeType: TribeType }[] = []
 
   let flag = true
   let count = 0
 
-  while(flag) {
-    const newPoint = getSectorRandomPoint(sector)
+  while (flag) {
+    const newPoint = sectorRandomPoint(sector)
     const isZeroPoint = newPoint.x === 0 && newPoint.y === 0
     const isPointAlreadyInModelsList = models.some(
       ({ point: { y, x } }) => y === newPoint.y && x === newPoint.x
@@ -122,8 +130,8 @@ async function sectorUsersGenerate(
     )
 
     if (!isPointAlreadyInModelsList && !isZeroPoint && !isPointAlreadyExists) {
-      models.push({ point: newPoint, tribeType: getRandomTribeType(tribeTypes) })
-      count++
+      models.push({ point: newPoint, tribeType: randomTribeType(tribeTypes) })
+      count += 1
     }
 
     if (count >= pointsToCreateLimit) {
@@ -131,9 +139,9 @@ async function sectorUsersGenerate(
     }
   }
 
-  return await prisma.$transaction(
+  return prisma.$transaction(
     models.map(({ point, tribeType }, index) => (
-      getUserOperation(
+      userOperation(
         point,
         tribeType,
         config,
@@ -144,7 +152,7 @@ async function sectorUsersGenerate(
   )
 }
 
-async function angleIndexUpdate(angleIndex: number, side: TSide, mapSettlements: MapSettlement[]) {
+async function angleIndexUpdate(angleIndex: number, side: Side, mapSettlements: MapSettlement[]) {
   return prisma.mapSettlement.update({
     where: {
       id: mapSettlements.find(({ direction }) => direction === side).id
@@ -155,20 +163,22 @@ async function angleIndexUpdate(angleIndex: number, side: TSide, mapSettlements:
   })
 }
 
-function getSortedSidesList(initialSidesAngleIndexes: TSidesAngleIndexesMap) {
+function sortedSidesList(initialSidesAngleIndexes: SidesAngleIndexesMap) {
   return [...sidesList].sort((one, two) => {
     if (initialSidesAngleIndexes[one] < initialSidesAngleIndexes[two]) {
-      return -1;
+      return -1
     }
     if (initialSidesAngleIndexes[one] > initialSidesAngleIndexes[two]) {
-      return 1;
+      return 1
     }
-    return 0;
+    return 0
   })
 }
 
-async function getSectorCapacityInfo({ startX, startY, endY, endX }: Sector) {
-  const castles = await findCastlesByCoordsRanges(
+async function sectorCapacityInfo({
+  startX, startY, endY, endX
+}: Sector) {
+  const castles = await castlesByCoordsRanges(
     Math.min(startX, endX),
     Math.min(startY, endY),
     Math.max(startX, endX),
@@ -177,36 +187,31 @@ async function getSectorCapacityInfo({ startX, startY, endY, endX }: Sector) {
 
   return {
     existingPoints: castles.map(({ x, y }) => ({ x, y })),
-    freeSpace: Math.max(USERS_IN_SECTOR_LIMIT - castles.length, 0),
+    freeSpace: Math.max(USERS_IN_SECTOR_LIMIT - castles.length, 0)
   }
 }
 
-async function generateUsers(config: TGenerateUserConfig) {
-  const { limit } = config
-  const mapSettlements = await prisma.mapSettlement.findMany();
-  const initialSidesAngleIndexes = await getSidesAngleIndexes(mapSettlements)
-
-  const sortedSidesList = getSortedSidesList(initialSidesAngleIndexes)
-  let currentSide = sortedSidesList[0]
-
-  const sidesAngleIndexes = initialSidesAngleIndexes
-
+async function generateUsers(config: GenerateUserConfig) {
   const tribeTypes = await findTribeTypes()
   const unitTypes = await findUnitTypes()
 
-  let generatedUsers = []
-
   let flag = true
-  const stopProcess = () => flag = false
+  const stopProcess = () => { flag = false }
+
+  const mapSettlements = await prisma.mapSettlement.findMany()
+  const initialSidesAngleIndexes = sidesAngleIndexes(mapSettlements)
+  let currentSide = sortedSidesList(initialSidesAngleIndexes)[0]
+  const currentSidesAngleIndexes = sidesAngleIndexes(mapSettlements)
 
   const incrementCurrentSideAngle = (angleIndex: number) => {
     const value = angleIndex + 1
-    sidesAngleIndexes[currentSide] = value
+    currentSidesAngleIndexes[currentSide] = value
     return value
   }
 
+  let generatedUsers = []
   const onNextSector = async (sector: Sector, angleIndex: number, isLastSectorInAngle: boolean) => {
-    const restUsersToGenerate = limit - generatedUsers.length
+    const restUsersToGenerate = config.limit - generatedUsers.length
 
     if (restUsersToGenerate <= 0) {
       stopProcess()
@@ -214,9 +219,11 @@ async function generateUsers(config: TGenerateUserConfig) {
     }
 
     const isNeedToGenerateFullSector = restUsersToGenerate >= USERS_IN_SECTOR_LIMIT
-    const usersNumberLeftToCreateInSector = isNeedToGenerateFullSector ? USERS_IN_SECTOR_LIMIT : restUsersToGenerate
+    const usersNumberLeftToCreateInSector = isNeedToGenerateFullSector
+      ? USERS_IN_SECTOR_LIMIT
+      : restUsersToGenerate
 
-    const { freeSpace: sectionFreeSpace, existingPoints } = await getSectorCapacityInfo(sector)
+    const { freeSpace: sectionFreeSpace, existingPoints } = await sectorCapacityInfo(sector)
 
     const actualUsersNumberToCreate = Math.min(sectionFreeSpace, usersNumberLeftToCreateInSector)
 
@@ -242,19 +249,21 @@ async function generateUsers(config: TGenerateUserConfig) {
   }
 
   const setNextSide = () => {
-    const foundSideIndex = sortedSidesList.findIndex((value) => value === currentSide)
-    currentSide = sortedSidesList[foundSideIndex + 1] || sortedSidesList[0]
+    const foundSideIndex = sortedSidesList(initialSidesAngleIndexes)
+      .findIndex((value) => value === currentSide)
+    currentSide = sortedSidesList(initialSidesAngleIndexes)[foundSideIndex + 1]
+      || sortedSidesList(initialSidesAngleIndexes)[0]
   }
 
-  while(flag) {
+  while (flag) {
     const currentSectorsGenerationModel = sectorsGenerateMap[currentSide]
 
-    const currentSidesAngleIndex = sidesAngleIndexes[currentSide]
+    const currentSidesAngleIndex = currentSidesAngleIndexes[currentSide]
 
     await generateSectors(
       currentSectorsGenerationModel,
       onNextSector,
-      angleIndex => angleIndex >= currentSidesAngleIndex + 1,
+      (angleIndex) => angleIndex >= currentSidesAngleIndex + 1,
       currentSidesAngleIndex
     )
 
@@ -275,20 +284,23 @@ export async function generateBots(limit: number) {
   await generateUsers({
     limit,
     isBot: true,
+    role: UserRole.USER,
     nameFactory: (index) => `Bot user ${botsAmount + index}`,
     withTroops,
     emailFactory: (index) => `botUser${botsAmount + index}@example.com`,
     passwordFactory: () => encryptedPassword
   })
 
+  // eslint-disable-next-line no-console
   console.log('[BOTS GENERATION END]')
 }
 
-export async function generateUser(name: string, email: string, password: string) {
+export async function generateUser(name: string, email: string, password: string, role: UserRole) {
   const encryptedPassword = await encryptPassword(password)
 
   const [user] = await generateUsers({
     limit: 1,
+    role,
     isBot: false,
     nameFactory: () => name,
     withTroops: true,

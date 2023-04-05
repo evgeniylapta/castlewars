@@ -29,7 +29,7 @@ function useIsSubmitDisabled(useFormReturn: UseFormReturn, troopsTotalPrice: num
     || totalMoreThanAvailable
 }
 
-type TProps = {
+type Props = {
   onCancel: () => void
 }
 
@@ -49,7 +49,7 @@ function useTroopsTotalPrice({ watch }: UseFormReturn) {
   )
 }
 
-const Form: FC<TProps> = ({ onCancel }) => {
+const Form: FC<Props> = ({ onCancel }) => {
   const { currentUserQuery: { data: currentUser } } = useAuthContext()
   const useFormReturn = useForm()
   const { handleSubmit } = useFormReturn

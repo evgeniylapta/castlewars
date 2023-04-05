@@ -1,9 +1,10 @@
-import { UserRole } from '@prisma/client';
-export type TUserRight = 'manageUsers'
+import { UserRole } from '@prisma/client'
 
-const allRoles: Readonly<{ [key in UserRole]: TUserRight[] }> = {
+export type UserRight = 'manageUsers'
+
+const allRoles: Readonly<{ [key in UserRole]: UserRight[] }> = {
   USER: [],
-  ADMIN: ['manageUsers'],
-};
+  ADMIN: ['manageUsers']
+}
 
-export const roleRights = new Map(Object.entries(allRoles));
+export const roleRights = new Map(Object.entries(allRoles))

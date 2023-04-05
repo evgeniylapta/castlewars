@@ -1,15 +1,15 @@
 import { useMutation, useQuery } from 'react-query'
 import { apiClient } from '../../shared/apiClient'
-import { TCastle } from '../castle'
-import { TAttack } from './types'
+import { Castle } from '../castle'
+import { Attack } from './types'
 
-const attacksListKey = (castleId?: TCastle['id']) => ['attacksList', castleId]
+const attacksListKey = (castleId?: Castle['id']) => ['attacksList', castleId]
 
-export function useAttacksListQuery(castleId?: TCastle['id']) {
+export function useAttacksListQuery(castleId?: Castle['id']) {
   return useQuery(
     attacksListKey(castleId),
     async () => {
-      const { data } = await apiClient.get<TAttack[]>('/attack', {
+      const { data } = await apiClient.get<Attack[]>('/attack', {
         params: {
           castleId
         }

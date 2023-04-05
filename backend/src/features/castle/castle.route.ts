@@ -1,27 +1,35 @@
-import express from 'express';
+import express from 'express'
 import {
-  createCastle,
-  getCastleDetails,
-  getCastles,
-  getCurrentUserCastle,
-  getDistanceBetweenCastles
-} from './castle.controller';
-import validateRequest from '../../middlewares/validateRequest';
-import { CastleCreateDto } from './dto/CastleCreateDto';
-import { GetCastlesQueryDto } from './dto/GetCastlesQueryDto';
-import { getCastleDetailsQueryDto } from './dto/GetCastleDetailsQueryDto';
-import { GetDistanceBetweenCastlesQueryDto } from './dto/GetDistanceBetweenPointsQueryDto';
+  createCastleController,
+  castleDetails,
+  castlesController,
+  currentUserCastleController,
+  distanceBetweenCastlesController
+} from './castle.controller'
+import validateRequest from '../../middlewares/validateRequest'
+import { CastleCreateDto } from './dto/CastleCreateDto'
+import { GetCastlesQueryDto } from './dto/GetCastlesQueryDto'
+import { GetCastleDetailsQueryDto } from './dto/GetCastleDetailsQueryDto'
+import { GetDistanceBetweenCastlesQueryDto } from './dto/GetDistanceBetweenPointsQueryDto'
 
-const router = express.Router();
+const router = express.Router()
 
 router.route('/')
-  .get(validateRequest({ query: GetCastlesQueryDto }), getCastles)
-  .post(validateRequest({ body: CastleCreateDto }), createCastle);
+  .get(validateRequest({ QueryDto: GetCastlesQueryDto }), castlesController)
+  .post(validateRequest({ BodyDto: CastleCreateDto }), createCastleController)
 
-router.get('/my', getCurrentUserCastle)
+router.get('/my', currentUserCastleController)
 
-router.get('/distance', validateRequest({ query: GetDistanceBetweenCastlesQueryDto }), getDistanceBetweenCastles)
+router.get(
+  '/distance',
+  validateRequest({ QueryDto: GetDistanceBetweenCastlesQueryDto }),
+  distanceBetweenCastlesController
+)
 
-router.get('/details', validateRequest({ query: getCastleDetailsQueryDto }), getCastleDetails)
+router.get(
+  '/details',
+  validateRequest({ QueryDto: GetCastleDetailsQueryDto }),
+  castleDetails
+)
 
-export default router;
+export default router

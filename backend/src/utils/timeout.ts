@@ -4,7 +4,7 @@ const startTimeout = (func: () => void, intervalMs) => {
   }, intervalMs)
 }
 
-export function asyncTimerStart(func: () => Promise<any>, intervalMs: number) {
+export function asyncTimerStart(func: () => Promise<void>, intervalMs: number) {
   const start = async () => {
     await func()
     startTimeout(start, intervalMs)

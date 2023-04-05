@@ -1,13 +1,13 @@
 import { useQuery } from 'react-query'
 import { apiClient } from '../../shared/apiClient'
-import { TUser } from './types'
+import { User } from './types'
 
-async function getUser() {
-  const { data } = await apiClient.get<TUser>('/user')
+async function user() {
+  const { data } = await apiClient.get<User>('/user')
 
   return data
 }
 
 export function useUserQuery() {
-  return useQuery('user', getUser)
+  return useQuery('user', user)
 }

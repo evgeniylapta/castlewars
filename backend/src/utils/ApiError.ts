@@ -1,18 +1,16 @@
-import { HttpStatus } from 'http-status';
-
 class ApiError extends Error {
   constructor(statusCode, message, isOperational = true, stack = '') {
-    super(message);
+    super(message)
     // @ts-ignore
-    this.statusCode = statusCode;
+    this.statusCode = statusCode
     // @ts-ignore
-    this.isOperational = isOperational;
+    this.isOperational = isOperational
     if (stack) {
-      this.stack = stack;
+      this.stack = stack
     } else {
-      Error.captureStackTrace(this, this.constructor);
+      Error.captureStackTrace(this, this.constructor)
     }
   }
 }
 
-export default ApiError;
+export default ApiError

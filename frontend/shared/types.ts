@@ -1,1 +1,1 @@
-export type TClassNameable = { className?: string }
+export type ClassNameable = { className?: string }

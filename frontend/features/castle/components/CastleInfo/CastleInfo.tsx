@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { TClassNameable } from '../../../../shared/types'
+import { ClassNameable } from '../../../../shared/types'
 import { useAuthContext } from '../../../auth'
 import { useSelectedCastleDetailsContext } from '../../index'
 import { Tribe, useTribeTypeById } from '../../../tribe'
@@ -8,9 +8,9 @@ import { Units, UnitsOrder } from '../../../unit'
 import { Gold } from '../../../resources'
 import { AttacksStatus, CreateAttack } from '../../../attack'
 
-type TProps = TClassNameable
+type Props = ClassNameable
 
-const CastleInfo: FC<TProps> = ({ className }) => {
+const CastleInfo: FC<Props> = ({ className }) => {
   const { currentUserQuery: { data: currentUser } } = useAuthContext()
 
   const { castleDetailsQuery: { data: castleDetails } } = useSelectedCastleDetailsContext()

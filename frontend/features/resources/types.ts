@@ -1,4 +1,4 @@
-export type TCastleResources = {
+export type CastleResources = {
   id: string
   gold: number
   goldLastUpdate: string

@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import { useUnitTypesContext } from '../contexts/unitsContext'
-import { TTribeItem } from '../../tribe'
+import { TribeItem } from '../../tribe'
 
-export function useUnitTypesByTribeId(tribeId?: TTribeItem['id']) {
+export function useUnitTypesByTribeId(tribeId?: TribeItem['id']) {
   const { unitTypesQuery: { data: unitTypes } } = useUnitTypesContext()
 
   return useMemo(

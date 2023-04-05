@@ -1,10 +1,10 @@
 import { FC, useState } from 'react'
-import { TClassNameable } from '../../../../../shared/types'
+import { ClassNameable } from '../../../../../shared/types'
 import Form from '../Form/Form'
 
-type TProps = TClassNameable
+type Props = ClassNameable
 
-const UnitsOrder: FC<TProps> = () => {
+const UnitsOrder: FC<Props> = () => {
   const [activated, setActivated] = useState(false)
 
   return (

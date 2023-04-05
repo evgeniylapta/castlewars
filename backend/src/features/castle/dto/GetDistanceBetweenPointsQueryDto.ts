@@ -1,9 +1,9 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator'
 
 export class GetDistanceBetweenCastlesQueryDto {
   @IsNotEmpty()
-  fromCastleId: string
+    fromCastleId: string
 
   @IsNotEmpty()
-  toCastleId: string
+    toCastleId: string
 }

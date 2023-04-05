@@ -1,13 +1,13 @@
-import { addSeconds } from 'date-fns';
-import { prisma } from '../../../config/prisma';
-import { randomIntFromInterval } from '../../../utils/random';
-import { findUnitTypes } from '../../unit/services/unitType.service';
-import { getTroopsSendOperations } from './troopsSending.service';
-import { getOrderUnitsOperations } from './troopsOrdering.service';
-import { callFormattedConsoleLog } from '../../../utils/console';
-import { INTERVAL_BETWEEN_ACTIONS_SECONDS_RANGE } from '../config';
+import { addSeconds } from 'date-fns'
+import { prisma } from '../../../config/prisma'
+import { randomIntFromInterval } from '../../../utils/random'
+import { unitTypes as findUnitTypes } from '../../unit/services/unitType.service'
+import { troopsSendOperations } from './troopsSending.service'
+import { orderUnitsOperations } from './troopsOrdering.service'
+import { callFormattedConsoleLog } from '../../../utils/console'
+import { INTERVAL_BETWEEN_ACTIONS_SECONDS_RANGE } from '../config'
 
-async function findActionsToExecute(date: Date) {
+async function actionsToExecute(date: Date) {
   return prisma.botAction.findMany({
     where: {
       date: {
@@ -21,7 +21,7 @@ async function findActionsToExecute(date: Date) {
             include: {
               castleResources: true,
               unitGroups: true,
-              unitsOrders: true,
+              unitsOrders: true
             }
           },
           tribeType: true
@@ -34,20 +34,28 @@ async function findActionsToExecute(date: Date) {
 export async function botsActionsExecuteTick() {
   const date = new Date()
 
-  const actionsToPerform  = await findActionsToExecute(date)
-  const unitTypes  = await findUnitTypes()
+  const actionsToPerform = await actionsToExecute(date)
+  const unitTypes = await findUnitTypes()
 
   let operations = []
 
   for (const action of actionsToPerform) {
     const { user: { castles: [castle], tribeType } } = action
-    const orderUnitsOperations = await getOrderUnitsOperations(castle.castleResources, castle.unitsOrders, unitTypes, tribeType)
-    const troopsSendOperations = await getTroopsSendOperations(castle.unitGroups, castle, tribeType, unitTypes)
 
     operations = [
       ...operations,
-      ...orderUnitsOperations,
-      ...troopsSendOperations
+      ...await orderUnitsOperations(
+        castle.castleResources,
+        castle.unitsOrders,
+        unitTypes,
+        tribeType
+      ),
+      ...await troopsSendOperations(
+        castle.unitGroups,
+        castle,
+        tribeType,
+        unitTypes
+      )
     ]
   }
 
@@ -63,7 +71,7 @@ export async function botsActionsExecuteTick() {
   ])
 }
 
-async function findBotsWithNoActions() {
+async function botsWithNoActions() {
   return prisma.user.findMany({
     where: {
       isBot: true,
@@ -74,12 +82,12 @@ async function findBotsWithNoActions() {
     include: {
       botAction: true,
       tribeType: true
-    },
+    }
   })
 }
 
 export async function botsActionsCreatingTick() {
-  const bots = await findBotsWithNoActions()
+  const bots = await botsWithNoActions()
 
   const newDate = new Date()
 
@@ -91,7 +99,7 @@ export async function botsActionsCreatingTick() {
       return ({
         userId: id,
         date: addSeconds(newDate, secondsToAdd)
-      });
+      })
     })
   })
 

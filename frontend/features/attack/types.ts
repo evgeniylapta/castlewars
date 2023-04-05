@@ -1,13 +1,13 @@
-import { TUnitGroup } from '../unit'
-import { TCastle, TCastleUserExtension } from '../castle'
+import { UnitGroup } from '../unit'
+import { Castle, CastleUserExtension } from '../castle'
 
-export type TAttack = {
+export type Attack = {
   id: string,
   castleFromId: string,
-  castleFrom: TCastle & TCastleUserExtension,
+  castleFrom: Castle & CastleUserExtension,
   castleToId: string,
-  castleTo: TCastle & TCastleUserExtension,
+  castleTo: Castle & CastleUserExtension,
   dateTime: string,
-  unitGroups: TUnitGroup[],
+  unitGroups: UnitGroup[],
   isReturning: boolean
 }

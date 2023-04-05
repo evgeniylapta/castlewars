@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 import { useUnitTypesContext } from '../contexts/unitsContext'
-import { TUnitGroup, TUnitTypesResponseItem } from '../types'
+import { UnitGroup, UnitTypesResponseItem } from '../types'
 import { findUnitTypeById } from '../utils/unitTypeUtils'
 
-const sort = (unitGroups: TUnitGroup[], unitTypes: TUnitTypesResponseItem[]) => {
+const sort = (unitGroups: UnitGroup[], unitTypes: UnitTypesResponseItem[]) => {
   const result = [...unitGroups]
 
   result.sort(((first, second) => {
@@ -26,7 +26,7 @@ const sort = (unitGroups: TUnitGroup[], unitTypes: TUnitTypesResponseItem[]) => 
   return result
 }
 
-export function usePreparedUnitGroups(unitGroups?: TUnitGroup[]) {
+export function usePreparedUnitGroups(unitGroups?: UnitGroup[]) {
   const { unitTypesQuery: { data: unitTypes } } = useUnitTypesContext()
 
   return useMemo(

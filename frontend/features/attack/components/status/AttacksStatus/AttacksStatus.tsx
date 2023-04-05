@@ -1,31 +1,31 @@
 import { FC, useMemo } from 'react'
-import { TClassNameable } from '../../../../../shared/types'
+import { ClassNameable } from '../../../../../shared/types'
 import { AttackContextProvider, useAttackContext } from '../../../contexts/attackContext'
-import { TAttack } from '../../../types'
+import { Attack } from '../../../types'
 import { useSelectedCastleDetailsContext } from '../../../../castle'
-import Attack from '../Attack/Attack'
+import AttackComponent from '../Attack/Attack'
 import styles from './AttacksStatus.module.scss'
 
-function getAttacks() {
+function useAttacks() {
   const { attacksListQuery: { data: attacksData } } = useAttackContext()
   const { selectedCastleId } = useSelectedCastleDetailsContext()
 
   return useMemo(() => {
-    type TResult = {
-      attackFromCurrentCastle: TAttack[],
-      attackToCurrentCastle: TAttack[],
-      returningAttacksOfCurrentCastle: TAttack[]
+    type Result = {
+      attackFromCurrentCastle: Attack[],
+      attackToCurrentCastle: Attack[],
+      returningAttacksOfCurrentCastle: Attack[]
     }
 
-    const initialData: TResult = {
+    const initialData: Result = {
       attackFromCurrentCastle: [],
       attackToCurrentCastle: [],
       returningAttacksOfCurrentCastle: []
     }
 
-    return attacksData?.reduce<TResult>(
+    return attacksData?.reduce<Result>(
       (result, attack) => {
-        const attackFromCurrentCastle: TAttack[] = [
+        const attackFromCurrentCastle: Attack[] = [
           ...result.attackFromCurrentCastle,
           ...(attack.castleFromId === selectedCastleId ? [attack] : [])
         ]
@@ -48,14 +48,14 @@ function getAttacks() {
   }, [selectedCastleId, attacksData])
 }
 
-type TProps = TClassNameable
+type Props = ClassNameable
 
-const AttacksStatus: FC<TProps> = () => {
+const AttacksStatus: FC<Props> = () => {
   const {
     attackFromCurrentCastle,
     attackToCurrentCastle,
     returningAttacksOfCurrentCastle
-  } = getAttacks()
+  } = useAttacks()
 
   if (!attackFromCurrentCastle.length && !attackToCurrentCastle.length) {
     return null
@@ -64,19 +64,34 @@ const AttacksStatus: FC<TProps> = () => {
   return (
     <>
       {attackFromCurrentCastle.map((attack) => (
-        <Attack className={styles.item} key={attack.id} attack={attack} fromCurrentCastle />
+        <AttackComponent
+          className={styles.item}
+          key={attack.id}
+          attack={attack}
+          fromCurrentCastle
+        />
       ))}
       {attackToCurrentCastle.map((attack) => (
-        <Attack className={styles.item} key={attack.id} attack={attack} fromCurrentCastle={false} />
+        <AttackComponent
+          className={styles.item}
+          key={attack.id}
+          attack={attack}
+          fromCurrentCastle={false}
+        />
       ))}
       {returningAttacksOfCurrentCastle.map((attack) => (
-        <Attack className={styles.item} key={attack.id} attack={attack} isReturning />
+        <AttackComponent
+          className={styles.item}
+          key={attack.id}
+          attack={attack}
+          isReturning
+        />
       ))}
     </>
   )
 }
 
-export default ({ ...props }: TProps) => (
+export default ({ ...props }: Props) => (
   <AttackContextProvider>
     <AttacksStatus {...props} />
   </AttackContextProvider>

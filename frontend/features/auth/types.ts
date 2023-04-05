@@ -1,8 +1,8 @@
-import { TCastle } from '../castle'
+import { Castle } from '../castle'
 
-export type TUser = {
+export type User = {
   id: string
   name: string
   tribeId: string
-  castles: TCastle[]
+  castles: Castle[]
 }

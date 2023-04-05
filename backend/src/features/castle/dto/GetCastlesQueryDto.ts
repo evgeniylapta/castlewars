@@ -1,15 +1,15 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator'
 
 export class GetCastlesQueryDto {
   @IsNotEmpty()
-  minX: string
+    minX: string
 
   @IsNotEmpty()
-  minY: string
+    minY: string
 
   @IsNotEmpty()
-  maxX: string
+    maxX: string
 
   @IsNotEmpty()
-  maxY: string
+    maxY: string
 }

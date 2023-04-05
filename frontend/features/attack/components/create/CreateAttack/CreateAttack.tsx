@@ -1,12 +1,12 @@
 import { FC, useState } from 'react'
-import { TClassNameable } from '../../../../../shared/types'
+import { ClassNameable } from '../../../../../shared/types'
 import { useSelectedCastleDetailsContext } from '../../../../castle'
 import Form from '../Form/Form'
 import InfoSection from '../../../../../shared/components/InfoSection/InfoSection'
 
-type TProps = TClassNameable
+type Props = ClassNameable
 
-const CreateAttack: FC<TProps> = () => {
+const CreateAttack: FC<Props> = () => {
   const { isMyCastleSelected } = useSelectedCastleDetailsContext()
   const [activated, setActivated] = useState(false)
 

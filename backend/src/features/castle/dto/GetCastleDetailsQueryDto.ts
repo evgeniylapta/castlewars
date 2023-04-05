@@ -1,6 +1,6 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator'
 
-export class getCastleDetailsQueryDto {
+export class GetCastleDetailsQueryDto {
   @IsNotEmpty()
-  castleId: string
+    castleId: string
 }

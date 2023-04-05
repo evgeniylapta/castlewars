@@ -1,11 +1,11 @@
 import { FC } from 'react'
 import { UseFormReturn } from 'react-hook-form'
 import classNames from 'classnames'
-import { TUnitGroup, TUnitTypesResponseItem, UnitIcon } from '../../../../unit'
+import { UnitGroup, UnitTypesResponseItem, UnitIcon } from '../../../../unit'
 import styles from './FormItem.module.scss'
-import { TClassNameable } from '../../../../../shared/types'
+import { ClassNameable } from '../../../../../shared/types'
 
-function useRestValue({ watch }: UseFormReturn, fieldName: string, unitGroup?: TUnitGroup) {
+function useRestValue({ watch }: UseFormReturn, fieldName: string, unitGroup?: UnitGroup) {
   if (!unitGroup) {
     return 0
   }
@@ -17,13 +17,13 @@ function useRestValue({ watch }: UseFormReturn, fieldName: string, unitGroup?: T
   return restValue >= 0 ? restValue : 0
 }
 
-type TProps = TClassNameable & {
-  unitType: TUnitTypesResponseItem
-  unitGroup?: TUnitGroup
+type Props = ClassNameable & {
+  unitType: UnitTypesResponseItem
+  unitGroup?: UnitGroup
   useFormReturn: UseFormReturn
 }
 
-const FormItem: FC<TProps> = ({
+const FormItem: FC<Props> = ({
   unitGroup, unitType, className, useFormReturn
 }) => {
   const name = unitType.id

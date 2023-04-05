@@ -1,79 +1,84 @@
-import { Castle, TribeType, UnitGroup, UnitType } from '@prisma/client';
-import { findCastlesByCoordsRanges } from '../../castle/castle.service';
-import { getRandomArrayItem, rollChance } from '../../../utils/random';
-import { TAttackCreationData } from '../../attack/types';
-import { getUnitTypesByTribeType } from '../../unit/services/unitType.service';
-import { findUnitGroupByUnitType } from '../../unit/services/unitGroup.service';
-import { getCreateAttackOperations } from '../../attack/services/attack.service';
-import { callFormattedConsoleLog } from '../../../utils/console';
-import { CHANCE_TO_SEND_TROOPS } from '../config';
+import {
+  Castle, TribeType, UnitGroup, UnitType
+} from '@prisma/client'
+import { castlesByCoordsRanges } from '../../castle/castle.service'
+import { randomArrayItem, rollChance } from '../../../utils/random'
+import { AttackCreationData } from '../../attack/types'
+import { unitTypesByTribeType } from '../../unit/services/unitType.service'
+import { unitGroupByUnitType } from '../../unit/services/unitGroup.service'
+import { attackCreateOperations } from '../../attack/services/attack.service'
+import { callFormattedConsoleLog } from '../../../utils/console'
+import { CHANCE_TO_SEND_TROOPS } from '../config'
 
-async function getRandomCastleToAttack(castle: Castle) {
+async function randomCastleToAttack(castle: Castle) {
   const { x, y } = castle
 
   // todo to config
   const rangeOffset = 5
 
-  const nearCastles = (await findCastlesByCoordsRanges(
+  const nearCastles = (await castlesByCoordsRanges(
     x - rangeOffset,
     y - rangeOffset,
     x + rangeOffset,
-    y + rangeOffset,
+    y + rangeOffset
   )).filter(({ id }) => id !== castle.id)
 
   if (!nearCastles.length) {
     return undefined
   }
 
-  return getRandomArrayItem<Castle>(nearCastles)
+  return randomArrayItem<Castle>(nearCastles)
 }
 
 function calculateUnitsPower({ attack }: UnitType, amount: number) {
   return attack * amount
 }
 
-function getUnitsToAttack(
+function unitsToAttack(
   tribeType: TribeType,
   unitTypes: UnitType[],
   castleUnitGroups: UnitGroup[]
-): TAttackCreationData | undefined {
-  const availableUnitTypes = getUnitTypesByTribeType(unitTypes, tribeType)
+): AttackCreationData | undefined {
+  const availableUnitTypes = unitTypesByTribeType(unitTypes, tribeType)
 
   // todo to config
   const availableCoefficient = [0.2, 0.3, 0.4, 0.5]
 
-  const { totalPower, data } = availableUnitTypes.reduce<{data: TAttackCreationData, totalPower: number}>(
-    (result, unitType) => {
-      const foundUnitGroup = findUnitGroupByUnitType(castleUnitGroups, unitType)
-      const randomCoefficient = getRandomArrayItem<number>(availableCoefficient)
+  const { totalPower, data } = availableUnitTypes
+    .reduce<{data: AttackCreationData, totalPower: number}>(
+      (result, unitType) => {
+        const foundUnitGroup = unitGroupByUnitType(castleUnitGroups, unitType)
+        const randomCoefficient = randomArrayItem<number>(availableCoefficient)
 
-      if (!foundUnitGroup) {
-        return result
-      }
+        if (!foundUnitGroup) {
+          return result
+        }
 
-      // todo to method
-      const calculatedAmount = Math.ceil(foundUnitGroup.amount * randomCoefficient)
+        // todo to method
+        const calculatedAmount = Math.ceil(foundUnitGroup.amount * randomCoefficient)
 
-      if (foundUnitGroup.amount <= calculatedAmount) {
-        return result
-      }
+        if (foundUnitGroup.amount <= calculatedAmount) {
+          return result
+        }
 
-      const unitsCalculatedPower = calculateUnitsPower(unitType, calculatedAmount)
+        const unitsCalculatedPower = calculateUnitsPower(unitType, calculatedAmount)
 
-      return {
-        data: {
-          ...result.data,
-          [unitType.id]: calculatedAmount
-        },
-        totalPower: result.totalPower + unitsCalculatedPower
-      }
-    },
-    {data: {}, totalPower: 0}
-  )
+        return {
+          data: {
+            ...result.data,
+            [unitType.id]: calculatedAmount
+          },
+          totalPower: result.totalPower + unitsCalculatedPower
+        }
+      },
+      { data: {}, totalPower: 0 }
+    )
 
   const maxPower = 10_000
   // todo to method
-  const isTotalPowerLessThanExpected = totalPower < (maxPower * getRandomArrayItem<number>(availableCoefficient))
+  const isTotalPowerLessThanExpected = totalPower < (
+    maxPower * randomArrayItem<number>(availableCoefficient)
+  )
 
   if (isTotalPowerLessThanExpected) {
     return undefined
@@ -82,37 +87,37 @@ function getUnitsToAttack(
   return data
 }
 
-export async function getTroopsSendOperations(
+export async function troopsSendOperations(
   castleUnitGroups: UnitGroup[],
   castle: Castle,
   tribeType: TribeType,
   unitTypes: UnitType[]
 ) {
-  if(!rollChance(CHANCE_TO_SEND_TROOPS)) {
+  if (!rollChance(CHANCE_TO_SEND_TROOPS)) {
     return []
   }
 
-  const unitsToAttack = getUnitsToAttack(tribeType, unitTypes, castleUnitGroups)
+  const foundUnitsToAttack = unitsToAttack(tribeType, unitTypes, castleUnitGroups)
 
-  if (!unitsToAttack) {
+  if (!foundUnitsToAttack) {
     return []
   }
 
-  const randomCastleToAttack = await getRandomCastleToAttack(castle)
+  const castleToAttack = await randomCastleToAttack(castle)
 
-  if (!randomCastleToAttack) {
+  if (!castleToAttack) {
     return []
   }
 
   callFormattedConsoleLog('Bot send troops', 'info', {
-    castleFrom: { id: castle.id, x: castle.x, y:castle.y },
-    castleTo: { id: randomCastleToAttack.id, x: randomCastleToAttack.x, y: randomCastleToAttack.y },
-    unitsToAttack
+    castleFrom: { id: castle.id, x: castle.x, y: castle.y },
+    castleTo: { id: castleToAttack.id, x: castleToAttack.x, y: castleToAttack.y },
+    unitsToAttack: foundUnitsToAttack
   })
 
-  return await getCreateAttackOperations(
+  return attackCreateOperations(
     castle.id,
-    randomCastleToAttack.id,
-    unitsToAttack
+    castleToAttack.id,
+    foundUnitsToAttack
   )
 }

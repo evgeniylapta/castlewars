@@ -1,3 +1,3 @@
-import { UnitType } from '@prisma/client';
+import { UnitType } from '@prisma/client'
 
-export type TAttackCreationData = { [key: UnitType['id']]: number }
+export type AttackCreationData = { [key: UnitType['id']]: number }

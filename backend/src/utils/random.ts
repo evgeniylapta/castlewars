@@ -1,17 +1,15 @@
-import { TribeType } from '@prisma/client';
-
 export function randomIntFromInterval(first, second) {
-  const min = first < second ? first : second;
-  const max = first > second ? first : second;
+  const min = first < second ? first : second
+  const max = first > second ? first : second
 
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-export function getRandomArrayItem<T>(array: T[]): T {
-  return array[Math.floor(Math.random() * array.length)];
+export function randomArrayItem<T>(array: T[]): T {
+  return array[Math.floor(Math.random() * array.length)]
 }
 
-export function rollChance(value: number){
+export function rollChance(value: number) {
   if (value < 0 || value > 1) {
     throw new Error('Value is not correct')
   }
@@ -24,5 +22,5 @@ export function rollChance(value: number){
     return true
   }
 
-  return Math.random() < value;
+  return Math.random() < value
 }

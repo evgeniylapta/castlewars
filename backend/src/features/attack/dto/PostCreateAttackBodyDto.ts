@@ -1,12 +1,12 @@
-import { IsNotEmpty, IsString, IsObject } from 'class-validator';
-import { TAttackCreationData } from '../types';
+import { IsNotEmpty, IsString, IsObject } from 'class-validator'
+import { AttackCreationData } from '../types'
 
 export class PostCreateAttackBodyDto {
   @IsNotEmpty()
   @IsString()
-  castleId: string
+    castleId: string
 
   @IsNotEmpty()
   @IsObject()
-  data: TAttackCreationData
+    data: AttackCreationData
 }

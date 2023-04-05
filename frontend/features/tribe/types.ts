@@ -1,6 +1,6 @@
-export type TTribeType = 'Roman' | 'Gaul' | 'Teuton'
+export type TribeType = 'Roman' | 'Gaul' | 'Teuton'
 
-export type TTribeItem = {
+export type TribeItem = {
   id: string,
-  name: TTribeType
+  name: TribeType
 }

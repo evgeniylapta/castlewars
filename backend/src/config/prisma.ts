@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
 
 export const prisma = new PrismaClient({
-  log: [{ level: 'query', emit: 'event' }],
+  log: [{ level: 'query', emit: 'event' }]
 })

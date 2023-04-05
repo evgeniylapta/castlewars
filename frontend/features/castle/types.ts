@@ -1,27 +1,27 @@
-import { TUser } from '../auth'
-import { TUnitGroup } from '../unit'
-import { TCastleResources } from '../resources'
+import { User } from '../auth'
+import { UnitGroup } from '../unit'
+import { CastleResources } from '../resources'
 
-export type TCastle = {
+export type Castle = {
   id: string
   x: number
   y: number
   userId: string
 }
 
-export type TCastleUserExtension = {
-  user: TUser
+export type CastleUserExtension = {
+  user: User
 }
 
-export type TCastleResourcesExtension = {
-  castleResources: TCastleResources
+export type CastleResourcesExtension = {
+  castleResources: CastleResources
 }
 
-export type TCastleUnitGroupsExtension = {
-  unitGroups: TUnitGroup[]
+export type CastleUnitGroupsExtension = {
+  unitGroups: UnitGroup[]
 }
 
-export type TCastleExtended = TCastle
-  & TCastleResourcesExtension
-  & TCastleUserExtension
-  & TCastleUnitGroupsExtension
+export type CastleExtended = Castle
+  & CastleResourcesExtension
+  & CastleUserExtension
+  & CastleUnitGroupsExtension

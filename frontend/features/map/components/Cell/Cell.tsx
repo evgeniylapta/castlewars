@@ -5,13 +5,13 @@ import castle from '../../assets/castle.gif'
 import { Point } from '../../types'
 import { useSelectedMapPointContext } from '../../contexts/selectedMapPointContext'
 
-type TProps = {
+type Props = {
   isCastle: boolean,
   isOwnCastle: boolean,
   point: Point
 }
 
-const Cell: FC<TProps> = ({ isOwnCastle, isCastle, point: { x, y } }) => {
+const Cell: FC<Props> = ({ isOwnCastle, isCastle, point: { x, y } }) => {
   const { setSelectedPoint, selectedPoint } = useSelectedMapPointContext()
 
   const isSelected = selectedPoint?.x === x && selectedPoint?.y === y

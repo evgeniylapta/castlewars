@@ -1,15 +1,15 @@
 import { FC } from 'react'
 import { UseFormReturn } from 'react-hook-form'
-import { TUnitTypesResponseItem, UnitIcon } from '../../../../unit'
+import { UnitTypesResponseItem, UnitIcon } from '../../../../unit'
 import styles from './FormItem.module.scss'
-import { TClassNameable } from '../../../../../shared/types'
+import { ClassNameable } from '../../../../../shared/types'
 
-type TProps = TClassNameable & {
-  unitType: TUnitTypesResponseItem
+type Props = ClassNameable & {
+  unitType: UnitTypesResponseItem
   useFormReturn: UseFormReturn
 }
 
-const FormItem: FC<TProps> = ({ unitType, className, useFormReturn }) => {
+const FormItem: FC<Props> = ({ unitType, className, useFormReturn }) => {
   const name = unitType.id
   const { register } = useFormReturn
 

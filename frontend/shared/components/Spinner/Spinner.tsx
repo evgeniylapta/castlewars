@@ -1,9 +1,9 @@
 import { FC } from 'react'
 import classNames from 'classnames'
 import styles from './Spinner.module.scss'
-import { TClassNameable } from '../../types'
+import { ClassNameable } from '../../types'
 
-const Spinner: FC<TClassNameable> = ({ className }) => (
+const Spinner: FC<ClassNameable> = ({ className }) => (
   <div className={classNames(styles.ldsRing, className)}>
     <div />
     <div />
