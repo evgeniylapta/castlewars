@@ -1,9 +1,15 @@
 {
   "name": "sharedutils",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.ts",
   "license": "ISC",
+  "scripts": {
+    "build": "tsc"
+  },
   "peerDependencies": {
     "date-fns": "^2.29.3"
+  },
+  "dependencies": {
+    "ts-node": "^10.9.1"
   }
 }

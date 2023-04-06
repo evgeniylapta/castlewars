@@ -1,5 +1,5 @@
 import { CastleResources } from '@prisma/client'
-import { calculatedCastleCold } from 'sharedUtils'
+import { calculateCastleCold } from 'sharedUtils'
 import { prisma } from '../../config/prisma'
 
 export function operationAddCastleGold(castleResources: CastleResources, value: number) {
@@ -8,7 +8,7 @@ export function operationAddCastleGold(castleResources: CastleResources, value: 
       castleId: castleResources.castleId
     },
     data: {
-      gold: calculatedCastleCold(castleResources.gold, castleResources.goldLastUpdate) + value,
+      gold: calculateCastleCold(castleResources.gold, castleResources.goldLastUpdate) + value,
       goldLastUpdate: new Date()
     }
   })

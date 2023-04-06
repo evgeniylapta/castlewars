@@ -3,6 +3,6 @@ import { Castle } from '../castle'
 export type User = {
   id: string
   name: string
-  tribeId: string
+  tribeTypeId: string
   castles: Castle[]
 }

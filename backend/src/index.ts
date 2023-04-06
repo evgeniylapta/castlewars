@@ -2,11 +2,12 @@ import config from './config/config'
 import logger from './config/logger'
 import app from './app'
 import { realTimeHandleStart } from './features/realTimeHandle/realTimeHandle.service'
+import { generateBots } from './features/generation/services/generation.service'
 
 const server = app.listen(config.port, async () => {
   logger.info(`Listening to port ${config.port}`)
 
-  // await generateBots(100)
+  await generateBots(100)
   realTimeHandleStart()
 })
 

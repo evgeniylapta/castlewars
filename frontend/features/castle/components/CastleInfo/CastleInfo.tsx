@@ -15,7 +15,9 @@ const CastleInfo: FC<Props> = ({ className }) => {
 
   const { castleDetailsQuery: { data: castleDetails } } = useSelectedCastleDetailsContext()
 
-  const tribeType = useTribeTypeById(castleDetails?.user.tribeId)
+  const tribeType = useTribeTypeById(castleDetails?.user.tribeTypeId)
+
+  console.log(tribeType)
 
   if (!castleDetails) {
     return null

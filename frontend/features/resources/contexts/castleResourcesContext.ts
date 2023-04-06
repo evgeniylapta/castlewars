@@ -1,5 +1,5 @@
 import constate from 'constate'
-import { getCalculatedCastleCold } from 'sharedUtils'
+import { calculateCastleCold } from 'sharedUtils'
 import { useMemo } from 'react'
 import { CastleExtended, useSelectedCastleDetailsContext } from '../../castle'
 import { useNewDateInterval } from '../../../shared/hooks/useNewDateInterval'
@@ -9,7 +9,7 @@ function useCastleCalculatedGold(castle?: CastleExtended) {
 
   return useMemo(() => (
     castle
-      ? getCalculatedCastleCold(
+      ? calculateCastleCold(
         castle.castleResources.gold,
         new Date(castle.castleResources.goldLastUpdate)
       )

@@ -54,7 +54,7 @@ const Form: FC<Props> = ({ onCancel }) => {
   const useFormReturn = useForm()
   const { handleSubmit } = useFormReturn
   const submitHandle = useSubmitHandle(onCancel)
-  const unitTypes = useUnitTypesByTribeId(currentUser?.tribeId)
+  const unitTypes = useUnitTypesByTribeId(currentUser?.tribeTypeId)
   const totalPrice = useTroopsTotalPrice(useFormReturn)
   const isSubmitDisabled = useIsSubmitDisabled(useFormReturn, totalPrice)
 

@@ -1,7 +1,7 @@
 import {
   CastleResources, TribeType, UnitsOrder, UnitType
 } from '@prisma/client'
-import { calculatedCastleCold } from 'sharedUtils'
+import { calculateCastleCold } from 'sharedUtils'
 import { randomArrayItem, rollChance } from '../../../utils/random'
 import { CHANCE_TO_ORDER_TROOPS, GOLD_TO_ORDER_TROOPS_COEFFICIENT } from '../config'
 import { operationAddCastleGold } from '../../resources/resources.service'
@@ -94,7 +94,7 @@ export async function orderUnitsOperations(
 
   const availableUnitTypes = unitTypesByTribeType(unitTypes, tribeType)
 
-  const goldAllowedToUse = calculatedCastleCold(
+  const goldAllowedToUse = calculateCastleCold(
     castleResources.gold,
     castleResources.goldLastUpdate
   ) * GOLD_TO_ORDER_TROOPS_COEFFICIENT
@@ -103,7 +103,7 @@ export async function orderUnitsOperations(
 
   callFormattedConsoleLog('Bot order troops', 'info', {
     goldAllowedToUse,
-    calculatedCastleCold: calculatedCastleCold(
+    calculatedCastleCold: calculateCastleCold(
       castleResources.gold,
       castleResources.goldLastUpdate
     ),

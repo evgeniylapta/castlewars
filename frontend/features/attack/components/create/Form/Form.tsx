@@ -1,10 +1,10 @@
 import {
-  FC, useCallback, useEffect, useMemo, useState
+  FC, useCallback, useMemo
 } from 'react'
 import { useForm, UseFormReturn } from 'react-hook-form'
-import { calculateDistanceBetweenPoints, getUnitTypesMovingSeconds } from 'sharedUtils'
+import { calculateDistanceBetweenPoints, unitTypesMovingSeconds } from 'sharedUtils'
 import {
-  addSeconds, format, formatDuration, intervalToDuration
+  addSeconds, formatDuration, intervalToDuration
 } from 'date-fns'
 import { useMyCastleContext, useSelectedCastleDetailsContext } from '../../../../castle'
 import styles from './Form.module.scss'
@@ -52,11 +52,11 @@ function useAttackTime(distance: number, { watch }: UseFormReturn) {
         start: newDate,
         end: addSeconds(
           newDate,
-          getUnitTypesMovingSeconds(
+          unitTypesMovingSeconds(
             filledTypes as UnitTypesResponseItem[],
             distance
           )
-        ),
+        )
       })
       : undefined
 
@@ -93,6 +93,7 @@ function useIsSubmitDisabled(useFormReturn: UseFormReturn) {
 
   const noValue = !Object.entries(watch()).filter(([, value]) => !!value).length
 
+  console.log(isValid)
   return !isValid || noValue
 }
 
@@ -109,7 +110,7 @@ const Form: FC<Props> = ({ onCancel }) => {
   const isSubmitDisabled = useIsSubmitDisabled(useFormReturn)
   const submitHandle = useSubmitHandle(onCancel)
   const preparedUnitGroups = usePreparedUnitGroups(myCastleDetails?.unitGroups)
-  const unitTypes = useUnitTypesByTribeId(myCastleDetails?.user.tribeId)
+  const unitTypes = useUnitTypesByTribeId(myCastleDetails?.user.tribeTypeId)
 
   return (
     <>
