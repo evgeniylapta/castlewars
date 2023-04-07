@@ -5,5 +5,4 @@ COPY ./package*.json .
 RUN npm ci --only=production
 COPY . .
 
-#ENV CI=true
-CMD ["npm", "prod"]
+CMD sh /sharedUtils/wait-shared-utils.sh && npm run prod

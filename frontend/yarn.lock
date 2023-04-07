@@ -2687,6 +2687,7 @@
   "resolved" "file:../sharedUtils"
   "version" "1.0.0"
   dependencies:
+    "date-fns" "^2.29.3"
     "ts-node" "^10.9.1"
 
 "shebang-command@^2.0.0":
