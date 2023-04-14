@@ -2,8 +2,25 @@
 
 **This is a simple clone of the popular online strategy game Travian.**
 
-Features:
+Technologies Used:
 
+**Frontend:**
+- TypeScript
+- React
+- Next.js
+- React-query
+- SCSS
+
+**Backend:**
+- TypeScript
+- Node.js
+- Express
+- Prisma ORM
+- PostgreSQL
+
+*It is designed as an isomorphic application, with shared utils that can be used both on the frontend and backend.*
+
+**Features:**
 - **Map navigation**. Navigate the game map with expand/collapse functionality.
 - **Castle information**. View detailed information about a castle, including tribe type (Romans, Gauls, or Teutons), the number of troops and gold.
 - **Tribe types**. Each tribe type has its own unique troop types with different attributes such as attack, defense, and recruitment cost and speed.
