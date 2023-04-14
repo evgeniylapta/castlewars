@@ -33,4 +33,7 @@ Technologies Used:
 - **Map settlement with Bots**. Sequentially fill map sectors with bots instead of random placement.
 - **Bot simple AI**. Simple bot AI that can order and send troops to nearby castles in real time.
 
-To run the game, simply call **"docker-compose up"** from the root directory of the project. Wait for all containers to finish deployment, and then access the game through **"localhost:3000"** in your web browser. 
+**To run the game:**
+- Call **"docker-compose up"** from the root directory of the project.
+- Wait for all containers to finish deployment
+- Access the game through **"localhost:3000"** in a web browser. 
