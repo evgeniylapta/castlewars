@@ -14,12 +14,12 @@ const Units: FC = () => {
   const unitGroups = useUnitGroups()
 
   return (
-    <span>
+    <>
       {unitGroups?.map(
         (unitGroup) => <Unit key={unitGroup.id} className={styles.unit} unitGroup={unitGroup} />
       )}
       {!unitGroups?.length && '-//-'}
-    </span>
+    </>
   )
 }
 

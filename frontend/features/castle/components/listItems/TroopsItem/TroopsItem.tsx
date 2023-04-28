@@ -11,6 +11,9 @@ const TroopsItem: FC = () => (
   <ListItem>
     <ListItemText
       primary="Troops in the castle"
+      secondaryTypographyProps={{
+        component: 'div'
+      }}
       secondary={<Units />}
     />
   </ListItem>

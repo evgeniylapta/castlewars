@@ -3,17 +3,17 @@ import { useAttackContext } from '../contexts/attackContext'
 import { useSelectedCastleDetailsContext } from '../../castle'
 import { Attack } from '../types'
 
+type Result = {
+  attackFromCurrentCastle: Attack[],
+  attackToCurrentCastle: Attack[],
+  returningAttacksOfCurrentCastle: Attack[]
+}
+
 export function useAttacks() {
   const { attacksListQuery: { data: attacksData } } = useAttackContext()
   const { selectedCastleId } = useSelectedCastleDetailsContext()
 
   return useMemo(() => {
-    type Result = {
-      attackFromCurrentCastle: Attack[],
-      attackToCurrentCastle: Attack[],
-      returningAttacksOfCurrentCastle: Attack[]
-    }
-
     const initialData: Result = {
       attackFromCurrentCastle: [],
       attackToCurrentCastle: [],

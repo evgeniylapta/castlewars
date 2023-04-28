@@ -2,10 +2,6 @@
   text-transform: capitalize;
   display: flex;
   align-items: center;
-
-  > * + * {
-    margin-left: 5px;
-  }
 }
 
 .img {

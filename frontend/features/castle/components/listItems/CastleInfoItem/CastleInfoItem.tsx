@@ -10,6 +10,9 @@ const CastleInfoItem: FC = () => (
   <ListItem>
     <ListItemText
       primary="Selected castle info"
+      secondaryTypographyProps={{
+        component: 'div'
+      }}
       secondary={<CastleDetails />}
     />
   </ListItem>

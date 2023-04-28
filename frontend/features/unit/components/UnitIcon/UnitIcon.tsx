@@ -10,6 +10,7 @@ import swordsmanImg from '../../assets/Swordsman.png'
 import theutatesThunderImg from '../../assets/TheutatesThunder.png'
 import { UnitName, UnitTypesResponseItem } from '../../types'
 import { useUnitTypeName } from '../../hooks/useUnitTypeName'
+import CustomImage from '../../../../shared/components/CustomImage/CustomImage'
 
 function useUnitIcon(type?: UnitName) {
   switch (type) {
@@ -41,15 +42,16 @@ type Props = {
 }
 
 const UnitIcon: FC<Props> = ({ unitTypeId }) => {
-  const foundType = useUnitTypeName(unitTypeId)
+  const foundTypeName = useUnitTypeName(unitTypeId)
 
-  const icon = useUnitIcon(foundType)
-
-  if (!icon) {
-    return null
-  }
-
-  return <img src={icon?.src} alt="" />
+  return (
+    <CustomImage
+      src={useUnitIcon(foundTypeName)?.src ?? ''}
+      alt={foundTypeName ?? ''}
+      width={20}
+      height={20}
+    />
+  )
 }
 
 export default UnitIcon

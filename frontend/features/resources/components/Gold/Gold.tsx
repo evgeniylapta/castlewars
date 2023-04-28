@@ -2,20 +2,18 @@ import { FC } from 'react'
 import styles from './Gold.module.scss'
 import goldImg from '../../assets/gold.png'
 import { useCastleResourcesContext } from '../../contexts/castleResourcesContext'
+import CustomImage from '../../../../shared/components/CustomImage/CustomImage'
 
-const Gold: FC = () => {
-  const { calculatedGold } = useCastleResourcesContext()
-
-  if (calculatedGold === undefined) {
-    return null
-  }
-
-  return (
-    <div className={styles.goldWrap}>
-      <img className={styles.gold} src={goldImg.src} alt="Gold" />
-      <span>{calculatedGold}</span>
-    </div>
-  )
-}
+const Gold: FC = () => (
+  <span className={styles.goldWrap}>
+    <CustomImage
+      src={goldImg.src}
+      alt="Gold"
+      width={25}
+      height={25}
+    />
+    <span>{useCastleResourcesContext().calculatedGold}</span>
+  </span>
+)
 
 export default Gold

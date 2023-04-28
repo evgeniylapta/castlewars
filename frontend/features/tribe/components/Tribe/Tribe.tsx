@@ -3,11 +3,17 @@ import styles from './Tribe.module.scss'
 import galusImg from '../../assets/galus.png'
 import romansImg from '../../assets/romans.png'
 import teautonsImg from '../../assets/teautons.png'
-import { TribeType, useTribeTypeById } from '../../index'
+import { useTribeTypeById } from '../../index'
 import { useSelectedCastleDetailsContext } from '../../../castle'
+import CustomImage from '../../../../shared/components/CustomImage/CustomImage'
 
-function useTribeIcon(type?: TribeType) {
-  switch (type) {
+function useTribeType() {
+  const { castleDetailsQuery: { data: castleDetails } } = useSelectedCastleDetailsContext()
+  return useTribeTypeById(castleDetails?.user.tribeTypeId)
+}
+
+function useTribeIcon() {
+  switch (useTribeType()) {
   case 'Gaul':
     return galusImg
   case 'Roman':
@@ -19,17 +25,15 @@ function useTribeIcon(type?: TribeType) {
   }
 }
 
-const Tribe: FC = () => {
-  const { castleDetailsQuery: { data: castleDetails } } = useSelectedCastleDetailsContext()
-  const tribeType = useTribeTypeById(castleDetails?.user.tribeTypeId)
-  const icon = useTribeIcon(tribeType)
-
-  return (
-    <div className={styles.wrap}>
-      {icon && <img className={styles.img} src={icon.src} alt="" />}
-      <span>{tribeType}</span>
-    </div>
-  )
-}
+const Tribe: FC = () => (
+  <div className={styles.wrap}>
+    <CustomImage
+      className={styles.img}
+      src={useTribeIcon()?.src ?? ''}
+      alt={useTribeType() ?? ''}
+    />
+    <span>{useTribeType()}</span>
+  </div>
+)
 
 export default Tribe
