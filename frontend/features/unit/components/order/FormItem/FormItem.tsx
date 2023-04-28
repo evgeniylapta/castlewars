@@ -1,28 +1,24 @@
 import { FC } from 'react'
-import { UseFormReturn } from 'react-hook-form'
-import { UnitTypesResponseItem, UnitIcon } from '../../../../unit'
-import styles from './FormItem.module.scss'
-import { ClassNameable } from '../../../../../shared/types'
+import { UnitTypesResponseItem, UnitIcon } from '../../../index'
+import { useUnitsOrderFormContext } from '../../../contexts/unitsOrderFormContext'
+import { positiveNumberOnly } from '../../../../../shared/utils/formValidationRules'
+import CustomTextField from '../../../../../shared/components/form/CustomTextField/CustomTextField'
 
-type Props = ClassNameable & {
+type Props = {
   unitType: UnitTypesResponseItem
-  useFormReturn: UseFormReturn
 }
 
-const FormItem: FC<Props> = ({ unitType, className, useFormReturn }) => {
-  const name = unitType.id
-  const { register } = useFormReturn
-
-  return (
-    <div className={className}>
-      <UnitIcon unitTypeId={unitType.id} />
-      <input
-        type="number"
-        {...register(name, { valueAsNumber: true, min: 0 })}
-        className={styles.input}
-      />
-    </div>
-  )
-}
+const FormItem: FC<Props> = ({ unitType }) => (
+  <CustomTextField
+    label={unitType.name}
+    fieldName={unitType.id}
+    rules={{
+      validate: positiveNumberOnly
+    }}
+    type="number"
+    control={useUnitsOrderFormContext().useFormReturn.control}
+    startIcon={<UnitIcon unitTypeId={unitType.id} />}
+  />
+)
 
 export default FormItem

@@ -3,9 +3,10 @@ import styles from './Tribe.module.scss'
 import galusImg from '../../assets/galus.png'
 import romansImg from '../../assets/romans.png'
 import teautonsImg from '../../assets/teautons.png'
-import { TribeType } from '../../index'
+import { TribeType, useTribeTypeById } from '../../index'
+import { useSelectedCastleDetailsContext } from '../../../castle'
 
-function useTribeIcon(type: TribeType) {
+function useTribeIcon(type?: TribeType) {
   switch (type) {
   case 'Gaul':
     return galusImg
@@ -18,17 +19,15 @@ function useTribeIcon(type: TribeType) {
   }
 }
 
-type Props = {
-  type: TribeType
-}
-
-const Tribe: FC<Props> = ({ type }) => {
-  const icon = useTribeIcon(type)
+const Tribe: FC = () => {
+  const { castleDetailsQuery: { data: castleDetails } } = useSelectedCastleDetailsContext()
+  const tribeType = useTribeTypeById(castleDetails?.user.tribeTypeId)
+  const icon = useTribeIcon(tribeType)
 
   return (
     <div className={styles.wrap}>
       {icon && <img className={styles.img} src={icon.src} alt="" />}
-      <span>{type}</span>
+      <span>{tribeType}</span>
     </div>
   )
 }

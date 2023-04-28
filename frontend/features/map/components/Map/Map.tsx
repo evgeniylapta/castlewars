@@ -33,13 +33,14 @@ const Map: FC = () => {
 
   return (
     <div className={styles.mapContainer}>
-      <Controls />
-
       <div className={styles.mapWrap}>
         <div className={styles.mapControlsWrap}>
           <MapActions />
         </div>
         <Numbers />
+        <div className={styles.controlsWrap}>
+          <Controls />
+        </div>
         <div className={styles.map} style={{ gridTemplateColumns: `repeat(${mapSize}, 1fr)` }}>
           {/* {showSpinner && ( */}
           {/*   <div className={styles.spinnerOverlay}> */}

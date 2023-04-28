@@ -1,4 +1,9 @@
 import { FC, useMemo } from 'react'
+import { ButtonGroup, Button } from '@mui/material'
+import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen'
+import OpenInFullIcon from '@mui/icons-material/OpenInFull'
+import HomeIcon from '@mui/icons-material/Home'
+import HighlightAltIcon from '@mui/icons-material/HighlightAlt'
 import styles from './MapActions.module.scss'
 import { isPointsEqual } from '../../utils/mapUtils'
 import { useMapCenterContext } from '../../contexts/mapCenterContext'
@@ -26,19 +31,24 @@ const MapActions: FC = () => {
 
   return (
     <div className={styles.wrap}>
-      <button type="button" onClick={isExpandedMap ? collapseMap : expandMap}>
-        {isExpandedMap ? 'Collapse' : 'Expand'}
-      </button>
-      {showGoToMyCastleButton && (
-        <button type="button" onClick={goToMyCastlePoint}>
-          Navigate to my castle
-        </button>
-      )}
-      {showGoToSelectedCastleButton && (
-        <button type="button" onClick={goToSelectedCastle}>
-          Navigate to selected castle
-        </button>
-      )}
+      <ButtonGroup variant="outlined" size="small">
+        <Button
+          startIcon={isExpandedMap ? <CloseFullscreenIcon /> : <OpenInFullIcon />}
+          onClick={isExpandedMap ? collapseMap : expandMap}
+        >
+          {isExpandedMap ? 'Collapse' : 'Expand'}
+        </Button>
+        {showGoToMyCastleButton && (
+          <Button startIcon={<HomeIcon />} onClick={goToMyCastlePoint}>
+            Go to my castle
+          </Button>
+        )}
+        {showGoToSelectedCastleButton && (
+          <Button startIcon={<HighlightAltIcon />} onClick={goToSelectedCastle}>
+            Go to selected castle
+          </Button>
+        )}
+      </ButtonGroup>
     </div>
   )
 }

@@ -1,49 +1,68 @@
 import { FC } from 'react'
-import { UseFormReturn } from 'react-hook-form'
-import classNames from 'classnames'
-import { UnitGroup, UnitTypesResponseItem, UnitIcon } from '../../../../unit'
-import styles from './FormItem.module.scss'
-import { ClassNameable } from '../../../../../shared/types'
+import { UnitTypesResponseItem, UnitIcon } from '../../../../unit'
+import { useCreateAttackContext } from '../../../contexts/createAttackContext'
+import CustomTextField from '../../../../../shared/components/form/CustomTextField/CustomTextField'
+import { maxNumber, positiveNumberOnly } from '../../../../../shared/utils/formValidationRules'
+import { fieldNameByUnitType } from '../../../utils/fieldNameByUnitType'
+import { useMyCastleContext } from '../../../../castle'
+import { usePreparedUnitGroups } from '../../../../unit/hooks/usePreparedUnitGroups'
 
-function useRestValue({ watch }: UseFormReturn, fieldName: string, unitGroup?: UnitGroup) {
-  if (!unitGroup) {
-    return 0
-  }
+function useUnitGroups() {
+  const { myCastleDetailsQuery: { data: myCastleDetails } } = useMyCastleContext()
 
-  const value = watch(fieldName)
+  return usePreparedUnitGroups(myCastleDetails?.unitGroups)
+}
 
-  const restValue = unitGroup.amount - (value > 0 ? value : 0)
+function useTroopsAmount(unitType: UnitTypesResponseItem) {
+  const foundUnitGroup = useUnitGroups()?.find(({ unitTypeId }) => unitTypeId === unitType.id)
+
+  return foundUnitGroup?.amount || 0
+}
+
+function useRestValue(unitType: UnitTypesResponseItem) {
+  const { useFormReturn: { watch } } = useCreateAttackContext()
+
+  const value = Number(watch(fieldNameByUnitType(unitType)))
+  const restValue = useTroopsAmount(unitType) - (value > 0 ? value : 0)
 
   return restValue >= 0 ? restValue : 0
 }
 
-type Props = ClassNameable & {
-  unitType: UnitTypesResponseItem
-  unitGroup?: UnitGroup
-  useFormReturn: UseFormReturn
-}
-
-const FormItem: FC<Props> = ({
-  unitGroup, unitType, className, useFormReturn
-}) => {
-  const name = unitType.id
-  const { register, formState: { errors } } = useFormReturn
-  const restValue = useRestValue(useFormReturn, name, unitGroup)
-
+function useLabel(unitType: UnitTypesResponseItem) {
   return (
-    <div className={className}>
-      <UnitIcon unitTypeId={unitType.id} />
-      <input
-        type="number"
-        {...register(name, { valueAsNumber: true, min: 0, max: restValue })}
-        className={classNames(styles.input, { [styles.error]: !!errors[name] })}
-      />
-      <span>
-        /
-        {restValue}
-      </span>
-    </div>
+    <span>
+      {unitType.name}
+      {' '}
+      (rest:
+      {' '}
+      {useRestValue(unitType)}
+      )
+    </span>
   )
 }
+
+function useIsDisabled(unitType: UnitTypesResponseItem) {
+  const { useFormReturn: { watch } } = useCreateAttackContext()
+
+  return !useRestValue(unitType) && !watch(fieldNameByUnitType(unitType))
+}
+
+type Props = {
+  unitType: UnitTypesResponseItem
+}
+const FormItem: FC<Props> = ({ unitType }) => (
+  <CustomTextField
+    label={useLabel(unitType)}
+    disabled={useIsDisabled(unitType)}
+    fieldName={fieldNameByUnitType(unitType)}
+    rules={{
+      max: maxNumber(useTroopsAmount(unitType)),
+      validate: positiveNumberOnly
+    }}
+    type="number"
+    control={useCreateAttackContext().useFormReturn.control}
+    startIcon={<UnitIcon unitTypeId={unitType.id} />}
+  />
+)
 
 export default FormItem

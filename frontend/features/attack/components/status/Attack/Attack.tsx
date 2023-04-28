@@ -2,28 +2,28 @@ import { FC, useMemo, useState } from 'react'
 import classNames from 'classnames'
 import { formatDistanceStrict, isAfter } from 'date-fns'
 import { useHarmonicIntervalFn } from 'react-use'
-import { Attack } from '../../../types'
+import { Attack as AttackType } from '../../../types'
 import styles from './Attack.module.scss'
 import { ClassNameable } from '../../../../../shared/types'
 
 type Props = ClassNameable & {
-  attack: Attack,
+  attack: AttackType,
   fromCurrentCastle?: boolean
   isReturning?: boolean
 }
 
-function useCoords(attack: Attack, fromCurrentCastle?: boolean, isReturning?: boolean) {
+function useCoords(attack: AttackType, fromCurrentCastle?: boolean, isReturning?: boolean) {
   return {
     x: fromCurrentCastle && !isReturning ? attack.castleTo.x : attack.castleFrom.x,
     y: fromCurrentCastle && !isReturning ? attack.castleTo.y : attack.castleFrom.y
   }
 }
 
-function useName(attack: Attack, fromCurrentCastle?: boolean, isReturning?: boolean) {
+function useName(attack: AttackType, fromCurrentCastle?: boolean, isReturning?: boolean) {
   return fromCurrentCastle || isReturning ? attack.castleTo.user.name : attack.castleFrom.user.name
 }
 
-function useTime({ dateTime }: Attack) {
+function useTime({ dateTime }: AttackType) {
   const [attacksTimerTickTime, setAttacksTimerTickTime] = useState<Date>()
 
   useHarmonicIntervalFn(

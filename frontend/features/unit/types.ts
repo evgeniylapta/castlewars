@@ -26,3 +26,5 @@ export type UnitGroup = {
   ownerCastleId: string | null
   ownerAttackId: string | null
 }
+
+export type OrderUnitsFormData = { [key: UnitTypesResponseItem['id']]: string }

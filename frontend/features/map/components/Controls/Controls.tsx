@@ -1,9 +1,9 @@
 import { FC } from 'react'
-import styles from './Controls.module.scss'
-import arrowUp from '../../assets/arrow_up.png'
-import arrowLeft from '../../assets/arrow_left.png'
-import arrowRight from '../../assets/arrow_right.png'
-import arrowDown from '../../assets/arrow_down.png'
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
+import { IconButton } from '@mui/material'
 import { useMapCenterContext } from '../../contexts/mapCenterContext'
 
 const Controls: FC = () => {
@@ -12,20 +12,12 @@ const Controls: FC = () => {
   } = useMapCenterContext()
 
   return (
-    <div className={styles.arrows}>
-      <div aria-hidden="true" onClick={goTop} className={styles.top}>
-        <img alt="arrowUp" src={arrowUp.src} />
-      </div>
-      <div aria-hidden="true" onClick={goLeft} className={styles.left}>
-        <img alt="arrowLeft" src={arrowLeft.src} />
-      </div>
-      <div aria-hidden="true" onClick={goRight} className={styles.right}>
-        <img alt="arrowRight" src={arrowRight.src} />
-      </div>
-      <div aria-hidden="true" onClick={goBottom} className={styles.bottom}>
-        <img alt="arrowDown" src={arrowDown.src} />
-      </div>
-    </div>
+    <>
+      <IconButton onClick={goTop}><ArrowUpwardIcon /></IconButton>
+      <IconButton onClick={goLeft}><ArrowBackIcon /></IconButton>
+      <IconButton onClick={goRight}><ArrowForwardIcon /></IconButton>
+      <IconButton onClick={goBottom}><ArrowDownwardIcon /></IconButton>
+    </>
   )
 }
 

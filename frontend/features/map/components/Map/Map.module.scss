@@ -3,17 +3,30 @@
 .mapContainer {
   display: flex;
   align-items: center;
-
-  > * + * {
-    margin-left: 10px;
-  }
+  flex-direction: column;
 }
+
+.controlsWrap {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  right: 0;
+  top: $cellSize;
+  height: calc(100% - $cellSize * 2);
+  width: $cellSize;
+}
+
+$top-offset: $cellSize;
 
 .mapWrap {
   position: relative;
   display: flex;
-  padding-top: $cellSize;
+  padding-top: $top-offset;
   padding-left: $cellSize;
+  padding-right: $cellSize;
   padding-bottom: $cellSize;
 }
 
@@ -44,8 +57,9 @@
 .mapControlsWrap {
   position: absolute;
   top: 0;
-  width: calc(100% - $cellSize);
-  height: $cellSize;
+  left: 0;
+  width: 100%;
+  height: $top-offset;
   display: flex;
   justify-content: center;
   align-items: center;

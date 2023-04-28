@@ -1,12 +1,26 @@
 .container {
   display: flex;
   padding: 20px;
+  justify-content: center;
 
   > * + * {
     margin-left: 20px;
   }
 }
 
-.info {
-  margin-top: 50px;
+.mapWrap {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.infoWrap {
+  display: flex;
+  width: 400px;
+  height: 100%;
+
+  :global(.MuiPaper-root) {
+    width: 100%;
+  }
 }
