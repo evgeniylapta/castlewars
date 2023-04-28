@@ -1,12 +1,14 @@
 @import "../../styles/variables";
 
+$top-offset: $cellSize;
+
 .mapContainer {
   display: flex;
   align-items: center;
   flex-direction: column;
 }
 
-.controlsWrap {
+.controls {
   display: flex;
   position: absolute;
   flex-direction: column;
@@ -18,8 +20,6 @@
   height: calc(100% - $cellSize * 2);
   width: $cellSize;
 }
-
-$top-offset: $cellSize;
 
 .mapWrap {
   position: relative;
@@ -37,24 +37,7 @@ $top-offset: $cellSize;
   position: relative;
 }
 
-.spinnerOverlay {
-  position: absolute !important;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  top: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1;
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.current {
-  border: 1px solid red
-}
-
-.mapControlsWrap {
+.actions {
   position: absolute;
   top: 0;
   left: 0;

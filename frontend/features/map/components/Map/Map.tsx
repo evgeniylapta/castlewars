@@ -26,38 +26,29 @@ function useModels() {
   }), [pointsList, castles, myCastlePoint])
 }
 
-const Map: FC = () => {
-  const { mapSize } = useMapSizeContext()
-
-  const models = useModels()
-
-  return (
-    <div className={styles.mapContainer}>
-      <div className={styles.mapWrap}>
-        <div className={styles.mapControlsWrap}>
-          <MapActions />
-        </div>
-        <Numbers />
-        <div className={styles.controlsWrap}>
-          <Controls />
-        </div>
-        <div className={styles.map} style={{ gridTemplateColumns: `repeat(${mapSize}, 1fr)` }}>
-          {/* {showSpinner && ( */}
-          {/*   <div className={styles.spinnerOverlay}> */}
-          {/* <Spinner  /> */}
-          {/* </div> */}
-          {/* )} */}
-
-          {models.map(({
-            key, isCastle, isOwnCastle, point
-          }) => (
-            <Cell point={point} key={key} isCastle={isCastle} isOwnCastle={isOwnCastle} />
-          ))}
-        </div>
+const Map: FC = () => (
+  <div className={styles.mapContainer}>
+    <div className={styles.mapWrap}>
+      <div className={styles.actions}>
+        <MapActions />
+      </div>
+      <Numbers />
+      <div className={styles.controls}>
+        <Controls />
+      </div>
+      <div
+        className={styles.map}
+        style={{ gridTemplateColumns: `repeat(${useMapSizeContext().mapSize}, 1fr)` }}
+      >
+        {useModels().map(({
+          key, isCastle, isOwnCastle, point
+        }) => (
+          <Cell point={point} key={key} isCastle={isCastle} isOwnCastle={isOwnCastle} />
+        ))}
       </div>
     </div>
-  )
-}
+  </div>
+)
 
 export default () => (
   <MapPointsProvider>
