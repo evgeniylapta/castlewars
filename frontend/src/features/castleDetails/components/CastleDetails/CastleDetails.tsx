@@ -1,8 +1,10 @@
 import { FC } from 'react'
 import { Typography } from '@mui/material'
-import { useSelectedCastleDetailsContext } from '../../index'
-import { Tribe } from '../../../tribe'
-import { useIsCurrentUserCastleSelected } from '../../hooks/useIsCurrentUserCastleSelected'
+import {
+  useIsCurrentUserCastleSelected,
+  useSelectedCastleDetailsContext
+} from '../../../../entities/castle'
+import { Tribe } from '../../../../entities/tribe'
 
 const CastleDetails: FC = () => {
   const { castleDetailsQuery: { data: castleDetails } } = useSelectedCastleDetailsContext()

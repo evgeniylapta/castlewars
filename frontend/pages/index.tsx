@@ -18,9 +18,9 @@ import {
 } from '../src/features/map'
 import { TribeTypesContextProvider } from '../src/entities/tribe'
 import { UnitTypesContextProvider } from '../src/entities/unit'
-import { AttackContextProvider } from '../src/features/attacksStatus/contexts/attackContext'
-import { CastleInfoList } from '../src/widgets/castleInfoList'
+import { InfoPanel } from '../src/widgets/infoPanel'
 import { Header } from '../src/widgets/header'
+import { AttackContextProvider } from '../src/features/attacksStatus'
 
 function Home() {
   const { currentUserQuery: { data: currentUser } } = useAuthContext()
@@ -42,7 +42,7 @@ function Home() {
         <div className={styles.infoWrap}>
           <Paper elevation={3}>
             <CastleResourcesProvider>
-              <CastleInfoList />
+              <InfoPanel />
             </CastleResourcesProvider>
           </Paper>
         </div>

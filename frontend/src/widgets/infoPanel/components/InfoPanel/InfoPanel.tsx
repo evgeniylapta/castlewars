@@ -22,7 +22,7 @@ function useListItems() {
     .map(([, component]) => component)
 }
 
-const CastleInfoList: FC = () => (
+const InfoPanel: FC = () => (
   <List>
     {useListItems().map((component, index) => (
       <>
@@ -33,4 +33,4 @@ const CastleInfoList: FC = () => (
   </List>
 )
 
-export default CastleInfoList
+export default InfoPanel
