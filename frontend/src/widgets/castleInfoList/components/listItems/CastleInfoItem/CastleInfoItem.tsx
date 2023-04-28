@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { ListItem, ListItemText } from '@mui/material'
-import CastleDetails from '../../CastleDetails/CastleDetails'
+import { CastleDetails } from '../../../../../entities/castle'
 
 export function useIsAvailable() {
   return true

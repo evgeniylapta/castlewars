@@ -3,8 +3,8 @@ import {
   ListItem, ListItemButton, ListItemIcon, ListItemText
 } from '@mui/material'
 import GroupAddIcon from '@mui/icons-material/GroupAdd'
-import { useIsCurrentUserCastleSelected } from '../../../hooks/useIsCurrentUserCastleSelected'
-import { UnitsOrderModal } from '../../../../unit'
+import { useIsCurrentUserCastleSelected } from '../../../../../entities/castle/hooks/useIsCurrentUserCastleSelected'
+import { UnitsOrderModal } from '../../../../../entities/unit'
 
 export function useIsAvailable() {
   return useIsCurrentUserCastleSelected()
