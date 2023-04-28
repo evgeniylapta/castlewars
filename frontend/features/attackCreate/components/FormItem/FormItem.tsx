@@ -1,11 +1,11 @@
 import { FC } from 'react'
-import { UnitTypesResponseItem, UnitIcon } from '../../../../unit'
-import { useCreateAttackContext } from '../../../contexts/createAttackContext'
-import CustomTextField from '../../../../../shared/components/form/CustomTextField/CustomTextField'
-import { maxNumber, positiveNumberOnly } from '../../../../../shared/utils/formValidationRules'
-import { fieldNameByUnitType } from '../../../utils/fieldNameByUnitType'
-import { useMyCastleContext } from '../../../../castle'
-import { usePreparedUnitGroups } from '../../../../unit/hooks/usePreparedUnitGroups'
+import { UnitTypesResponseItem, UnitIcon } from '../../../unit'
+import { useCreateAttackContext } from '../../contexts/createAttackContext'
+import CustomTextField from '../../../../shared/components/form/CustomTextField/CustomTextField'
+import { maxNumber, positiveNumberOnly } from '../../../../shared/utils/formValidationRules'
+import { fieldNameByUnitType } from '../../utils/fieldNameByUnitType'
+import { useMyCastleContext } from '../../../castle'
+import { usePreparedUnitGroups } from '../../../unit/hooks/usePreparedUnitGroups'
 
 function useUnitGroups() {
   const { myCastleDetailsQuery: { data: myCastleDetails } } = useMyCastleContext()

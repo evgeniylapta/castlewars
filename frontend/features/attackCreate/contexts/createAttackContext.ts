@@ -1,12 +1,12 @@
 import constate from 'constate'
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useForm, UseFormReturn } from 'react-hook-form'
 import { calculateDistanceBetweenPoints } from 'sharedUtils'
-import { useCreateAttackMutation } from '../query'
 import { useMyCastleContext, useSelectedCastleDetailsContext } from '../../castle'
 import { useMapCenterContext } from '../../map'
 import { useUnitTypesByTribeId } from '../../unit/hooks/useUnitTypesByTribeId'
 import { CreateAttackFormData } from '../types'
+import { useCreateAttackMutation } from '../query'
 
 function useUnitTypes() {
   const { myCastleDetailsQuery: { data: myCastleDetails } } = useMyCastleContext()
@@ -44,7 +44,7 @@ function useSubmitHandle({ getValues }: UseFormReturn<CreateAttackFormData>) {
   const { mutateAsync } = useCreateAttackMutation()
   const { goToMyCastlePoint } = useMapCenterContext()
 
-  return useCallback(async (callback: () => void) => {
+  return async (callback: () => void) => {
     if (!selectedCastleDetails) {
       return null
     }
@@ -64,7 +64,7 @@ function useSubmitHandle({ getValues }: UseFormReturn<CreateAttackFormData>) {
     callback()
 
     return Promise.resolve()
-  }, [])
+  }
 }
 
 function useFormInit() {

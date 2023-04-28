@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react'
+import { FC } from 'react'
 import { Divider, List } from '@mui/material'
 import CastleInfoItem, { useIsAvailable as useIsCastleInfoAvailable } from '../listItems/CastleInfoItem/CastleInfoItem'
 import GoldItem, { useIsAvailable as useIsGoldAvailable } from '../listItems/GoldItem/GoldItem'
@@ -9,7 +9,7 @@ import TroopsOrderingItem, { useIsAvailable as useIsTroopsOrderingAvailable } fr
 import HistoryItem, { useIsAvailable as useIsHistoryItemAvailable } from '../listItems/HistoryItem/HistoryItem'
 
 function useListItems() {
-  const map: [boolean, ReactNode][] = [
+  return [
     [useIsCastleInfoAvailable(), <CastleInfoItem />],
     [useIsGoldAvailable(), <GoldItem />],
     [useIsTroopsAvailable(), <TroopsItem />],
@@ -18,8 +18,6 @@ function useListItems() {
     [useIsTroopsOrderingAvailable(), <TroopsOrderingItem />],
     [useIsHistoryItemAvailable(), <HistoryItem />]
   ]
-
-  return map
     .filter(([isAvailable]) => isAvailable)
     .map(([, component]) => component)
 }

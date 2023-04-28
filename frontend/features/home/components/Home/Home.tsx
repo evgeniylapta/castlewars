@@ -16,7 +16,7 @@ import { UnitTypesContextProvider } from '../../../unit'
 import { TribeTypesContextProvider } from '../../../tribe'
 import { CastleResourcesProvider } from '../../../resources'
 import { useAuthContext } from '../../../auth'
-import { AttackContextProvider } from '../../../attack/contexts/attackContext'
+import { AttackContextProvider } from '../../../attacksStatus/contexts/attackContext'
 
 function Home() {
   const { currentUserQuery: { data: currentUser } } = useAuthContext()

@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import FormItem from '../FormItem/FormItem'
 import styles from './FormItems.module.scss'
-import { useCreateAttackContext } from '../../../contexts/createAttackContext'
+import { useCreateAttackContext } from '../../contexts/createAttackContext'
 
 const FormItems: FC = () => (
   <div>

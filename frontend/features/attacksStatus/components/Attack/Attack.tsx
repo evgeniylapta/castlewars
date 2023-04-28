@@ -2,9 +2,9 @@ import { FC, useMemo, useState } from 'react'
 import classNames from 'classnames'
 import { formatDistanceStrict, isAfter } from 'date-fns'
 import { useHarmonicIntervalFn } from 'react-use'
-import { Attack as AttackType } from '../../../types'
+import { Attack as AttackType } from '../../types'
 import styles from './Attack.module.scss'
-import { ClassNameable } from '../../../../../shared/types'
+import { ClassNameable } from '../../../../shared/types'
 
 type Props = ClassNameable & {
   attack: AttackType,

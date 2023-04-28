@@ -2,8 +2,8 @@ import { FC } from 'react'
 import {
   Button
 } from '@mui/material'
-import { ClassNameable } from '../../../../../shared/types'
-import { useCreateAttackContext } from '../../../contexts/createAttackContext'
+import { ClassNameable } from '../../../../shared/types'
+import { useCreateAttackContext } from '../../contexts/createAttackContext'
 
 type Props = {
   onClose: () => void

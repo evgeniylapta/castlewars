@@ -3,8 +3,8 @@ import {
   ListItem, ListItemButton, ListItemIcon, ListItemText
 } from '@mui/material'
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow'
-import { CreateAttackModal } from '../../../../attack'
 import { useIsCurrentUserCastleSelected } from '../../../hooks/useIsCurrentUserCastleSelected'
+import { CreateAttackModal } from '../../../../attackCreate'
 
 export function useIsAvailable() {
   return !useIsCurrentUserCastleSelected()

@@ -2,7 +2,7 @@ import { FC } from 'react'
 import {
   Button, Dialog, DialogActions, DialogContent, DialogTitle
 } from '@mui/material'
-import { CreateAttackContextProvider } from '../../../contexts/createAttackContext'
+import { CreateAttackContextProvider } from '../../contexts/createAttackContext'
 import Submit from '../Submit/Submit'
 import Distance from '../Distance/Distance'
 import AttackTime from '../AttackTime/AttackTime'

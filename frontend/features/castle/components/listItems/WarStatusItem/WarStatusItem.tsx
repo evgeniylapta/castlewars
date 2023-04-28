@@ -1,11 +1,14 @@
 import { FC } from 'react'
 import { ListItem, ListItemText } from '@mui/material'
-import { AttacksStatus } from '../../../../attack'
+import { AttacksStatus } from '../../../../attacksStatus'
 import { useIsPersonalDataAvailable } from '../../../hooks/useIsPersonalDataAvailable'
-import { useHasActiveAttacksStatus } from '../../../../attack/hooks/useHasActiveAttacksStatus'
+import { useHasActiveAttacksStatus } from '../../../../attacksStatus/hooks/useHasActiveAttacksStatus'
 
 export function useIsAvailable() {
-  return useIsPersonalDataAvailable() && useHasActiveAttacksStatus()
+  return [
+    useIsPersonalDataAvailable(),
+    useHasActiveAttacksStatus()
+  ].every((value) => value)
 }
 
 const WarStatusItem: FC = () => (

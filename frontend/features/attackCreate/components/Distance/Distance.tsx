@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { FormHelperText, Typography } from '@mui/material'
-import { useCreateAttackContext } from '../../../contexts/createAttackContext'
+import { useCreateAttackContext } from '../../contexts/createAttackContext'
 
 const Distance: FC = () => {
   const { distance } = useCreateAttackContext()

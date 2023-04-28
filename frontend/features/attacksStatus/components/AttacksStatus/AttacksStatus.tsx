@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import Attack from '../Attack/Attack'
 import styles from './AttacksStatus.module.scss'
-import { useAttacks } from '../../../hooks/useAttacks'
+import { useAttacks } from '../../hooks/useAttacks'
 
 const AttacksStatus: FC = () => (
   <>
