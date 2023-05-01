@@ -12,11 +12,12 @@ import styles from './CreateAttackModal.module.scss'
 type Props = {
   isOpened: boolean
   onClose: () => void
+  onSubmitCallback?: () => void
 }
 
-const CreateAttackModal: FC<Props> = ({ onClose, isOpened }) => (
+const CreateAttackModal: FC<Props> = ({ onClose, isOpened, onSubmitCallback }) => (
   <Dialog maxWidth="xs" fullWidth open={isOpened} onClose={onClose}>
-    <CreateAttackContextProvider>
+    <CreateAttackContextProvider onSubmitSuccess={onSubmitCallback}>
       <DialogTitle>Create attack</DialogTitle>
       <DialogContent>
         <FormItems />

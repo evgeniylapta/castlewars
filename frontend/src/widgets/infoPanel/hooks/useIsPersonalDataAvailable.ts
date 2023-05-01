@@ -1,8 +1,8 @@
-import { useIsCurrentUserCastleSelected } from '../../../entities/castle'
+import { useCastleContext } from '../../../entities/castle'
 
 export function useIsPersonalDataAvailable() {
   const isSuperAdmin = true
   // const isSuperAdmin = false
 
-  return useIsCurrentUserCastleSelected() || isSuperAdmin
+  return useCastleContext().isMyCastleSelected || isSuperAdmin
 }

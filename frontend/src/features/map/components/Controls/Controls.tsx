@@ -4,12 +4,23 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
 import { IconButton } from '@mui/material'
-import { useMapCenterContext } from '../../contexts/mapCenterContext'
+import { useMapContext } from '../../contexts/mapContext'
+
+function useMapControlsHandle() {
+  const { centerPoint, setCenterPoint } = useMapContext()
+
+  return {
+    goLeft: () => setCenterPoint({ ...centerPoint, x: centerPoint.x - 1 }),
+    goRight: () => setCenterPoint({ ...centerPoint, x: centerPoint.x + 1 }),
+    goTop: () => setCenterPoint({ ...centerPoint, y: centerPoint.y + 1 }),
+    goBottom: () => setCenterPoint({ ...centerPoint, y: centerPoint.y - 1 })
+  }
+}
 
 const Controls: FC = () => {
   const {
     goBottom, goLeft, goRight, goTop
-  } = useMapCenterContext()
+  } = useMapControlsHandle()
 
   return (
     <>

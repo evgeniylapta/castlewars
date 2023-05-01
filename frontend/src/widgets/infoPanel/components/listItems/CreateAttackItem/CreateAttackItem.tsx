@@ -4,10 +4,11 @@ import {
 } from '@mui/material'
 import DoubleArrowIcon from '@mui/icons-material/DoubleArrow'
 import { CreateAttackModal } from '../../../../../features/attackCreate'
-import { useIsCurrentUserCastleSelected } from '../../../../../entities/castle'
+import { useInfoPanelContext } from '../../../contexts/InfoPanel'
+import { useCastleContext } from '../../../../../entities/castle'
 
 export function useIsAvailable() {
-  return !useIsCurrentUserCastleSelected()
+  return !useCastleContext().isMyCastleSelected
 }
 
 const CreateAttackItem: FC = () => {
@@ -24,6 +25,7 @@ const CreateAttackItem: FC = () => {
         </ListItemButton>
       </ListItem>
       <CreateAttackModal
+        onSubmitCallback={useInfoPanelContext().onAttackCreated}
         isOpened={isModalOpened}
         onClose={() => setIsModalOpen(false)}
       />

@@ -3,7 +3,7 @@ import type { AppProps } from 'next/app'
 import { QueryClientProvider, Hydrate } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { queryClient } from '../src/shared/queryClient'
-import { AuthProvider } from '../src/entities/auth'
+import { UserProvider } from '../src/entities/user'
 import 'normalize.css'
 import '@fontsource/roboto/300.css'
 import '@fontsource/roboto/400.css'
@@ -15,10 +15,10 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>
-        <AuthProvider>
+        <UserProvider>
           <Component {...pageProps} />
           <ReactQueryDevtools initialIsOpen={false} />
-        </AuthProvider>
+        </UserProvider>
       </Hydrate>
     </QueryClientProvider>
   )

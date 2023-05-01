@@ -1,7 +1,7 @@
 import { useQuery } from 'react-query'
 import { apiClient } from '../../shared/apiClient'
-import { Castle } from '../../entities/castle'
 import { Attack } from './types'
+import { Castle } from '../../commonTypes'
 
 const attacksListKey = (castleId?: Castle['id']) => ['attacksList', castleId]
 

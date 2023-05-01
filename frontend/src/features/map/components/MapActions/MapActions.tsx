@@ -1,42 +1,69 @@
-import { FC, useMemo } from 'react'
+import { FC } from 'react'
 import { ButtonGroup, Button } from '@mui/material'
 import CloseFullscreenIcon from '@mui/icons-material/CloseFullscreen'
 import OpenInFullIcon from '@mui/icons-material/OpenInFull'
 import HomeIcon from '@mui/icons-material/Home'
 import HighlightAltIcon from '@mui/icons-material/HighlightAlt'
 import styles from './MapActions.module.scss'
-import { isPointsEqual } from '../../utils/mapUtils'
-import { useMapCenterContext } from '../../contexts/mapCenterContext'
-import { useSelectedMapPointContext } from '../../contexts/selectedMapPointContext'
-import { useMyCastleContext } from '../../../../entities/castle'
-import { useMapSizeContext } from '../../contexts/mapSizeContext'
+import { useMapContext } from '../../contexts/mapContext'
+import { useCastleContext } from '../../../../entities/castle'
+import { isPointsEqual } from '../../utils/isPointsEqual'
+import { pointByCastle } from '../../utils/castle'
+
+function useGoToSelectedCastle() {
+  const {
+    selectedCastleQuery: { data: selectedCastle },
+    myCastleQuery: { data: myCastle }
+  } = useCastleContext()
+  const { centerPoint, setCenterPoint } = useMapContext()
+
+  const selectedCastleEqualMyCastle = !!selectedCastle
+    && !!myCastle
+    && isPointsEqual(pointByCastle(selectedCastle), pointByCastle(myCastle))
+
+  const selectedCastleEqualCurrentCenter = !!selectedCastle
+    && isPointsEqual(pointByCastle(selectedCastle), centerPoint)
+
+  return {
+    showGoToSelectedCastleButton: !selectedCastleEqualMyCastle
+      && !selectedCastleEqualCurrentCenter,
+    goToSelectedCastle: () => {
+      if (selectedCastle) {
+        setCenterPoint(pointByCastle(selectedCastle))
+      }
+    }
+  }
+}
+
+function useGoToMyCastlePoint() {
+  const { myCastleQuery: { data: myCastle } } = useCastleContext()
+  const { centerPoint, setCenterPoint } = useMapContext()
+  const { setSelectedCastleId } = useCastleContext()
+
+  return {
+    showGoToMyCastleButton: !!myCastle && !isPointsEqual(pointByCastle(myCastle), centerPoint),
+    goToMyCastlePoint: () => {
+      if (myCastle) {
+        setCenterPoint(pointByCastle(myCastle))
+        setSelectedCastleId(undefined)
+      }
+    }
+  }
+}
 
 const MapActions: FC = () => {
-  const { isExpandedMap, expandMap, collapseMap } = useMapSizeContext()
-
-  const { selectedPoint } = useSelectedMapPointContext()
-  const { goToSelectedCastle, goToMyCastlePoint, currentCenterPoint } = useMapCenterContext()
-  const { myCastlePoint } = useMyCastleContext()
-
-  const showGoToMyCastleButton = useMemo(
-    () => !isPointsEqual(myCastlePoint, currentCenterPoint),
-    [myCastlePoint, currentCenterPoint]
-  )
-
-  const showGoToSelectedCastleButton = useMemo(
-    () => !isPointsEqual(selectedPoint, myCastlePoint)
-      && !isPointsEqual(selectedPoint, currentCenterPoint),
-    [selectedPoint, currentCenterPoint, myCastlePoint]
-  )
+  const { isExpanded, expandMap, collapseMap } = useMapContext()
+  const { showGoToMyCastleButton, goToMyCastlePoint } = useGoToMyCastlePoint()
+  const { showGoToSelectedCastleButton, goToSelectedCastle } = useGoToSelectedCastle()
 
   return (
     <div className={styles.wrap}>
       <ButtonGroup variant="outlined" size="small">
         <Button
-          startIcon={isExpandedMap ? <CloseFullscreenIcon /> : <OpenInFullIcon />}
-          onClick={isExpandedMap ? collapseMap : expandMap}
+          startIcon={isExpanded ? <CloseFullscreenIcon /> : <OpenInFullIcon />}
+          onClick={isExpanded ? collapseMap : expandMap}
         >
-          {isExpandedMap ? 'Collapse' : 'Expand'}
+          {isExpanded ? 'Collapse' : 'Expand'}
         </Button>
         {showGoToMyCastleButton && (
           <Button startIcon={<HomeIcon />} onClick={goToMyCastlePoint}>

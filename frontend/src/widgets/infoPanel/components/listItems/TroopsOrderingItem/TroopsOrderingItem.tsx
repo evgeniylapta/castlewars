@@ -3,11 +3,11 @@ import {
   ListItem, ListItemButton, ListItemIcon, ListItemText
 } from '@mui/material'
 import GroupAddIcon from '@mui/icons-material/GroupAdd'
-import { UnitsOrderModal } from '../../../../../entities/unit'
-import { useIsCurrentUserCastleSelected } from '../../../../../entities/castle'
+import { useCastleContext } from '../../../../../entities/castle'
+import { UnitsOrderModal } from '../../../../../features/unitsOrder'
 
 export function useIsAvailable() {
-  return useIsCurrentUserCastleSelected()
+  return useCastleContext().isMyCastleSelected
 }
 
 const TroopsOrderingItem: FC = () => {

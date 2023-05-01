@@ -1,5 +1,5 @@
-import { UnitTypesResponseItem } from '../../../entities/unit'
+import { UnitType } from '../../../commonTypes'
 
-export function fieldNameByUnitType(unitType: UnitTypesResponseItem) {
+export function fieldNameByUnitType(unitType: UnitType) {
   return unitType.id
 }

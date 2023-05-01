@@ -1,17 +1,9 @@
-import { User } from '../auth'
-import { UnitGroup } from '../unit'
-import { CastleResources } from '../resources'
-
-export type Castle = {
-  id: string
-  x: number
-  y: number
-  userId: string
-}
-
-export type CastleUserExtension = {
-  user: User
-}
+import {
+  Castle,
+  CastleResources,
+  CastleUserExtension,
+  UnitGroup
+} from '../../commonTypes'
 
 export type CastleResourcesExtension = {
   castleResources: CastleResources

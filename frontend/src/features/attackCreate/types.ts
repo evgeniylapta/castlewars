@@ -1,5 +1,9 @@
-import { UnitGroup, UnitTypesResponseItem } from '../../entities/unit'
-import { Castle, CastleUserExtension } from '../../entities/castle'
+import {
+  Castle,
+  CastleUserExtension,
+  UnitGroup,
+  UnitType
+} from '../../commonTypes'
 
 export type Attack = {
   id: string,
@@ -12,4 +16,4 @@ export type Attack = {
   isReturning: boolean
 }
 
-export type CreateAttackFormData = { [key: UnitTypesResponseItem['id']]: string }
+export type CreateAttackFormData = { [key: UnitType['id']]: string }

@@ -1,8 +1,7 @@
 import { FC } from 'react'
 import { ListItem, ListItemText } from '@mui/material'
-import { AttacksStatus } from '../../../../../features/attacksStatus'
+import { AttacksStatus, useHasActiveAttacksStatus } from '../../../../../features/attacksStatus'
 import { useIsPersonalDataAvailable } from '../../../hooks/useIsPersonalDataAvailable'
-import { useHasActiveAttacksStatus } from '../../../../../features/attacksStatus/hooks/useHasActiveAttacksStatus'
 
 export function useIsAvailable() {
   return [

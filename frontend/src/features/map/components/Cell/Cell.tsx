@@ -2,29 +2,30 @@ import { FC } from 'react'
 import classNames from 'classnames'
 import styles from './Cell.module.scss'
 import castle from '../../assets/castle.gif'
-import { Point } from '../../types'
-import { useSelectedMapPointContext } from '../../contexts/selectedMapPointContext'
+import { useCastleContext } from '../../../../entities/castle'
+import { CellModel } from '../../types'
 
 type Props = {
-  isCastle: boolean,
-  isOwnCastle: boolean,
-  point: Point
+  cellModel: CellModel
 }
 
-const Cell: FC<Props> = ({ isOwnCastle, isCastle, point: { x, y } }) => {
-  const { setSelectedPoint, selectedPoint } = useSelectedMapPointContext()
-
-  const isSelected = selectedPoint?.x === x && selectedPoint?.y === y
-
-  const isSelectable = isCastle
+const Cell: FC<Props> = ({
+  cellModel: {
+    castleId,
+    isSelectedCastle,
+    isOwnCastle
+  }
+}) => {
+  const { setSelectedCastleId } = useCastleContext()
+  const isCastle = !!castleId
 
   return (
     <div
       aria-hidden="true"
-      onClick={() => isSelectable && setSelectedPoint({ x, y })}
-      className={classNames(styles.mapItem, { [styles.selectable]: isSelectable })}
+      onClick={() => setSelectedCastleId(castleId)}
+      className={classNames(styles.mapItem, { [styles.selectable]: isCastle })}
     >
-      {(isSelected || isOwnCastle) && (
+      {(isSelectedCastle || isOwnCastle) && (
         <div className={classNames(styles.selection, { [styles.current]: isOwnCastle })} />
       )}
       {isCastle && <img alt="Cell" src={castle.src} />}

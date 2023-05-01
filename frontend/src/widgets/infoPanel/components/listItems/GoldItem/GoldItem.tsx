@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { ListItem, ListItemText } from '@mui/material'
-import { Gold } from '../../../../../entities/resources'
 import { useIsPersonalDataAvailable } from '../../../hooks/useIsPersonalDataAvailable'
+import { Gold } from '../../../../../features/gold'
 
 export function useIsAvailable() {
   return useIsPersonalDataAvailable()

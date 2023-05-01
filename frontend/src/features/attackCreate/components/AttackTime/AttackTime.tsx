@@ -2,9 +2,10 @@ import { FC, useMemo } from 'react'
 import { addSeconds, formatDuration, intervalToDuration } from 'date-fns'
 import { unitTypesMovingSeconds } from 'sharedUtils'
 import { FormHelperText, Typography } from '@mui/material'
-import { findUnitTypeById, UnitTypesResponseItem, useUnitTypesContext } from '../../../../entities/unit'
+import { findUnitTypeById, useUnitTypesContext } from '../../../../entities/unit'
 import { useNewDateInterval } from '../../../../shared/hooks/useNewDateInterval'
 import { useCreateAttackContext } from '../../contexts/createAttackContext'
+import { UnitType } from '../../../../commonTypes'
 
 function useAttackTime() {
   const { unitTypesQuery: { data: unitTypes } } = useUnitTypesContext()
@@ -27,7 +28,7 @@ function useAttackTime() {
         end: addSeconds(
           newDate,
           unitTypesMovingSeconds(
-            filledTypes as UnitTypesResponseItem[],
+            filledTypes as UnitType[],
             distance
           )
         )

@@ -8,9 +8,10 @@ import praetorianImg from '../../assets/Praetorian.png'
 import spearfighterImg from '../../assets/Spearfighter.png'
 import swordsmanImg from '../../assets/Swordsman.png'
 import theutatesThunderImg from '../../assets/TheutatesThunder.png'
-import { UnitName, UnitTypesResponseItem } from '../../types'
+import { UnitName } from '../../types'
 import { useUnitTypeName } from '../../hooks/useUnitTypeName'
 import CustomImage from '../../../../shared/components/CustomImage/CustomImage'
+import { UnitType } from '../../../../commonTypes'
 
 function useUnitIcon(type?: UnitName) {
   switch (type) {
@@ -38,7 +39,7 @@ function useUnitIcon(type?: UnitName) {
 }
 
 type Props = {
-  unitTypeId: UnitTypesResponseItem['id']
+  unitTypeId: UnitType['id']
 }
 
 const UnitIcon: FC<Props> = ({ unitTypeId }) => {

@@ -1,6 +1,5 @@
 export * from './contexts/unitsContext'
-export * from './types'
 export * from './utils/unitTypeUtils'
 export { default as UnitIcon } from './components/UnitIcon/UnitIcon'
-export { default as UnitsOrderModal } from './components/order/UnitsOrderModal/UnitsOrderModal'
-export { default as Units } from './components/Units/Units'
+export * from './hooks/usePreparedUnitGroups'
+export * from './hooks/useUnitTypesByTribeId'

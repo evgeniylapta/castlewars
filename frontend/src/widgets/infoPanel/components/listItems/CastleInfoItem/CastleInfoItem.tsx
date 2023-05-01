@@ -1,9 +1,61 @@
 import { FC } from 'react'
-import { ListItem, ListItemText } from '@mui/material'
-import { CastleDetails } from '../../../../../features/castleDetails'
+import { ListItem, ListItemText, Typography } from '@mui/material'
+import { useCastleContext } from '../../../../../entities/castle'
+import { Tribe } from '../../../../../features/tribe'
 
 export function useIsAvailable() {
   return true
+}
+
+function useUserName() {
+  const {
+    selectedCastleQuery: { data },
+    isMyCastleSelected
+  } = useCastleContext()
+
+  return `${data?.user.name} ${isMyCastleSelected ? '(me)' : ''}`
+}
+
+function useCoordsString() {
+  const { selectedCastleQuery: { data } } = useCastleContext()
+
+  return `[x: ${data?.x} y: ${data?.y}]`
+}
+
+function useCastleInfo() {
+  return (
+    <>
+      <Typography
+        component="span"
+        variant="body2"
+        color="text.primary"
+      >
+        User name:
+      </Typography>
+      {' '}
+      {useUserName()}
+      <br />
+      <Typography
+        component="span"
+        variant="body2"
+        color="text.primary"
+      >
+        Coords:
+      </Typography>
+      {' '}
+      {useCoordsString()}
+      <br />
+      <Typography
+        component="span"
+        variant="body2"
+        color="text.primary"
+      >
+        Tribe:
+      </Typography>
+      {' '}
+      <Tribe />
+    </>
+  )
 }
 
 const CastleInfoItem: FC = () => (
@@ -13,7 +65,7 @@ const CastleInfoItem: FC = () => (
       secondaryTypographyProps={{
         component: 'div'
       }}
-      secondary={<CastleDetails />}
+      secondary={useCastleInfo()}
     />
   </ListItem>
 )

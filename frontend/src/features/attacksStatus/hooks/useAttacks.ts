@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useAttackContext } from '../contexts/attackContext'
-import { useSelectedCastleDetailsContext } from '../../../entities/castle'
+import { useCastleContext } from '../../../entities/castle'
 import { Attack } from '../types'
 
 type Result = {
@@ -11,7 +11,7 @@ type Result = {
 
 export function useAttacks() {
   const { attacksListQuery: { data: attacksData } } = useAttackContext()
-  const { selectedCastleId } = useSelectedCastleDetailsContext()
+  const { selectedCastleQuery: { data: selectedCastle } } = useCastleContext()
 
   return useMemo(() => {
     const initialData: Result = {
@@ -24,7 +24,7 @@ export function useAttacks() {
       (result, attack) => {
         const attackFromCurrentCastle: Attack[] = [
           ...result.attackFromCurrentCastle,
-          ...(attack.castleFromId === selectedCastleId ? [attack] : [])
+          ...(attack.castleFromId === selectedCastle?.id ? [attack] : [])
         ]
 
         return ({
@@ -32,7 +32,7 @@ export function useAttacks() {
             .filter(({ isReturning }) => !isReturning),
           attackToCurrentCastle: [
             ...result.attackToCurrentCastle,
-            ...(attack.castleToId === selectedCastleId ? [attack] : [])
+            ...(attack.castleToId === selectedCastle?.id ? [attack] : [])
           ],
           returningAttacksOfCurrentCastle: [
             ...result.returningAttacksOfCurrentCastle,
@@ -42,5 +42,5 @@ export function useAttacks() {
       },
       initialData
     ) || initialData
-  }, [selectedCastleId, attacksData])
+  }, [selectedCastle, attacksData])
 }

@@ -2,16 +2,15 @@ import constate from 'constate'
 import { useMemo } from 'react'
 import { useForm, UseFormReturn } from 'react-hook-form'
 import { calculateDistanceBetweenPoints } from 'sharedUtils'
-import { useMyCastleContext, useSelectedCastleDetailsContext } from '../../../entities/castle'
-import { useMapCenterContext } from '../../map'
-import { useUnitTypesByTribeId } from '../../../entities/unit/hooks/useUnitTypesByTribeId'
+import { useCastleContext } from '../../../entities/castle'
+import { useUnitTypesByTribeId } from '../../../entities/unit'
 import { CreateAttackFormData } from '../types'
 import { useCreateAttackMutation } from '../query'
 
 function useUnitTypes() {
-  const { myCastleDetailsQuery: { data: myCastleDetails } } = useMyCastleContext()
+  const { myCastleQuery: { data: myCastle } } = useCastleContext()
 
-  return useUnitTypesByTribeId(myCastleDetails?.user.tribeTypeId)
+  return useUnitTypesByTribeId(myCastle?.user.tribeTypeId)
 }
 
 function useIsSubmitDisabled(useFormReturn: UseFormReturn<CreateAttackFormData>) {
@@ -22,8 +21,10 @@ function useIsSubmitDisabled(useFormReturn: UseFormReturn<CreateAttackFormData>)
 }
 
 function useDistance() {
-  const { castleDetailsQuery: { data: selectedCastleDetails } } = useSelectedCastleDetailsContext()
-  const { myCastleDetailsQuery: { data: myCastleDetails } } = useMyCastleContext()
+  const {
+    selectedCastleQuery: { data: selectedCastleDetails },
+    myCastleQuery: { data: myCastleDetails }
+  } = useCastleContext()
 
   return useMemo(() => {
     if (!selectedCastleDetails || !myCastleDetails) {
@@ -39,13 +40,15 @@ function useDistance() {
   }, [selectedCastleDetails, myCastleDetails])
 }
 
-function useSubmitHandle({ getValues }: UseFormReturn<CreateAttackFormData>) {
-  const { castleDetailsQuery: { data: selectedCastleDetails } } = useSelectedCastleDetailsContext()
+function useSubmitHandle(
+  { getValues }: UseFormReturn<CreateAttackFormData>,
+  onSubmitSuccess?: () => void
+) {
+  const { selectedCastleQuery: { data: selectedCastle } } = useCastleContext()
   const { mutateAsync } = useCreateAttackMutation()
-  const { goToMyCastlePoint } = useMapCenterContext()
 
   return async (callback: () => void) => {
-    if (!selectedCastleDetails) {
+    if (!selectedCastle) {
       return null
     }
 
@@ -57,10 +60,10 @@ function useSubmitHandle({ getValues }: UseFormReturn<CreateAttackFormData>) {
 
     await mutateAsync({
       data: preparedData,
-      castleId: selectedCastleDetails.id
+      castleId: selectedCastle.id
     })
 
-    goToMyCastlePoint()
+    onSubmitSuccess?.()
     callback()
 
     return Promise.resolve()
@@ -72,13 +75,15 @@ function useFormInit() {
     mode: 'onChange'
   })
 }
-
-const useContext = () => {
+type Props = {
+  onSubmitSuccess?: () => void
+}
+const useContext = ({ onSubmitSuccess }: Props) => {
   const useFormReturn = useFormInit()
 
   return {
     useFormReturn,
-    submitHandle: useSubmitHandle(useFormReturn),
+    submitHandle: useSubmitHandle(useFormReturn, onSubmitSuccess),
     isSubmitDisabled: useIsSubmitDisabled(useFormReturn),
     distance: useDistance(),
     unitTypes: useUnitTypes()

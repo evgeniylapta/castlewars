@@ -1,32 +1,19 @@
-import {
-  Paper
-} from '@mui/material'
+import { Paper } from '@mui/material'
+import { FC, useRef } from 'react'
 import styles from './Index.module.scss'
-import { useAuthContext } from '../src/entities/auth'
-import {
-  CastlesRangeProvider,
-  MyCastleProvider,
-  SelectedCastleDetailsProvider,
-  useMyCastleContext
-} from '../src/entities/castle'
-import { CastleResourcesProvider } from '../src/entities/resources'
-import {
-  MapCenterContextProvider,
-  MapSizeProvider,
-  SelectedMapPointContextProvider,
-  Map
-} from '../src/features/map'
+import { useUserContext } from '../src/entities/user'
+import { Map, MapRefProps } from '../src/features/map'
 import { TribeTypesContextProvider } from '../src/entities/tribe'
 import { UnitTypesContextProvider } from '../src/entities/unit'
 import { InfoPanel } from '../src/widgets/infoPanel'
 import { Header } from '../src/widgets/header'
-import { AttackContextProvider } from '../src/features/attacksStatus'
+import { CastleProvider, useCastleContext } from '../src/entities/castle'
 
-function Home() {
-  const { currentUserQuery: { data: currentUser } } = useAuthContext()
-  const { myCastleDetailsQuery: { data: myCastleDetails } } = useMyCastleContext()
+const Home: FC = () => {
+  const { myCastleQuery: { isFetched } } = useCastleContext()
+  const mapRef = useRef<MapRefProps>(null)
 
-  if (!myCastleDetails || !currentUser) {
+  if (!isFetched) {
     return null
   }
 
@@ -36,14 +23,12 @@ function Home() {
       <div className={styles.container}>
         <div className={styles.mapWrap}>
           <Paper elevation={3}>
-            <Map />
+            <Map ref={mapRef} />
           </Paper>
         </div>
         <div className={styles.infoWrap}>
           <Paper elevation={3}>
-            <CastleResourcesProvider>
-              <InfoPanel />
-            </CastleResourcesProvider>
+            <InfoPanel onAttackCreated={() => mapRef.current?.goToMyCastlePoint()} />
           </Paper>
         </div>
       </div>
@@ -52,25 +37,15 @@ function Home() {
 }
 
 export default function () {
+  const { currentUserQuery: { data: currentUser } } = useUserContext()
+
   return (
-    <MyCastleProvider>
-      <SelectedMapPointContextProvider>
-        <MapCenterContextProvider>
-          <MapSizeProvider>
-            <CastlesRangeProvider>
-              <TribeTypesContextProvider>
-                <UnitTypesContextProvider>
-                  <SelectedCastleDetailsProvider>
-                    <AttackContextProvider>
-                      <Home />
-                    </AttackContextProvider>
-                  </SelectedCastleDetailsProvider>
-                </UnitTypesContextProvider>
-              </TribeTypesContextProvider>
-            </CastlesRangeProvider>
-          </MapSizeProvider>
-        </MapCenterContextProvider>
-      </SelectedMapPointContextProvider>
-    </MyCastleProvider>
+    <TribeTypesContextProvider>
+      <UnitTypesContextProvider>
+        <CastleProvider myCastleId={currentUser?.castles[0].id}>
+          <Home />
+        </CastleProvider>
+      </UnitTypesContextProvider>
+    </TribeTypesContextProvider>
   )
 }

@@ -1,25 +1,25 @@
 import { FC } from 'react'
-import { UnitTypesResponseItem, UnitIcon } from '../../../../entities/unit'
 import { useCreateAttackContext } from '../../contexts/createAttackContext'
 import CustomTextField from '../../../../shared/components/form/CustomTextField/CustomTextField'
 import { maxNumber, positiveNumberOnly } from '../../../../shared/utils/formValidationRules'
 import { fieldNameByUnitType } from '../../utils/fieldNameByUnitType'
-import { useMyCastleContext } from '../../../../entities/castle'
-import { usePreparedUnitGroups } from '../../../../entities/unit/hooks/usePreparedUnitGroups'
+import { UnitIcon, usePreparedUnitGroups } from '../../../../entities/unit'
+import { useCastleContext } from '../../../../entities/castle'
+import { UnitType } from '../../../../commonTypes'
 
 function useUnitGroups() {
-  const { myCastleDetailsQuery: { data: myCastleDetails } } = useMyCastleContext()
+  const { myCastleQuery: { data: myCastleDetails } } = useCastleContext()
 
   return usePreparedUnitGroups(myCastleDetails?.unitGroups)
 }
 
-function useTroopsAmount(unitType: UnitTypesResponseItem) {
+function useTroopsAmount(unitType: UnitType) {
   const foundUnitGroup = useUnitGroups()?.find(({ unitTypeId }) => unitTypeId === unitType.id)
 
   return foundUnitGroup?.amount || 0
 }
 
-function useRestValue(unitType: UnitTypesResponseItem) {
+function useRestValue(unitType: UnitType) {
   const { useFormReturn: { watch } } = useCreateAttackContext()
 
   const value = Number(watch(fieldNameByUnitType(unitType)))
@@ -28,7 +28,7 @@ function useRestValue(unitType: UnitTypesResponseItem) {
   return restValue >= 0 ? restValue : 0
 }
 
-function useLabel(unitType: UnitTypesResponseItem) {
+function useLabel(unitType: UnitType) {
   return (
     <span>
       {unitType.name}
@@ -41,14 +41,14 @@ function useLabel(unitType: UnitTypesResponseItem) {
   )
 }
 
-function useIsDisabled(unitType: UnitTypesResponseItem) {
+function useIsDisabled(unitType: UnitType) {
   const { useFormReturn: { watch } } = useCreateAttackContext()
 
   return !useRestValue(unitType) && !watch(fieldNameByUnitType(unitType))
 }
 
 type Props = {
-  unitType: UnitTypesResponseItem
+  unitType: UnitType
 }
 const FormItem: FC<Props> = ({ unitType }) => (
   <CustomTextField
