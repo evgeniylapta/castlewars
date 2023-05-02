@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useUnitTypesContext } from '../contexts/unitsContext'
-import { UnitType } from '../types'
+import { UnitType } from '../../../commonTypes'
 
 export function useUnitTypeName(unitTypeId: UnitType['id']) {
   const { unitTypesQuery: { data: unitTypes } } = useUnitTypesContext()

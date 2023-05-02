@@ -1,5 +1,5 @@
-import { Castle } from '../types'
-import { Point } from '../../../shared/types'
+import { Castle } from '../../../commonTypes'
+import { Point } from '../types'
 
 export function pointByCastle(castle: Castle): Point {
   return {

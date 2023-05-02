@@ -1,6 +1,7 @@
-import { Point, Uuid } from '../../../shared/types'
-import { Castle, CellModel, ExtremePoints } from '../types'
+import { Uuid } from '../../../shared/types'
+import { CellModel, ExtremePoints, Point } from '../types'
 import { castleByPoint } from './castle'
+import { Castle } from '../../../commonTypes'
 
 function cellModel(
   castles: Castle[],

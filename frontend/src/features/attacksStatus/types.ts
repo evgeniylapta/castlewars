@@ -1,5 +1,4 @@
-import { UnitGroup } from '../../entities/unit'
-import { Castle, CastleUserExtension } from '../../entities/castle'
+import { Castle, CastleUserExtension, UnitGroup } from '../../commonTypes'
 
 export type Attack = {
   id: string,

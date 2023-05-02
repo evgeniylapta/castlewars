@@ -1,5 +1,4 @@
-import { Point } from '../../../shared/types'
-import { MapRange } from '../types'
+import { MapRange, Point } from '../types'
 import { halfMapSize } from './mapSize'
 
 export function mapRange(centerPoint: Point, mapSize: number): MapRange {

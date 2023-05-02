@@ -1,5 +1,5 @@
 import {
-  FC, ForwardedRef,
+  ForwardedRef,
   forwardRef, ForwardRefRenderFunction, useImperativeHandle, useMemo
 } from 'react'
 import styles from './Map.module.scss'

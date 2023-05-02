@@ -1,6 +1,5 @@
-import { Point } from '../../../shared/types'
 import { halfMapSize } from './mapSize'
-import { ExtremePoints } from '../types'
+import { ExtremePoints, Point } from '../types'
 
 export function extremePoints(centerPoint: Point, mapSize: number): ExtremePoints {
   return {

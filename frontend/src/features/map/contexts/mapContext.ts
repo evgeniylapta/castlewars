@@ -1,11 +1,11 @@
 import constate from 'constate'
 import { useState } from 'react'
-import { Point } from '../../../shared/types'
 import { useCastlesQuery } from '../query'
 import { mapSize } from '../utils/mapSize'
 import { mapRange } from '../utils/mapRange'
 import { useCastleContext } from '../../../entities/castle'
 import { pointByCastle } from '../utils/castle'
+import { Point } from '../types'
 
 function useInitialMapCenter(): Point {
   const { myCastleQuery: { data: myCastle } } = useCastleContext()

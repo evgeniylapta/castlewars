@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "nodemon",
-    "start:prod": "tsc && node dist/index.js",
+    "start:prod": "tsc && node --max-old-space-size=2048 dist/index.js",
     "start:migrate:prod": "prisma migrate dev && npm run start:prod",
     "lint": "eslint . --ext .ts"
   },

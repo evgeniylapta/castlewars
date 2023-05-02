@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { useUnitTypesContext } from '../contexts/unitsContext'
-import { UnitGroup, UnitType } from '../types'
 import { findUnitTypeById } from '../utils/unitTypeUtils'
+import { UnitGroup, UnitType } from '../../../commonTypes'
 
 const sort = (unitGroups: UnitGroup[], unitTypes: UnitType[]) => {
   const result = [...unitGroups]
