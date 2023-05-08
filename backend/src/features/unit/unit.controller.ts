@@ -1,7 +1,7 @@
 import { Request } from 'express'
 import { PostCreateUnitOrderDto } from './dto/PostCreateUnitOrderDto'
 import { createUnitOrderItem } from './services/unitsOrder.service'
-import { unitTypeById } from './services/unitType.service'
+import { getUnitTypeById } from './services/unitType.service'
 
 // todo rename to unit order / troop order
 export const createUnitCreatingController = async (
@@ -13,7 +13,7 @@ export const createUnitCreatingController = async (
   // todo check tribe type and unit type param
   // todo check available gold
 
-  const unitType = await unitTypeById(unitTypeId)
+  const unitType = await getUnitTypeById(unitTypeId)
 
   res.send(await createUnitOrderItem(unitType, castleId, amount))
 }

@@ -1,11 +1,11 @@
 import { Request, Response } from 'express'
-import { tribeTypes } from '../tribe/tribe.service'
-import { unitTypes } from '../unit/services/unitType.service'
+import { findTribeTypes } from '../tribe/tribe.service'
+import { findUnitTypes } from '../unit/services/unitType.service'
 
 export const unitTypesController = async (req: Request, res: Response) => {
-  res.send(await unitTypes())
+  res.send(await findUnitTypes())
 }
 
 export const tribeTypesController = async (req: Request, res: Response) => {
-  res.send(await tribeTypes())
+  res.send(await findTribeTypes())
 }

@@ -2,7 +2,7 @@ import {
   UnitType, Castle, UnitsOrder, UnitsOrderItem
 } from '@prisma/client'
 import { prisma } from '../../../config/prisma'
-import { operationAddCastleGold } from '../../resources/resources.service'
+import { getAddCastleGoldOperation } from '../../resources/resources.service'
 
 async function createUnitsOrder(castleId) {
   return prisma.unitsOrder.create({
@@ -16,7 +16,7 @@ async function createUnitsOrder(castleId) {
   })
 }
 
-async function unitsOrderItemCreatingOperations(
+async function getUnitsOrderItemCreatingOperations(
   unitsOrder: UnitsOrder,
   unitTypeId: UnitType['id'],
   amount: number,
@@ -47,7 +47,7 @@ async function unitsOrderItemCreatingOperations(
   ]
 }
 
-function updateUnitsOrderLastCreationDateOperation(
+function getUpdateUnitsOrderLastCreationDateOperation(
   unitOrder: UnitsOrder,
   unitOrderItems: UnitsOrderItem[]
 ) {
@@ -65,7 +65,7 @@ function updateUnitsOrderLastCreationDateOperation(
   })
 }
 
-export async function operationsCreateUnitOrderItem(
+export async function getCreateUnitOrderItemOperations(
   unitType: UnitType,
   castleId: Castle['id'],
   amount: number,
@@ -93,13 +93,13 @@ export async function operationsCreateUnitOrderItem(
     unitOrder = await createUnitsOrder(castleId)
   }
 
-  const updateLastCreationDateOperation = updateUnitsOrderLastCreationDateOperation(
+  const updateLastCreationDateOperation = getUpdateUnitsOrderLastCreationDateOperation(
     unitOrder,
     unitOrder.items
   )
 
   return [
-    ...await unitsOrderItemCreatingOperations(
+    ...await getUnitsOrderItemCreatingOperations(
       unitOrder,
       unitType.id,
       amount,
@@ -108,7 +108,7 @@ export async function operationsCreateUnitOrderItem(
     ...(updateLastCreationDateOperation ? [updateLastCreationDateOperation] : []),
     ...(
       subtractGold
-        ? [operationAddCastleGold(castle.castleResources, -unitType.goldPrice)]
+        ? [getAddCastleGoldOperation(castle.castleResources, -unitType.goldPrice)]
         : []
     )
   ]
@@ -121,6 +121,6 @@ export async function createUnitOrderItem(
   subtractGold = true
 ) {
   return prisma.$transaction(
-    await operationsCreateUnitOrderItem(unitType, castleId, amount, subtractGold)
+    await getCreateUnitOrderItemOperations(unitType, castleId, amount, subtractGold)
   )
 }

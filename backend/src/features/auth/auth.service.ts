@@ -5,12 +5,12 @@ import { PostSignInDto } from './dto/PostSignInDto'
 import ApiError from '../../utils/ApiError'
 import { PostSignUpDto } from './dto/PostSignUpDto'
 import { GetCheckEmailDto } from './dto/GetCheckEmailDto'
-import { createUser, userByEmail, userById } from '../user/user.service'
+import { createUser, findUserByEmail, findUserById } from '../user/user.service'
 import { generateAuthTokens, removeToken, verifyToken } from '../token/token.service'
 import { PostRefreshTokenDto } from './dto/PostRefreshTokenDto'
 
 export async function signIn({ email, password }: PostSignInDto) {
-  const user = await userByEmail(email)
+  const user = await findUserByEmail(email)
 
   const passwordMatch = await bcrypt.compare(password, user.password)
 
@@ -34,13 +34,13 @@ export async function signUp({
 }
 
 export async function checkEmail({ email }: GetCheckEmailDto) {
-  return !!await userByEmail(email)
+  return !!await findUserByEmail(email)
 }
 
 export async function refreshToken({ refreshToken: token }: PostRefreshTokenDto) {
   try {
     const foundRefreshToken = await verifyToken(token, 'REFRESH')
-    const user = await userById(foundRefreshToken.userId)
+    const user = await findUserById(foundRefreshToken.userId)
     if (!user) {
       // todo error?
       throw new Error()

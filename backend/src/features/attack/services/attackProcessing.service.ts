@@ -5,21 +5,21 @@ import { add } from 'date-fns'
 import { calculateDistanceBetweenPoints, unitTypesMovingSeconds } from 'sharedUtils'
 import { prisma } from '../../../config/prisma'
 import {
-  unitGroupByUnitType,
+  getUnitGroupByUnitType,
   UnitGroupUpdateAmountModel,
-  unitGroupUpdateAmountOperation,
-  UnitGroupCreateModel, unitGroupCreateOperation
+  getUnitGroupUpdateAmountOperation,
+  UnitGroupCreateModel, getUnitGroupCreateOperation
 } from '../../unit/services/unitGroup.service'
-import { unitTypes as findUnitTypes } from '../../unit/services/unitType.service'
+import { findUnitTypes as findUnitTypes } from '../../unit/services/unitType.service'
 import { callFormattedConsoleLog } from '../../../utils/console'
 
-function unitTypeById(unitTypes: UnitType[], unitTypeId: string) {
+function findUnitTypeById(unitTypes: UnitType[], unitTypeId: string) {
   return unitTypes.find(({ id }) => id === unitTypeId)
 }
 
 function calculateAttackValueByUnitGroups(unitGroups: UnitGroup[], unitTypes: UnitType[]) {
   return unitGroups.reduce((result, { amount, unitTypeId }) => {
-    const unitType = unitTypeById(unitTypes, unitTypeId)
+    const unitType = findUnitTypeById(unitTypes, unitTypeId)
 
     const value = unitType.attack * amount
 
@@ -29,7 +29,7 @@ function calculateAttackValueByUnitGroups(unitGroups: UnitGroup[], unitTypes: Un
 
 function calculateDefenceValueByUnitGroups(unitGroups: UnitGroup[], unitTypes: UnitType[]) {
   return unitGroups.reduce<number>((result, { amount, unitTypeId }) => {
-    const unitType = unitTypeById(unitTypes, unitTypeId)
+    const unitType = findUnitTypeById(unitTypes, unitTypeId)
 
     const value = unitType.defence * amount
 
@@ -61,7 +61,7 @@ function attackDeleteOperation(attackId: Attack['id']) {
   })
 }
 
-function attackUpdateReturningDateOperation(
+function getAttackUpdateReturningDateOperation(
   attackId: Attack['id'],
   attackDate: Date,
   attackUnitTypesLeft: UnitType[],
@@ -86,7 +86,7 @@ function attackUpdateReturningDateOperation(
 }
 
 // todo only update
-function unitGroupsAlteringModels(
+function getUnitGroupsAlteringModels(
   unitGroups: UnitGroup[],
   survivedCoefficient: number
   // removeOnEmpty = false
@@ -104,17 +104,17 @@ function unitGroupsAlteringModels(
   }
 }
 
-function leftAttackUpdateUnitTypes(
+function getLeftAttackUpdateUnitTypes(
   attackUpdateModels: UnitGroupUpdateAmountModel[],
   attackUnitGroups: UnitGroup[],
   unitTypes: UnitType[]
 ) {
   return attackUnitGroups
     .filter(({ id }) => attackUpdateModels.some(({ unitGroupId }) => unitGroupId === id))
-    .map(({ unitTypeId }) => unitTypeById(unitTypes, unitTypeId))
+    .map(({ unitTypeId }) => findUnitTypeById(unitTypes, unitTypeId))
 }
 
-async function attacks() {
+async function findAttacks() {
   return prisma.attack.findMany({
     where: {
       dateTime: {
@@ -137,7 +137,7 @@ async function attacks() {
   })
 }
 
-function attackOperations(
+function getAttackOperations(
   castleToUnitGroups: UnitGroup[],
   attackUnitGroups: UnitGroup[],
   attackId: Attack['id'],
@@ -156,13 +156,13 @@ function attackOperations(
   const {
     updateModels: attackUpdateModels
     // deleteModels: attackUnitGroupIdsToDelete
-  } = unitGroupsAlteringModels(
+  } = getUnitGroupsAlteringModels(
     attackUnitGroups,
     attackSurvivedCoefficient
     // true
   )
 
-  const { updateModels: defenceUpdateModels } = unitGroupsAlteringModels(
+  const { updateModels: defenceUpdateModels } = getUnitGroupsAlteringModels(
     castleToUnitGroups,
     defenceSurvivedCoefficient
     // false
@@ -178,15 +178,15 @@ function attackOperations(
   const updateUnitGroupsOperations = [
     ...attackUpdateModels,
     ...defenceUpdateModels
-  ].map(unitGroupUpdateAmountOperation)
+  ].map(getUnitGroupUpdateAmountOperation)
 
   // todo cascade remove unitGroups on attack remove
   const attackOperation = !hasTroopsToReturn
     ? attackDeleteOperation(attackId)
-    : attackUpdateReturningDateOperation(
+    : getAttackUpdateReturningDateOperation(
       attackId,
       attackDate,
-      leftAttackUpdateUnitTypes(attackUpdateModels, attackUnitGroups, unitTypes),
+      getLeftAttackUpdateUnitTypes(attackUpdateModels, attackUnitGroups, unitTypes),
       distance
     )
 
@@ -206,7 +206,7 @@ function attackOperations(
   ]
 }
 
-function attackReturningOperations(
+function getAttackReturningOperations(
   attackId: Attack['id'],
   homeCastleUnitGroups: UnitGroup[],
   attackUnitGroups: UnitGroup[],
@@ -218,8 +218,8 @@ function attackReturningOperations(
   const createModels: UnitGroupCreateModel[] = []
 
   unitTypes.forEach((unitType) => {
-    const foundHomeUnitGroup = unitGroupByUnitType(homeCastleUnitGroups, unitType)
-    const foundAttackUnitGroup = unitGroupByUnitType(attackUnitGroups, unitType)
+    const foundHomeUnitGroup = getUnitGroupByUnitType(homeCastleUnitGroups, unitType)
+    const foundAttackUnitGroup = getUnitGroupByUnitType(attackUnitGroups, unitType)
 
     const foundHomeAndAttackGroups = foundHomeUnitGroup && foundAttackUnitGroup
     const foundOnlyAttackGroup = !foundHomeUnitGroup && foundAttackUnitGroup
@@ -248,14 +248,14 @@ function attackReturningOperations(
   })
 
   return [
-    ...updateAmountModels.map(unitGroupUpdateAmountOperation),
-    ...createModels.map(unitGroupCreateOperation),
+    ...updateAmountModels.map(getUnitGroupUpdateAmountOperation),
+    ...createModels.map(getUnitGroupCreateOperation),
     attackDeleteOperation(attackId)
   ]
 }
 
 export async function attacksProcessingTick() {
-  const foundAttacks = await attacks()
+  const foundAttacks = await findAttacks()
   const unitTypes = await findUnitTypes()
 
   const operations = foundAttacks.reduce((result, {
@@ -279,14 +279,14 @@ export async function attacksProcessingTick() {
       ...result,
       ...(
         isReturning
-          ? attackReturningOperations(
+          ? getAttackReturningOperations(
             attackId,
             castleFromUnitGroups,
             attackUnitGroups,
             unitTypes,
             castleFromId
           )
-          : attackOperations(
+          : getAttackOperations(
             castleToUnitGroups,
             attackUnitGroups,
             attackId,

@@ -3,7 +3,7 @@ import { Sector, Side } from '../types'
 
 type MoveCommand = 'straight' | 'side'
 
-function sectorKey(sector: Sector) {
+function createSectorKey(sector: Sector) {
   return `${sector.startX}_${sector.startY}_${sector.endX}_${sector.endY}`
 }
 
@@ -147,7 +147,7 @@ export async function generateSectors(
   let angleIndex = angleInitialIndex
 
   const addSectorToList = async (sector: Sector, isLastSectorInAngle: boolean) => {
-    sectors[sectorKey(sector)] = sector
+    sectors[createSectorKey(sector)] = sector
     await onNextSector(sector, angleIndex, isLastSectorInAngle)
   }
 
@@ -193,7 +193,7 @@ export async function generateSectors(
     if (currentCommand === 'side') {
       const newSector: Sector = sideSectorModifier(currentSector)
       const isSectorInIgnoredArea = checkIsSectorInIgnoredArea(angleInitialIndex, newSector)
-      const isSectorPassed = sectors[sectorKey(newSector)]
+      const isSectorPassed = sectors[createSectorKey(newSector)]
       const isLastSectorInAngle = sideSectorResetCondition(newSector)
 
       if (!isSectorPassed && !isSectorInIgnoredArea) {

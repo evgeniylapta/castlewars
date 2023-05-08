@@ -7,7 +7,7 @@ export type UnitGroupUpdateAmountModel = { unitGroupId: UnitGroup['id'], newAmou
 export type UnitGroupCreateModel = { amount: number, ownerCastleId?: Castle['id'], ownerAttackId?: Attack['id'], unitTypeId: UnitType['id'] }
 // export type TUnitGroupDeleteModel = { unitGroupId: UnitGroup['id'] }
 
-export async function unitGroupsByCastleId(castleId: string) {
+export async function findUnitGroupsByCastleId(castleId: string) {
   return prisma.unitGroup.findMany({
     where: {
       ownerCastleId: castleId
@@ -16,7 +16,7 @@ export async function unitGroupsByCastleId(castleId: string) {
 }
 
 // todo delete?
-export async function unitGroupsByAttacksIdOrCastleId(
+export async function getUnitGroupsByAttacksIdOrCastleId(
   attackIds: string | string[],
   castleIds: string | string[]
 ) {
@@ -38,11 +38,11 @@ export async function unitGroupsByAttacksIdOrCastleId(
   })
 }
 
-export function unitGroupByUnitType(unitGroups: UnitGroup[], unitType: UnitType) {
+export function getUnitGroupByUnitType(unitGroups: UnitGroup[], unitType: UnitType) {
   return unitGroups.find(({ unitTypeId }) => unitTypeId === unitType.id)
 }
 
-export function unitGroupUpdateAmountOperation(
+export function getUnitGroupUpdateAmountOperation(
   { unitGroupId, newAmount }: UnitGroupUpdateAmountModel
 ) {
   return (
@@ -58,7 +58,7 @@ export function unitGroupUpdateAmountOperation(
 }
 
 // todo delete?
-export function unitGroupDeleteOperation(unitGroupId: UnitGroup['id']) {
+export function getUnitGroupDeleteOperation(unitGroupId: UnitGroup['id']) {
   return (
     prisma.unitGroup.delete({
       where: {
@@ -68,7 +68,7 @@ export function unitGroupDeleteOperation(unitGroupId: UnitGroup['id']) {
   )
 }
 
-export function unitGroupCreateOperation({
+export function getUnitGroupCreateOperation({
   amount, ownerCastleId, ownerAttackId, unitTypeId
 }: UnitGroupCreateModel) {
   if (!ownerCastleId && !ownerAttackId) {

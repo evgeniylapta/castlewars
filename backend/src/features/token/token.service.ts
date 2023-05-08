@@ -21,7 +21,7 @@ const generateToken = (
   return jwt.sign(payload, secret)
 }
 
-function accessTokenError() {
+function getAccessTokenError() {
   return new Error('ACCESS token can not be saved in DB')
 }
 
@@ -33,7 +33,7 @@ const saveToken = async (
   blacklisted = false
 ) => {
   if (type === 'ACCESS') {
-    throw accessTokenError()
+    throw getAccessTokenError()
   }
 
   return prisma.token.create({
@@ -51,7 +51,7 @@ export const verifyToken = async (token: string, type: FullTokenType) => {
   const payload = jwt.verify(token, process.env.JWT_SECRET) as JwtPayloadType
 
   if (type === 'ACCESS') {
-    throw accessTokenError()
+    throw getAccessTokenError()
   }
 
   const tokenDoc = await prisma.token.findFirst({

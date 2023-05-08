@@ -3,13 +3,13 @@ import {
 } from '@prisma/client'
 import { generateSectors, sectorsGenerateMap, sidesList } from './sectors.service'
 import { prisma } from '../../../config/prisma'
-import { tribeTypes as findTribeTypes } from '../../tribe/tribe.service'
-import { castlesByCoordsRanges } from '../../castle/castle.service'
+import { findTribeTypes as findTribeTypes } from '../../tribe/tribe.service'
+import { findCastlesByCoordsRanges } from '../../castle/castle.service'
 import { USERS_IN_SECTOR_LIMIT } from '../config'
 import { Sector, Side } from '../types'
-import { encryptPassword, selectBotsAmount } from '../../user/user.service'
+import { encryptPassword, findBotsAmount } from '../../user/user.service'
 import { randomArrayItem, randomIntFromInterval } from '../../../utils/random'
-import { unitTypes as findUnitTypes, unitTypesByTribeType } from '../../unit/services/unitType.service'
+import { findUnitTypes as findUnitTypes, getUnitTypesByTribeType } from '../../unit/services/unitType.service'
 import { callFormattedConsoleLog } from '../../../utils/console'
 
 type SidesAngleIndexesMap = { [key in Side]: number }
@@ -26,7 +26,7 @@ type GenerateUserConfig = {
   withTroops: boolean
 }
 
-function sidesAngleIndexes(
+function getSidesAngleIndexes(
   mapSettlement: MapSettlement[]
 ): SidesAngleIndexesMap {
   return {
@@ -37,22 +37,22 @@ function sidesAngleIndexes(
   }
 }
 
-function sectorRandomPoint(sector: Sector) {
+function getSectorRandomPoint(sector: Sector) {
   return {
     x: randomIntFromInterval(sector.startX, sector.endX),
     y: randomIntFromInterval(sector.startY, sector.endY)
   }
 }
 
-function randomUnitsAmount() {
+function getRandomUnitsAmount() {
   return randomIntFromInterval(10, 100)
 }
 
-function randomGoldAmount() {
+function getRandomGoldAmount() {
   return randomIntFromInterval(100, 3000)
 }
 
-function userOperation(
+function getUserOperation(
   point: Point,
   tribeType: TribeType,
   {
@@ -61,7 +61,7 @@ function userOperation(
   index: number,
   unitTypes: UnitType[]
 ) {
-  const availableUnitTypes = unitTypesByTribeType(unitTypes, tribeType)
+  const availableUnitTypes = getUnitTypesByTribeType(unitTypes, tribeType)
 
   return prisma.user.create({
     include: {
@@ -80,7 +80,7 @@ function userOperation(
           y: point.y,
           castleResources: {
             create: {
-              gold: randomGoldAmount(),
+              gold: getRandomGoldAmount(),
               goldLastUpdate: new Date()
             }
           },
@@ -89,7 +89,7 @@ function userOperation(
               data: withTroops
                 ? availableUnitTypes.map(({ id }) => ({
                   unitTypeId: id,
-                  amount: randomUnitsAmount(),
+                  amount: getRandomUnitsAmount(),
                   ownerAttackId: null
                 }))
                 : []
@@ -101,7 +101,7 @@ function userOperation(
   })
 }
 
-function randomTribeType(tribeTypes: TribeType[]) {
+function getRandomTribeType(tribeTypes: TribeType[]) {
   return randomArrayItem<TribeType>(tribeTypes)
 }
 
@@ -120,7 +120,7 @@ async function sectorUsersGenerate(
   let count = 0
 
   while (flag) {
-    const newPoint = sectorRandomPoint(sector)
+    const newPoint = getSectorRandomPoint(sector)
     const isZeroPoint = newPoint.x === 0 && newPoint.y === 0
     const isPointAlreadyInModelsList = models.some(
       ({ point: { y, x } }) => y === newPoint.y && x === newPoint.x
@@ -130,7 +130,7 @@ async function sectorUsersGenerate(
     )
 
     if (!isPointAlreadyInModelsList && !isZeroPoint && !isPointAlreadyExists) {
-      models.push({ point: newPoint, tribeType: randomTribeType(tribeTypes) })
+      models.push({ point: newPoint, tribeType: getRandomTribeType(tribeTypes) })
       count += 1
     }
 
@@ -141,7 +141,7 @@ async function sectorUsersGenerate(
 
   return prisma.$transaction(
     models.map(({ point, tribeType }, index) => (
-      userOperation(
+      getUserOperation(
         point,
         tribeType,
         config,
@@ -152,7 +152,7 @@ async function sectorUsersGenerate(
   )
 }
 
-async function angleIndexUpdate(angleIndex: number, side: Side, mapSettlements: MapSettlement[]) {
+async function updateAngleIndex(angleIndex: number, side: Side, mapSettlements: MapSettlement[]) {
   return prisma.mapSettlement.update({
     where: {
       id: mapSettlements.find(({ direction }) => direction === side).id
@@ -163,7 +163,7 @@ async function angleIndexUpdate(angleIndex: number, side: Side, mapSettlements: 
   })
 }
 
-function sortedSidesList(initialSidesAngleIndexes: SidesAngleIndexesMap) {
+function getSortedSidesList(initialSidesAngleIndexes: SidesAngleIndexesMap) {
   return [...sidesList].sort((one, two) => {
     if (initialSidesAngleIndexes[one] < initialSidesAngleIndexes[two]) {
       return -1
@@ -175,10 +175,10 @@ function sortedSidesList(initialSidesAngleIndexes: SidesAngleIndexesMap) {
   })
 }
 
-async function sectorCapacityInfo({
+async function getSectorCapacityInfo({
   startX, startY, endY, endX
 }: Sector) {
-  const castles = await castlesByCoordsRanges(
+  const castles = await findCastlesByCoordsRanges(
     Math.min(startX, endX),
     Math.min(startY, endY),
     Math.max(startX, endX),
@@ -199,9 +199,9 @@ async function generateUsers(config: GenerateUserConfig) {
   const stopProcess = () => { flag = false }
 
   const mapSettlements = await prisma.mapSettlement.findMany()
-  const initialSidesAngleIndexes = sidesAngleIndexes(mapSettlements)
-  let currentSide = sortedSidesList(initialSidesAngleIndexes)[0]
-  const currentSidesAngleIndexes = sidesAngleIndexes(mapSettlements)
+  const initialSidesAngleIndexes = getSidesAngleIndexes(mapSettlements)
+  let currentSide = getSortedSidesList(initialSidesAngleIndexes)[0]
+  const currentSidesAngleIndexes = getSidesAngleIndexes(mapSettlements)
 
   const incrementCurrentSideAngle = (angleIndex: number) => {
     const value = angleIndex + 1
@@ -223,7 +223,7 @@ async function generateUsers(config: GenerateUserConfig) {
       ? USERS_IN_SECTOR_LIMIT
       : restUsersToGenerate
 
-    const { freeSpace: sectionFreeSpace, existingPoints } = await sectorCapacityInfo(sector)
+    const { freeSpace: sectionFreeSpace, existingPoints } = await getSectorCapacityInfo(sector)
 
     const actualUsersNumberToCreate = Math.min(sectionFreeSpace, usersNumberLeftToCreateInSector)
 
@@ -244,15 +244,15 @@ async function generateUsers(config: GenerateUserConfig) {
 
     if (isLastSectorInAngle && actualUsersNumberToCreate >= sectionFreeSpace) {
       const newAngleIndex = incrementCurrentSideAngle(angleIndex)
-      await angleIndexUpdate(newAngleIndex, currentSide, mapSettlements)
+      await updateAngleIndex(newAngleIndex, currentSide, mapSettlements)
     }
   }
 
   const setNextSide = () => {
-    const foundSideIndex = sortedSidesList(initialSidesAngleIndexes)
+    const foundSideIndex = getSortedSidesList(initialSidesAngleIndexes)
       .findIndex((value) => value === currentSide)
-    currentSide = sortedSidesList(initialSidesAngleIndexes)[foundSideIndex + 1]
-      || sortedSidesList(initialSidesAngleIndexes)[0]
+    currentSide = getSortedSidesList(initialSidesAngleIndexes)[foundSideIndex + 1]
+      || getSortedSidesList(initialSidesAngleIndexes)[0]
   }
 
   while (flag) {
@@ -274,7 +274,7 @@ async function generateUsers(config: GenerateUserConfig) {
 }
 
 export async function generateBots(limit: number) {
-  const botsAmount = await selectBotsAmount()
+  const botsAmount = await findBotsAmount()
 
   const withTroops = true
 

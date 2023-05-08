@@ -4,9 +4,9 @@ import {
 import { calculateCastleCold } from 'sharedUtils'
 import { randomArrayItem, rollChance } from '../../../utils/random'
 import { CHANCE_TO_ORDER_TROOPS, GOLD_TO_ORDER_TROOPS_COEFFICIENT } from '../config'
-import { operationAddCastleGold } from '../../resources/resources.service'
-import { unitTypesByTribeType } from '../../unit/services/unitType.service'
-import { operationsCreateUnitOrderItem } from '../../unit/services/unitsOrder.service'
+import { getAddCastleGoldOperation } from '../../resources/resources.service'
+import { getUnitTypesByTribeType } from '../../unit/services/unitType.service'
+import { getCreateUnitOrderItemOperations } from '../../unit/services/unitsOrder.service'
 import { callFormattedConsoleLog } from '../../../utils/console'
 
 type Model = {[key: UnitType['id']]: {
@@ -14,18 +14,18 @@ type Model = {[key: UnitType['id']]: {
   unitType: UnitType
 }}
 
-function randomUnitTypeToOrder(unitTypes: UnitType[]) {
+function getRandomUnitTypeToOrder(unitTypes: UnitType[]) {
   return randomArrayItem<UnitType>(unitTypes)
 }
 
-function resultToOrder(goldAllowedToUse: number, unitTypes: UnitType[]) {
+function getResultToOrder(goldAllowedToUse: number, unitTypes: UnitType[]) {
   let flag = true
 
   const resultUnitsToOrder: Model = {}
   let currentUnitsCost = 0
 
   while (flag) {
-    const unitType = randomUnitTypeToOrder(unitTypes)
+    const unitType = getRandomUnitTypeToOrder(unitTypes)
 
     const newCurrentUnitsCost = currentUnitsCost + unitType.goldPrice
 
@@ -48,7 +48,7 @@ function resultToOrder(goldAllowedToUse: number, unitTypes: UnitType[]) {
   }
 }
 
-async function operationsByModel(
+async function getOperationsByModel(
   resultUnitsToOrder: Model,
   unitsCost: number,
   castleResources: CastleResources
@@ -66,7 +66,7 @@ async function operationsByModel(
 
     result = [
       ...result,
-      ...await operationsCreateUnitOrderItem(
+      ...await getCreateUnitOrderItemOperations(
         item.unitType,
         castleResources.castleId,
         item.amount,
@@ -78,11 +78,11 @@ async function operationsByModel(
 
   return [
     ...result,
-    operationAddCastleGold(castleResources, -unitsCost)
+    getAddCastleGoldOperation(castleResources, -unitsCost)
   ]
 }
 
-export async function orderUnitsOperations(
+export async function getOrderUnitsOperations(
   castleResources: CastleResources,
   unitOrder: UnitsOrder[],
   unitTypes: UnitType[],
@@ -92,14 +92,14 @@ export async function orderUnitsOperations(
     return []
   }
 
-  const availableUnitTypes = unitTypesByTribeType(unitTypes, tribeType)
+  const availableUnitTypes = getUnitTypesByTribeType(unitTypes, tribeType)
 
   const goldAllowedToUse = calculateCastleCold(
     castleResources.gold,
     castleResources.goldLastUpdate
   ) * GOLD_TO_ORDER_TROOPS_COEFFICIENT
 
-  const { resultUnitsToOrder, unitsCost } = resultToOrder(goldAllowedToUse, availableUnitTypes)
+  const { resultUnitsToOrder, unitsCost } = getResultToOrder(goldAllowedToUse, availableUnitTypes)
 
   callFormattedConsoleLog('Bot order troops', 'info', {
     goldAllowedToUse,
@@ -112,5 +112,5 @@ export async function orderUnitsOperations(
       .map(([, item]) => ({ unitType: item.unitType.name, amount: item.amount }))
   })
 
-  return operationsByModel(resultUnitsToOrder, unitsCost, castleResources)
+  return getOperationsByModel(resultUnitsToOrder, unitsCost, castleResources)
 }

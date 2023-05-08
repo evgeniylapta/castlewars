@@ -2,7 +2,7 @@ import { TribeType, UserRole } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import { prisma } from '../../config/prisma'
 
-export async function currentUser() {
+export async function findCurrentUser() {
   return prisma.user.findFirst({
     where: {
       name: 'TestUser'
@@ -14,7 +14,7 @@ export async function currentUser() {
 }
 
 // todo optimize to aggregated
-export async function selectBotsAmount() {
+export async function findBotsAmount() {
   return (await prisma.user.findMany({
     where: {
       isBot: true
@@ -47,10 +47,10 @@ export async function createUser(
   })
 }
 
-export async function userByEmail(email: string) {
+export async function findUserByEmail(email: string) {
   return prisma.user.findFirst({ where: { email } })
 }
 
-export async function userById(id: string) {
+export async function findUserById(id: string) {
   return prisma.user.findUnique({ where: { id } })
 }

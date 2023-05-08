@@ -1,12 +1,12 @@
 import { Request } from 'express'
 import { prisma } from '../../config/prisma'
 import { CastleCreateDto } from './dto/CastleCreateDto'
-import { currentUser } from '../user/user.service'
+import { findCurrentUser } from '../user/user.service'
 import { GetCastlesQueryDto } from './dto/GetCastlesQueryDto'
 import { GetCastleDetailsQueryDto } from './dto/GetCastleDetailsQueryDto'
 import {
   calculateDistanceBetweenCastles,
-  castlesByCoordsRanges
+  findCastlesByCoordsRanges
 } from './castle.service'
 import { GetDistanceBetweenCastlesQueryDto } from './dto/GetDistanceBetweenPointsQueryDto'
 
@@ -18,12 +18,12 @@ export const castlesController = async (
     minX, minY, maxX, maxY
   } = req.query
 
-  res.send(await castlesByCoordsRanges(Number(minX), Number(minY), Number(maxX), Number(maxY)))
+  res.send(await findCastlesByCoordsRanges(Number(minX), Number(minY), Number(maxX), Number(maxY)))
 }
 
 // todo type
 export const currentUserCastleController = async (req, res) => {
-  const { id: userId } = await currentUser()
+  const { id: userId } = await findCurrentUser()
 
   res.send(await prisma.castle.findFirst({ where: { userId } }))
 }

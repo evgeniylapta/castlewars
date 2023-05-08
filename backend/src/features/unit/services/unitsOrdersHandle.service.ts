@@ -3,25 +3,25 @@ import {
 } from '@prisma/client'
 import { addSeconds, subSeconds } from 'date-fns'
 import { prisma } from '../../../config/prisma'
-import { unitTypes } from './unitType.service'
+import { findUnitTypes } from './unitType.service'
 import { callFormattedConsoleLog } from '../../../utils/console'
 import { UNIT_ORDER_ITEM_DURATION_COEFFICIENT } from '../config'
 
-function unitOrderItemDurationByUnitTypeInSeconds(unitType: UnitType) {
+function getUnitOrderItemDurationByUnitTypeInSeconds(unitType: UnitType) {
   return UNIT_ORDER_ITEM_DURATION_COEFFICIENT * unitType.creatingSpeed
 }
 
-function minimalUnitOrderDurationInSeconds(types: UnitType[]) {
+function getMinimalUnitOrderDurationInSeconds(types: UnitType[]) {
   return Math.min(
-    ...types.map((unitType) => unitOrderItemDurationByUnitTypeInSeconds(unitType))
+    ...types.map((unitType) => getUnitOrderItemDurationByUnitTypeInSeconds(unitType))
   )
 }
 
-async function actualUnitOrdersToHandle(types: UnitType[], newDate: Date) {
+async function findActualUnitOrdersToHandle(types: UnitType[], newDate: Date) {
   return prisma.unitsOrder.findMany({
     where: {
       lastCreationDate: {
-        lte: subSeconds(newDate, minimalUnitOrderDurationInSeconds(types))
+        lte: subSeconds(newDate, getMinimalUnitOrderDurationInSeconds(types))
       }
     },
     include: {
@@ -42,14 +42,14 @@ async function actualUnitOrdersToHandle(types: UnitType[], newDate: Date) {
   })
 }
 
-type FoundUnitsOrder = Awaited<ReturnType<typeof actualUnitOrdersToHandle>>[0];
+type FoundUnitsOrder = Awaited<ReturnType<typeof findActualUnitOrdersToHandle>>[0];
 
 type OrderItemUnitModel = {
   orderItem: UnitsOrderItem,
   unitType: UnitType
 }
 
-function modelsToCreate(unitOrder: FoundUnitsOrder, nowDate: Date) {
+function getModelsToCreate(unitOrder: FoundUnitsOrder, nowDate: Date) {
   let date = unitOrder.lastCreationDate
 
   const result: OrderItemUnitModel[] = []
@@ -62,7 +62,7 @@ function modelsToCreate(unitOrder: FoundUnitsOrder, nowDate: Date) {
         unitType: item.unitType
       }
 
-      date = addSeconds(date, unitOrderItemDurationByUnitTypeInSeconds(item.unitType))
+      date = addSeconds(date, getUnitOrderItemDurationByUnitTypeInSeconds(item.unitType))
 
       if (date <= nowDate) {
         result.push(model)
@@ -75,7 +75,7 @@ function modelsToCreate(unitOrder: FoundUnitsOrder, nowDate: Date) {
   return result
 }
 
-function unitOrderLastUpdateOperation(unitsOrder: UnitsOrder, nowDate: Date) {
+function getUnitOrderLastUpdateOperation(unitsOrder: UnitsOrder, nowDate: Date) {
   return prisma.unitsOrder.update({
     where: {
       id: unitsOrder.id
@@ -86,7 +86,7 @@ function unitOrderLastUpdateOperation(unitsOrder: UnitsOrder, nowDate: Date) {
   })
 }
 
-function unitOrderOperations(
+function getUnitOrderOperations(
   models: OrderItemUnitModel[],
   castleUnitGroups: UnitGroup[]
 ) {
@@ -156,17 +156,17 @@ function unitOrderOperations(
 export async function handleUnitOrders() {
   const nowDate = new Date()
 
-  const foundUnitOrders = await actualUnitOrdersToHandle(await unitTypes(), nowDate)
+  const foundUnitOrders = await findActualUnitOrdersToHandle(await findUnitTypes(), nowDate)
 
   const operations = foundUnitOrders.reduce((result, unitOrder) => {
-    if (!modelsToCreate(unitOrder, nowDate).length) {
+    if (!getModelsToCreate(unitOrder, nowDate).length) {
       return result
     }
 
     return [
       ...result,
-      ...unitOrderOperations(modelsToCreate(unitOrder, nowDate), unitOrder.castle.unitGroups),
-      unitOrderLastUpdateOperation(unitOrder, nowDate)
+      ...getUnitOrderOperations(getModelsToCreate(unitOrder, nowDate), unitOrder.castle.unitGroups),
+      getUnitOrderLastUpdateOperation(unitOrder, nowDate)
     ]
   }, [])
 

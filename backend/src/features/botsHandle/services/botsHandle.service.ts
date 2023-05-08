@@ -1,13 +1,13 @@
 import { addSeconds } from 'date-fns'
 import { prisma } from '../../../config/prisma'
 import { randomIntFromInterval } from '../../../utils/random'
-import { unitTypes as findUnitTypes } from '../../unit/services/unitType.service'
-import { troopsSendOperations } from './troopsSending.service'
-import { orderUnitsOperations } from './troopsOrdering.service'
+import { findUnitTypes as findUnitTypes } from '../../unit/services/unitType.service'
+import { getTroopsSendOperations } from './troopsSending.service'
+import { getOrderUnitsOperations } from './troopsOrdering.service'
 import { callFormattedConsoleLog } from '../../../utils/console'
 import { INTERVAL_BETWEEN_ACTIONS_SECONDS_RANGE } from '../config'
 
-async function actionsToExecute(date: Date) {
+async function findActionsToExecute(date: Date) {
   return prisma.botAction.findMany({
     where: {
       date: {
@@ -34,7 +34,7 @@ async function actionsToExecute(date: Date) {
 export async function botsActionsExecuteTick() {
   const date = new Date()
 
-  const actionsToPerform = await actionsToExecute(date)
+  const actionsToPerform = await findActionsToExecute(date)
   const unitTypes = await findUnitTypes()
 
   let operations = []
@@ -44,13 +44,13 @@ export async function botsActionsExecuteTick() {
 
     operations = [
       ...operations,
-      ...await orderUnitsOperations(
+      ...await getOrderUnitsOperations(
         castle.castleResources,
         castle.unitsOrders,
         unitTypes,
         tribeType
       ),
-      ...await troopsSendOperations(
+      ...await getTroopsSendOperations(
         castle.unitGroups,
         castle,
         tribeType,
@@ -71,7 +71,7 @@ export async function botsActionsExecuteTick() {
   ])
 }
 
-async function botsWithNoActions() {
+async function findBotsWithNoActions() {
   return prisma.user.findMany({
     where: {
       isBot: true,
@@ -87,7 +87,7 @@ async function botsWithNoActions() {
 }
 
 export async function botsActionsCreatingTick() {
-  const bots = await botsWithNoActions()
+  const bots = await findBotsWithNoActions()
 
   const newDate = new Date()
 
