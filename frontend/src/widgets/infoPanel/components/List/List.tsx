@@ -7,6 +7,7 @@ import WarStatusItem, { useIsAvailable as useIsWarStatusAvailable } from '../lis
 import CreateAttackItem, { useIsAvailable as useIsCreateAttackAvailable } from '../listItems/CreateAttackItem/CreateAttackItem'
 import TroopsOrderingItem, { useIsAvailable as useIsTroopsOrderingAvailable } from '../listItems/TroopsOrderingItem/TroopsOrderingItem'
 import HistoryItem, { useIsAvailable as useIsHistoryItemAvailable } from '../listItems/HistoryItem/HistoryItem'
+import UnitsOrderStatusItem, { useIsAvailable as useIsUnitsOrderStatusItemAvailable } from '../listItems/UnitsOrderStatusItem/UnitsOrderStatusItem'
 
 function useListItems(): [string, ReactNode][] {
   const map: [boolean, string, ReactNode][] = [
@@ -14,6 +15,7 @@ function useListItems(): [string, ReactNode][] {
     [useIsGoldAvailable(), 'GoldItem', <GoldItem />],
     [useIsTroopsAvailable(), 'TroopsItem', <TroopsItem />],
     [useIsWarStatusAvailable(), 'WarStatusItem', <WarStatusItem />],
+    [useIsUnitsOrderStatusItemAvailable(), 'UnitsOrderStatusItem', <UnitsOrderStatusItem />],
     [useIsCreateAttackAvailable(), 'CreateAttackItem', <CreateAttackItem />],
     [useIsTroopsOrderingAvailable(), 'TroopsOrderingItem', <TroopsOrderingItem />],
     [useIsHistoryItemAvailable(), 'HistoryItem', <HistoryItem />]

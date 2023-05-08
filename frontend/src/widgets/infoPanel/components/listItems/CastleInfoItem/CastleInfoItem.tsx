@@ -62,9 +62,7 @@ const CastleInfoItem: FC = () => (
   <ListItem>
     <ListItemText
       primary="Selected castle info"
-      secondaryTypographyProps={{
-        component: 'div'
-      }}
+      secondaryTypographyProps={{ component: 'div' }}
       secondary={useCastleInfo()}
     />
   </ListItem>

@@ -2,17 +2,24 @@ import constate from 'constate'
 import { useForm, UseFormReturn } from 'react-hook-form'
 import { useCallback, useMemo } from 'react'
 import { useUnitTypesContext, findUnitTypeById } from '../../../entities/unit'
-import { OrderUnitsFormData } from '../../../entities/unit/types'
 import { useCalculatedGoldInterval } from '../../../entities/gold'
 import { useCastleContext } from '../../../entities/castle'
+import { useUnitsOrderMutation } from '../query'
+import { OrderUnitsFormData } from '../types'
 
 function useSubmitHandle({ getValues }: UseFormReturn<OrderUnitsFormData>) {
-  return useCallback(async (callback: () => void) => {
-    console.log('data')
-    console.log(getValues())
+  const { myCastleQuery: { data: myCastleData } } = useCastleContext()
+  const { mutateAsync } = useUnitsOrderMutation()
+
+  return async (callback: () => void) => {
+    if (!myCastleData) {
+      return
+    }
+
+    await mutateAsync({ castleId: myCastleData.id, data: getValues() })
 
     callback()
-  }, [])
+  }
 }
 
 export function useTroopsTotalPrice({ watch }: UseFormReturn<OrderUnitsFormData>) {

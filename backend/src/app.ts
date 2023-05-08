@@ -1,6 +1,7 @@
 import express from 'express'
 import helmet from 'helmet'
 import xss from 'xss-clean'
+import 'reflect-metadata'
 import compression from 'compression'
 import cors from 'cors'
 import httpStatus from 'http-status'

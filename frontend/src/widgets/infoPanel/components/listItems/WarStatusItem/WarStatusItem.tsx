@@ -14,9 +14,7 @@ const WarStatusItem: FC = () => (
   <ListItem>
     <ListItemText
       primary="War status"
-      secondaryTypographyProps={{
-        component: 'div'
-      }}
+      secondaryTypographyProps={{ component: 'div' }}
       secondary={<AttacksStatus />}
     />
   </ListItem>

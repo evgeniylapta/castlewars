@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 import { asyncTimerStart } from '../../utils/timeout'
-import { handleUnitOrders } from '../unit/services/unitsOrdersHandle.service'
 import { botsActionsCreatingTick, botsActionsExecuteTick } from '../botsHandle/services/botsHandle.service'
 import { attacksProcessingTick } from '../attack/services/attackProcessing.service'
 import {
@@ -9,6 +8,7 @@ import {
   BOTS_ACTIONS_EXECUTE_TICK,
   HANDLE_UNIT_ORDERS_TICK
 } from './config'
+import { processUnitOrders } from '../unitsOrder/services/unitsOrdersProcessing.service'
 
 async function executeConsideringTickInterval(
   counter: number,
@@ -35,7 +35,7 @@ export function realTimeHandleStart() {
     await executeConsideringTickInterval(
       counter,
       HANDLE_UNIT_ORDERS_TICK,
-      handleUnitOrders
+      processUnitOrders
     )
     await executeConsideringTickInterval(
       counter,

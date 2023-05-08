@@ -6,8 +6,8 @@ import { randomArrayItem, rollChance } from '../../../utils/random'
 import { CHANCE_TO_ORDER_TROOPS, GOLD_TO_ORDER_TROOPS_COEFFICIENT } from '../config'
 import { getAddCastleGoldOperation } from '../../resources/resources.service'
 import { getUnitTypesByTribeType } from '../../unit/services/unitType.service'
-import { getCreateUnitOrderItemOperations } from '../../unit/services/unitsOrder.service'
 import { callFormattedConsoleLog } from '../../../utils/console'
+import { getCreateUnitOrderItemOperations } from '../../unitsOrder/services/unitsOrder.service'
 
 type Model = {[key: UnitType['id']]: {
   amount: number,

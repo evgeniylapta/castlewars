@@ -5,8 +5,8 @@ export async function findUnitTypes() {
   return prisma.unitType.findMany()
 }
 
-export async function getUnitTypeById(typeById: UnitType['id']) {
-  return (await findUnitTypes()).find(({ id }) => id === typeById)
+export function getUnitTypeById(types: UnitType[], typeById: UnitType['id']) {
+  return types.find(({ id }) => id === typeById)
 }
 
 export function getUnitTypesByTribeType(types: UnitType[], tribeType: TribeType) {

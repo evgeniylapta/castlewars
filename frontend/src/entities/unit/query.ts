@@ -2,8 +2,6 @@ import { useQuery } from 'react-query'
 import { apiClient } from '../../shared/apiClient'
 import { UnitType } from '../../commonTypes'
 
-const unitTypesKey = () => 'unitTypes'
-
 async function unitTypes() {
   const { data } = await apiClient.get<UnitType[]>('/dictionaries/unit-types')
 
@@ -11,5 +9,5 @@ async function unitTypes() {
 }
 
 export function useUnitTypesQuery() {
-  return useQuery(unitTypesKey(), unitTypes)
+  return useQuery('unitTypes', unitTypes)
 }

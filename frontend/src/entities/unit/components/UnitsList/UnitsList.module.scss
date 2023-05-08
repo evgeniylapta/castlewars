@@ -1,9 +1,7 @@
-.unit {
-  margin-top: 5px;
-}
-
 .wrap {
   display: flex;
+  flex-wrap: wrap;
+
   > * {
     margin-right: 5px;
   }

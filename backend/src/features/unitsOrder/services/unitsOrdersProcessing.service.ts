@@ -3,9 +3,9 @@ import {
 } from '@prisma/client'
 import { addSeconds, subSeconds } from 'date-fns'
 import { prisma } from '../../../config/prisma'
-import { findUnitTypes } from './unitType.service'
 import { callFormattedConsoleLog } from '../../../utils/console'
 import { UNIT_ORDER_ITEM_DURATION_COEFFICIENT } from '../config'
+import { findUnitTypes } from '../../unit/services/unitType.service'
 
 function getUnitOrderItemDurationByUnitTypeInSeconds(unitType: UnitType) {
   return UNIT_ORDER_ITEM_DURATION_COEFFICIENT * unitType.creatingSpeed
@@ -153,20 +153,20 @@ function getUnitOrderOperations(
   }, [])
 }
 
-export async function handleUnitOrders() {
-  const nowDate = new Date()
-
-  const foundUnitOrders = await findActualUnitOrdersToHandle(await findUnitTypes(), nowDate)
+export async function processUnitOrders() {
+  const now = new Date()
+  const foundUnitOrders = await findActualUnitOrdersToHandle(await findUnitTypes(), now)
 
   const operations = foundUnitOrders.reduce((result, unitOrder) => {
-    if (!getModelsToCreate(unitOrder, nowDate).length) {
+    const models = getModelsToCreate(unitOrder, now)
+    if (!models.length) {
       return result
     }
 
     return [
       ...result,
-      ...getUnitOrderOperations(getModelsToCreate(unitOrder, nowDate), unitOrder.castle.unitGroups),
-      getUnitOrderLastUpdateOperation(unitOrder, nowDate)
+      ...getUnitOrderOperations(models, unitOrder.castle.unitGroups),
+      getUnitOrderLastUpdateOperation(unitOrder, now)
     ]
   }, [])
 

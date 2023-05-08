@@ -12,6 +12,7 @@ export type UnitType = {
   subsequence: number
   tribeTypeId: Uuid
   goldPrice: number
+  creatingSpeed: number,
 }
 
 export type UnitGroup = {

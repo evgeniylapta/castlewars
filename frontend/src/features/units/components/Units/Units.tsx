@@ -1,8 +1,6 @@
 import { FC } from 'react'
-import styles from './Units.module.scss'
 import { useCastleContext } from '../../../../entities/castle'
-import Unit from '../Unit/Unit'
-import { usePreparedUnitGroups } from '../../../../entities/unit'
+import { UnitsList, usePreparedUnitGroups } from '../../../../entities/unit'
 
 function useUnitGroups() {
   const { selectedCastleQuery: { data } } = useCastleContext()
@@ -15,9 +13,7 @@ const Units: FC = () => {
 
   return (
     <>
-      {unitGroups?.map((unitGroup) => (
-        <Unit key={unitGroup.id} className={styles.unit} unitGroup={unitGroup} />
-      ))}
+      {!!unitGroups && <UnitsList items={unitGroups} />}
       {!unitGroups?.length && '-//-'}
     </>
   )

@@ -2,7 +2,7 @@ import express from 'express'
 import castleRoute from './features/castle/castle.route'
 import userRoute from './features/user/user.route'
 import attackRoute from './features/attack/attack.route'
-import unitRoute from './features/unit/unit.route'
+import unitsOrderRoute from './features/unitsOrder/unitsOrder.route'
 import authRoute from './features/auth/auth.route'
 import dictionariesRouter from './features/dictionaries/dictionaries.route'
 import config from './config/config'
@@ -27,8 +27,8 @@ const defaultRoutes = [
     route: attackRoute
   },
   {
-    path: '/unit',
-    route: unitRoute
+    path: '/units-order',
+    route: unitsOrderRoute
   },
   {
     path: '/auth',

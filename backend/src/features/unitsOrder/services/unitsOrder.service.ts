@@ -3,6 +3,8 @@ import {
 } from '@prisma/client'
 import { prisma } from '../../../config/prisma'
 import { getAddCastleGoldOperation } from '../../resources/resources.service'
+import { PostCreateUnitsOrderDto } from '../dto/PostCreateUnitsOrderDto'
+import { getUnitTypeById } from '../../unit/services/unitType.service'
 
 async function createUnitsOrder(castleId) {
   return prisma.unitsOrder.create({
@@ -68,12 +70,11 @@ function getUpdateUnitsOrderLastCreationDateOperation(
 export async function getCreateUnitOrderItemOperations(
   unitType: UnitType,
   castleId: Castle['id'],
-  amount: number,
+  amount?: number,
   subtractGold = true,
   extraSubsequenceIndex = 0
 ) {
-  // todo option to optimize
-
+  // todo pass castleModel as param ??
   const castle = await prisma.castle.findFirst({
     where: {
       id: castleId
@@ -114,13 +115,35 @@ export async function getCreateUnitOrderItemOperations(
   ]
 }
 
-export async function createUnitOrderItem(
-  unitType: UnitType,
-  castleId: Castle['id'],
-  amount: number,
-  subtractGold = true
+export async function createUnitOrderItems(
+  unitTypes: UnitType[],
+  { items, castleId }: PostCreateUnitsOrderDto
 ) {
   return prisma.$transaction(
-    await getCreateUnitOrderItemOperations(unitType, castleId, amount, subtractGold)
+    await items.reduce(
+      async (result, { unitTypeId, amount }) => [
+        ...await result,
+        ...await getCreateUnitOrderItemOperations(
+          getUnitTypeById(unitTypes, unitTypeId),
+          castleId,
+          amount,
+          true
+        )
+      ],
+      Promise.resolve([])
+    )
   )
+}
+
+export async function findUnitOrderItemByCastleId(castleId: Castle['id']) {
+  return prisma.unitsOrder.findFirst({
+    where: {
+      castleId
+    },
+    include: {
+      items: {
+        orderBy: { subsequence: 'asc' }
+      }
+    }
+  })
 }

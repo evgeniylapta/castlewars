@@ -2,6 +2,7 @@ import { FC } from 'react'
 import { InfoPanelContextProvider } from '../../contexts/InfoPanel'
 import { AttackContextProvider } from '../../../../features/attacksStatus'
 import List from '../List/List'
+import { UnitsOrderStatusContextProvider } from '../../../../features/unitsOrderStatus'
 
 type Props = {
   onAttackCreated: () => void
@@ -10,7 +11,9 @@ type Props = {
 const InfoPanel: FC<Props> = ({ onAttackCreated }) => (
   <InfoPanelContextProvider onAttackCreated={onAttackCreated}>
     <AttackContextProvider>
-      <List />
+      <UnitsOrderStatusContextProvider>
+        <List />
+      </UnitsOrderStatusContextProvider>
     </AttackContextProvider>
   </InfoPanelContextProvider>
 )
