@@ -1,6 +1,6 @@
 import constate from 'constate'
 import { useForm, UseFormReturn } from 'react-hook-form'
-import { useCallback, useMemo } from 'react'
+import { useMemo } from 'react'
 import { useUnitTypesContext, findUnitTypeById } from '../../../entities/unit'
 import { useCalculatedGoldInterval } from '../../../entities/gold'
 import { useCastleContext } from '../../../entities/castle'
