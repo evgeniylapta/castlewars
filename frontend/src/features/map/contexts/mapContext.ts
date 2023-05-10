@@ -1,5 +1,6 @@
 import constate from 'constate'
 import { useState } from 'react'
+import { useLocalStorage } from 'react-use'
 import { useCastlesQuery } from '../query'
 import { mapSize } from '../utils/mapSize'
 import { mapRange } from '../utils/mapRange'
@@ -25,10 +26,10 @@ function useMapCenter() {
 }
 
 function useExpanding() {
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [isExpanded, setIsExpanded] = useLocalStorage('isExpanded', false)
 
   return {
-    isExpanded,
+    isExpanded: isExpanded || false,
     expandMap: () => setIsExpanded(true),
     collapseMap: () => setIsExpanded(false)
   }

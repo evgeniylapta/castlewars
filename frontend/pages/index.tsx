@@ -8,6 +8,7 @@ import { UnitTypesContextProvider } from '../src/entities/unit'
 import { InfoPanel } from '../src/widgets/infoPanel'
 import { Header } from '../src/widgets/header'
 import { CastleProvider, useCastleContext } from '../src/entities/castle'
+import { SocketsContextProvider } from '../src/shared/contexts/socketsContext'
 
 const Home: FC = () => {
   const { myCastleQuery: { isFetched } } = useCastleContext()
@@ -42,9 +43,11 @@ export default function () {
   return (
     <TribeTypesContextProvider>
       <UnitTypesContextProvider>
-        <CastleProvider myCastleId={currentUser?.castles[0].id}>
-          <Home />
-        </CastleProvider>
+        <SocketsContextProvider>
+          <CastleProvider myCastleId={currentUser?.castles[0].id}>
+            <Home />
+          </CastleProvider>
+        </SocketsContextProvider>
       </UnitTypesContextProvider>
     </TribeTypesContextProvider>
   )

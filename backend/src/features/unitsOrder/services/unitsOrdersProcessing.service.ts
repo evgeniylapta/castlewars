@@ -2,10 +2,12 @@ import {
   UnitType, UnitsOrderItem, UnitsOrder, UnitGroup
 } from '@prisma/client'
 import { addSeconds, subSeconds } from 'date-fns'
+import { SocketAction } from 'sharedUtils'
 import { prisma } from '../../../config/prisma'
 import { callFormattedConsoleLog } from '../../../utils/console'
 import { UNIT_ORDER_ITEM_DURATION_COEFFICIENT } from '../config'
 import { findUnitTypes } from '../../unit/services/unitType.service'
+import { broadcastSocketsEvent } from '../../sockets/socketsInitService'
 
 function getUnitOrderItemDurationByUnitTypeInSeconds(unitType: UnitType) {
   return UNIT_ORDER_ITEM_DURATION_COEFFICIENT * unitType.creatingSpeed
@@ -153,6 +155,17 @@ function getUnitOrderOperations(
   }, [])
 }
 
+async function emitSocketEvents(
+  unitOrders: Awaited<ReturnType<typeof findActualUnitOrdersToHandle>>
+) {
+  return Promise.all(unitOrders.map(({ castle }) => (
+    broadcastSocketsEvent(
+      SocketAction.ORDERING_PROCESSING,
+      ({ selectedCastleId }) => castle.id === selectedCastleId
+    )
+  )))
+}
+
 export async function processUnitOrders() {
   const now = new Date()
   const foundUnitOrders = await findActualUnitOrdersToHandle(await findUnitTypes(), now)
@@ -171,4 +184,6 @@ export async function processUnitOrders() {
   }, [])
 
   await prisma.$transaction(operations)
+
+  await emitSocketEvents(foundUnitOrders)
 }

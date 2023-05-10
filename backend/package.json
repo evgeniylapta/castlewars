@@ -29,6 +29,7 @@
     "prisma": "^4.7.1",
     "reflect-metadata": "^0.1.13",
     "sharedUtils": "file:../sharedUtils",
+    "socket.io": "^4.6.1",
     "swagger-jsdoc": "^6.2.7",
     "swagger-ui-express": "^4.6.0",
     "ts-node": "^10.9.1",

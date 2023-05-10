@@ -2,7 +2,7 @@ import {
   UnitGroup, UnitType, Attack, Castle
 } from '@prisma/client'
 import { add } from 'date-fns'
-import { calculateDistanceBetweenPoints, unitTypesMovingSeconds } from 'sharedUtils'
+import { calculateDistanceBetweenPoints, SocketAction, unitTypesMovingSeconds } from 'sharedUtils'
 import { prisma } from '../../../config/prisma'
 import {
   getUnitGroupByUnitType,
@@ -10,8 +10,9 @@ import {
   getUnitGroupUpdateAmountOperation,
   UnitGroupCreateModel, getUnitGroupCreateOperation
 } from '../../unit/services/unitGroup.service'
-import { findUnitTypes as findUnitTypes } from '../../unit/services/unitType.service'
+import { findUnitTypes } from '../../unit/services/unitType.service'
 import { callFormattedConsoleLog } from '../../../utils/console'
+import { broadcastSocketsEvent } from '../../sockets/socketsInitService'
 
 function findUnitTypeById(unitTypes: UnitType[], unitTypeId: string) {
   return unitTypes.find(({ id }) => id === unitTypeId)
@@ -254,6 +255,15 @@ function getAttackReturningOperations(
   ]
 }
 
+async function emitSocketEvents(attacks: Awaited<ReturnType<typeof findAttacks>>) {
+  return Promise.all(attacks.map(({ castleToId, castleFromId }) => (
+    broadcastSocketsEvent(
+      SocketAction.ATTACK_PROCESSING,
+      ({ selectedCastleId }) => [castleToId, castleFromId].includes(selectedCastleId)
+    )
+  )))
+}
+
 export async function attacksProcessingTick() {
   const foundAttacks = await findAttacks()
   const unitTypes = await findUnitTypes()
@@ -299,4 +309,6 @@ export async function attacksProcessingTick() {
   }, [])
 
   await prisma.$transaction(operations)
+
+  await emitSocketEvents(foundAttacks)
 }

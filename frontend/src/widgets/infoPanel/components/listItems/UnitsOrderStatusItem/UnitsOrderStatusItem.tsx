@@ -4,7 +4,7 @@ import { UnitsOrderStatus, useUnitsOrderStatusContext } from '../../../../../fea
 export function useIsAvailable() {
   const { unitsOrdersQuery } = useUnitsOrderStatusContext()
 
-  return !!unitsOrdersQuery.data?.items.length
+  return !!unitsOrdersQuery.data?.items?.length
 }
 
 const UnitsOrderStatusItem = () => (

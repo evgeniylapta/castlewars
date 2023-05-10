@@ -6,12 +6,15 @@ import compression from 'compression'
 import cors from 'cors'
 import httpStatus from 'http-status'
 import passport from 'passport'
+import http from 'http'
 import ApiError from './utils/ApiError'
 import routes from './routes'
 import { errorConverter, errorHandler } from './middlewares/error'
 import { jwtStrategy } from './config/passport'
+import { startSocketsServer } from './features/sockets/socketsInitService'
 
 const app = express()
+const server = http.createServer(app)
 
 // app.get('/test', (req, res) => {
 //   res.send('test')
@@ -62,4 +65,6 @@ app.use(errorConverter)
 
 app.use(errorHandler)
 
-export default app
+startSocketsServer(server)
+
+export default server
