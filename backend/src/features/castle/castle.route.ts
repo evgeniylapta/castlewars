@@ -1,35 +1,24 @@
 import express from 'express'
 import {
-  createCastleController,
-  castleDetails,
-  castlesController,
-  currentUserCastleController,
-  distanceBetweenCastlesController
+  getCastleDetailsController,
+  getCastlesController
 } from './castle.controller'
 import validateRequest from '../../middlewares/validateRequest'
-import { CastleCreateDto } from './dto/CastleCreateDto'
 import { GetCastlesQueryDto } from './dto/GetCastlesQueryDto'
 import { GetCastleDetailsQueryDto } from './dto/GetCastleDetailsQueryDto'
-import { GetDistanceBetweenCastlesQueryDto } from './dto/GetDistanceBetweenPointsQueryDto'
 
 const router = express.Router()
 
-router.route('/')
-  .get(validateRequest({ QueryDto: GetCastlesQueryDto }), castlesController)
-  .post(validateRequest({ BodyDto: CastleCreateDto }), createCastleController)
-
-router.get('/my', currentUserCastleController)
-
 router.get(
-  '/distance',
-  validateRequest({ QueryDto: GetDistanceBetweenCastlesQueryDto }),
-  distanceBetweenCastlesController
+  '/',
+  validateRequest({ QueryDto: GetCastlesQueryDto }),
+  getCastlesController
 )
 
 router.get(
   '/details',
   validateRequest({ QueryDto: GetCastleDetailsQueryDto }),
-  castleDetails
+  getCastleDetailsController
 )
 
 export default router

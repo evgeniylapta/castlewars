@@ -1,19 +1,19 @@
 import { useQuery } from 'react-query'
-import { SocketAction } from 'sharedutils'
+import { SocketAction } from 'sharedUtils'
 import { apiClient } from '../../shared/apiClient'
-import { Uuid } from '../../shared/types'
+import { PossibleUndefined, Uuid } from '../../shared/types'
 import { UnitsOrder } from './types'
-import { socketSubscribeOnEvent } from '../../shared/hooks/socketSubscribeOnEvent'
+import { useSocketSubscribeQueryOnEvent } from '../../shared/hooks/useSocketSubscribeQueryOnEvent'
 
-export function useUnitsOrdersQuery(castleId?: Uuid) {
+export function useUnitsOrdersQuery(castleId: PossibleUndefined<Uuid>) {
   const key = ['unitsOrders', castleId]
-  socketSubscribeOnEvent(SocketAction.ORDERING_PROCESSING, key)
+  useSocketSubscribeQueryOnEvent(SocketAction.UNITS_ORDERING_CHANGE, key)
 
   return useQuery(
     key,
     async () => {
       const { data } = await apiClient.get<UnitsOrder>(
-        'units-order',
+        'unit-order',
         {
           params: { castleId }
         }

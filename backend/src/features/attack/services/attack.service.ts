@@ -1,9 +1,9 @@
 import { add } from 'date-fns'
 import { unitTypesMovingSeconds } from 'sharedUtils'
 import { prisma } from '../../../config/prisma'
-import { findUnitGroupsByCastleId } from '../../unit/services/unitGroup.service'
+import { findUnitGroupsByOwnerCastleId } from '../../unitGroup/unitGroup.service'
 import { calculateDistanceBetweenCastles } from '../../castle/castle.service'
-import { findUnitTypes as findUnitTypes } from '../../unit/services/unitType.service'
+import { findUnitTypes } from '../../unitType/unitType.service'
 import { AttackCreationData } from '../types'
 
 export async function findAttacksByUser(castleId: string) {
@@ -55,7 +55,7 @@ export async function getAttackCreateOperations(
     seconds: secondsToDestination
   })
 
-  const unitGroupsToUpdate = (await findUnitGroupsByCastleId(castleFromId))
+  const unitGroupsToUpdate = (await findUnitGroupsByOwnerCastleId(castleFromId))
     .filter(({ unitTypeId }) => requestUnitTypeKeys.includes(unitTypeId))
 
   // todo удалять если пустая группа

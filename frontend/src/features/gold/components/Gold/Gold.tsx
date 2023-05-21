@@ -2,15 +2,12 @@ import { FC } from 'react'
 import styles from './Gold.module.scss'
 import goldImg from '../../assets/gold.png'
 import CustomImage from '../../../../shared/components/CustomImage/CustomImage'
-import { useCalculatedGoldInterval } from '../../../../entities/gold'
 import { useCastleContext } from '../../../../entities/castle'
+import { useCalculatedGoldInterval, useResourcesQuery } from '../../../../entities/resources'
 
 function useCalculatedGold() {
-  const { selectedCastleQuery: { data: selectedCastle } } = useCastleContext()
-  return useCalculatedGoldInterval(
-    selectedCastle?.castleResources.gold,
-    selectedCastle?.castleResources.goldLastUpdate
-  )
+  const { data } = useResourcesQuery(useCastleContext().selectedCastleQuery.data?.id)
+  return useCalculatedGoldInterval(data)
 }
 
 const Gold: FC = () => (

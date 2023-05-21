@@ -1,4 +1,4 @@
 export enum SocketAction {
-  ATTACK_PROCESSING = 'attack-processing',
-  ORDERING_PROCESSING = 'ordering-processing'
+  ATTACKS_CHANGE = 'attacks-update',
+  UNITS_ORDERING_CHANGE = 'units-ordering-change'
 }

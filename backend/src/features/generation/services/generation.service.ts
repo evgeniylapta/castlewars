@@ -3,13 +3,13 @@ import {
 } from '@prisma/client'
 import { generateSectors, sectorsGenerateMap, sidesList } from './sectors.service'
 import { prisma } from '../../../config/prisma'
-import { findTribeTypes as findTribeTypes } from '../../tribe/tribe.service'
+import { findTribeTypes } from '../../tribe/tribe.service'
 import { findCastlesByCoordsRanges } from '../../castle/castle.service'
 import { USERS_IN_SECTOR_LIMIT } from '../config'
 import { Sector, Side } from '../types'
 import { encryptPassword, findBotsAmount } from '../../user/user.service'
 import { randomArrayItem, randomIntFromInterval } from '../../../utils/random'
-import { findUnitTypes as findUnitTypes, getUnitTypesByTribeType } from '../../unit/services/unitType.service'
+import { findUnitTypes, getUnitTypesByTribeType } from '../../unitType/unitType.service'
 import { callFormattedConsoleLog } from '../../../utils/console'
 
 type SidesAngleIndexesMap = { [key in Side]: number }

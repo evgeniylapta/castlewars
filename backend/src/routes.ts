@@ -2,9 +2,11 @@ import express from 'express'
 import castleRoute from './features/castle/castle.route'
 import userRoute from './features/user/user.route'
 import attackRoute from './features/attack/attack.route'
-import unitsOrderRoute from './features/unitsOrder/unitsOrder.route'
+import unitOrderRoute from './features/unitOrder/unitOrder.route'
+import unitGroupRoute from './features/unitGroup/unitGroup.route'
+import resourcesRoute from './features/resource/resource.route'
 import authRoute from './features/auth/auth.route'
-import dictionariesRouter from './features/dictionaries/dictionaries.route'
+import dictionariesRouter from './features/dictionary/dictionary.route'
 import config from './config/config'
 
 const router = express.Router()
@@ -19,7 +21,7 @@ const defaultRoutes = [
     route: userRoute
   },
   {
-    path: '/dictionaries',
+    path: '/dictionary',
     route: dictionariesRouter
   },
   {
@@ -27,8 +29,16 @@ const defaultRoutes = [
     route: attackRoute
   },
   {
-    path: '/units-order',
-    route: unitsOrderRoute
+    path: '/unit-order',
+    route: unitOrderRoute
+  },
+  {
+    path: '/unit-group',
+    route: unitGroupRoute
+  },
+  {
+    path: '/resource',
+    route: resourcesRoute
   },
   {
     path: '/auth',

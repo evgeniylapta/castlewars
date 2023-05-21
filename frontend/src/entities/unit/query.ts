@@ -3,7 +3,7 @@ import { apiClient } from '../../shared/apiClient'
 import { UnitType } from '../../commonTypes'
 
 async function unitTypes() {
-  const { data } = await apiClient.get<UnitType[]>('/dictionaries/unit-types')
+  const { data } = await apiClient.get<UnitType[]>('/dictionary/unit-types')
 
   return data
 }

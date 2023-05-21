@@ -9,8 +9,8 @@ import {
   UnitGroupUpdateAmountModel,
   getUnitGroupUpdateAmountOperation,
   UnitGroupCreateModel, getUnitGroupCreateOperation
-} from '../../unit/services/unitGroup.service'
-import { findUnitTypes } from '../../unit/services/unitType.service'
+} from '../../unitGroup/unitGroup.service'
+import { findUnitTypes } from '../../unitType/unitType.service'
 import { callFormattedConsoleLog } from '../../../utils/console'
 import { broadcastSocketsEvent } from '../../sockets/socketsInitService'
 
@@ -258,7 +258,7 @@ function getAttackReturningOperations(
 async function emitSocketEvents(attacks: Awaited<ReturnType<typeof findAttacks>>) {
   return Promise.all(attacks.map(({ castleToId, castleFromId }) => (
     broadcastSocketsEvent(
-      SocketAction.ATTACK_PROCESSING,
+      SocketAction.ATTACKS_CHANGE,
       ({ selectedCastleId }) => [castleToId, castleFromId].includes(selectedCastleId)
     )
   )))

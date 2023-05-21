@@ -5,8 +5,8 @@ import InProgress from '../InProgress/InProgress'
 
 const UnitsOrderStatus: FC = () => (
   <div className={styles.wrap}>
-    <Queue />
     <InProgress />
+    <Queue />
   </div>
 )
 

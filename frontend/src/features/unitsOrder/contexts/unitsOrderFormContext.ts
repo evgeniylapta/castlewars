@@ -2,7 +2,7 @@ import constate from 'constate'
 import { useForm, UseFormReturn } from 'react-hook-form'
 import { useMemo } from 'react'
 import { useUnitTypesContext, findUnitTypeById } from '../../../entities/unit'
-import { useCalculatedGoldInterval } from '../../../entities/gold'
+import { useCalculatedGoldInterval, useResourcesQuery } from '../../../entities/resources'
 import { useCastleContext } from '../../../entities/castle'
 import { useUnitsOrderMutation } from '../query'
 import { OrderUnitsFormData } from '../types'
@@ -38,12 +38,13 @@ export function useTroopsTotalPrice({ watch }: UseFormReturn<OrderUnitsFormData>
   )
 }
 
+function useCalculatedGold() {
+  const { data } = useResourcesQuery(useCastleContext().myCastleQuery.data?.id)
+  return useCalculatedGoldInterval(data)
+}
+
 function useTroopsTotal(useFormReturn: UseFormReturn<OrderUnitsFormData>) {
-  const { myCastleQuery: { data } } = useCastleContext()
-  const calculatedGold = useCalculatedGoldInterval(
-    data?.castleResources.gold,
-    data?.castleResources.goldLastUpdate
-  )
+  const calculatedGold = useCalculatedGold()
 
   const troopsTotalPrice = useTroopsTotalPrice(useFormReturn)
 

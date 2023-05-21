@@ -3,19 +3,14 @@ import { useCreateAttackContext } from '../../contexts/createAttackContext'
 import CustomTextField from '../../../../shared/components/form/CustomTextField/CustomTextField'
 import { maxNumber, positiveNumberOnly } from '../../../../shared/utils/formValidationRules'
 import { fieldNameByUnitType } from '../../utils/fieldNameByUnitType'
-import { UnitIcon, usePreparedUnitGroups } from '../../../../entities/unit'
-import { useCastleContext } from '../../../../entities/castle'
+import { UnitIcon } from '../../../../entities/unit'
 import { UnitType } from '../../../../commonTypes'
-
-function useUnitGroups() {
-  const { myCastleQuery: { data: myCastleDetails } } = useCastleContext()
-
-  return usePreparedUnitGroups(myCastleDetails?.unitGroups)
-}
+import { useUnitGroupsQuery } from '../../../../entities/unitGroup'
+import { useCastleContext } from '../../../../entities/castle'
 
 function useTroopsAmount(unitType: UnitType) {
-  const foundUnitGroup = useUnitGroups()?.find(({ unitTypeId }) => unitTypeId === unitType.id)
-
+  const { data: unitGroups } = useUnitGroupsQuery(useCastleContext().myCastleQuery.data?.id)
+  const foundUnitGroup = unitGroups?.find(({ unitTypeId }) => unitTypeId === unitType.id)
   return foundUnitGroup?.amount || 0
 }
 

@@ -1,13 +1,13 @@
 import { useQuery } from 'react-query'
-import { SocketAction } from 'sharedutils'
+import { SocketAction } from 'sharedUtils'
 import { apiClient } from '../../shared/apiClient'
 import { Attack } from './types'
-import { Castle } from '../../commonTypes'
-import { socketSubscribeOnEvent } from '../../shared/hooks/socketSubscribeOnEvent'
+import { useSocketSubscribeQueryOnEvent } from '../../shared/hooks/useSocketSubscribeQueryOnEvent'
+import { PossibleUndefined, Uuid } from '../../shared/types'
 
-export function useAttacksListQuery(castleId?: Castle['id']) {
+export function useAttacksListQuery(castleId: PossibleUndefined<Uuid>) {
   const key = ['attacksList', castleId]
-  socketSubscribeOnEvent(SocketAction.ATTACK_PROCESSING, key)
+  useSocketSubscribeQueryOnEvent(SocketAction.ATTACKS_CHANGE, key)
 
   return useQuery(
     key,

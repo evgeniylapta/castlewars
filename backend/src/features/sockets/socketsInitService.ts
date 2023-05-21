@@ -34,8 +34,8 @@ export function startSocketsServer(httpServer: HttpServer) {
 }
 
 export async function broadcastSocketsEvent(
-  eventName: SocketAction,
-  checkAvailability: (socketState: State) => boolean,
+  eventName: SocketAction | SocketAction[],
+  checkAvailability: (socketState: State) => boolean
 ) {
   if (!socketsServer) {
     throw new Error('Sockets server is not defined')
@@ -43,7 +43,9 @@ export async function broadcastSocketsEvent(
 
   (await socketsServer.fetchSockets()).forEach((socket) => {
     if (checkAvailability(socket.data)) {
-      socket.emit('message', eventName)
+      (Array.isArray(eventName) ? eventName : [eventName]).forEach((event) => {
+        socket.emit('message', event)
+      })
     }
   })
 }

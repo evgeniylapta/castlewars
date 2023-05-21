@@ -1,11 +1,9 @@
 import { useQuery } from 'react-query'
-import { SocketAction } from 'sharedUtils'
 import { apiClient } from '../../shared/apiClient'
-import { Uuid } from '../../shared/types'
+import { PossibleUndefined, Uuid } from '../../shared/types'
 import { CastleExtended } from './types'
-import { socketSubscribeOnEvent } from '../../shared/hooks/socketSubscribeOnEvent'
 
-async function castleDetails(castleId?: Uuid) {
+async function castleDetails(castleId: PossibleUndefined<Uuid>) {
   const { data } = await apiClient.get<CastleExtended>('/castle/details', {
     params: { castleId }
   })
@@ -13,10 +11,8 @@ async function castleDetails(castleId?: Uuid) {
   return data
 }
 
-export function useCastleDetailsQuery(castleId?: Uuid) {
+export function useCastleDetailsQuery(castleId: PossibleUndefined<Uuid>) {
   const key = ['castleDetails', castleId]
-  socketSubscribeOnEvent(SocketAction.ATTACK_PROCESSING, key)
-  socketSubscribeOnEvent(SocketAction.ORDERING_PROCESSING, key)
 
   return useQuery(
     key,

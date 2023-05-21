@@ -1,11 +1,12 @@
 import { FC } from 'react'
+import { UnitsList } from '../../../../entities/unit'
+import { useUnitGroupsQuery } from '../../../../entities/unitGroup'
 import { useCastleContext } from '../../../../entities/castle'
-import { UnitsList, usePreparedUnitGroups } from '../../../../entities/unit'
 
 function useUnitGroups() {
-  const { selectedCastleQuery: { data } } = useCastleContext()
-
-  return usePreparedUnitGroups(data?.unitGroups)
+  const { selectedCastleQuery: { data: selectedCastle } } = useCastleContext()
+  const { data: unitGroups } = useUnitGroupsQuery(selectedCastle?.id)
+  return unitGroups
 }
 
 const Units: FC = () => {

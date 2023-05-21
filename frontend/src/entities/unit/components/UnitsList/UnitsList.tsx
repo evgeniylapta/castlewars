@@ -12,7 +12,7 @@ type Props = {
 }
 const UnitsList: FC<Props> = ({ items }) => (
   <div className={styles.wrap}>
-    {items.map(({ unitTypeId, amount, id }) => (
+    {items.filter(({ amount }) => !!amount).map(({ unitTypeId, amount, id }) => (
       <Unit key={id || unitTypeId} unitTypeId={unitTypeId} amount={amount} />
     ))}
   </div>

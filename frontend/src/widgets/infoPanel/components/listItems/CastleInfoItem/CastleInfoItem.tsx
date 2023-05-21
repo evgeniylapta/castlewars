@@ -13,7 +13,7 @@ function useUserName() {
     isMyCastleSelected
   } = useCastleContext()
 
-  return `${data?.user.name} ${isMyCastleSelected ? '(me)' : ''}`
+  return `${data?.user?.name} ${isMyCastleSelected ? '(me)' : ''}`
 }
 
 function useCoordsString() {
