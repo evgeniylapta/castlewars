@@ -1,10 +1,9 @@
 import { FC, useMemo, useState } from 'react'
-import classNames from 'classnames'
 import { formatDistanceStrict, isAfter } from 'date-fns'
 import { useHarmonicIntervalFn } from 'react-use'
 import { Attack as AttackType } from '../../types'
-import styles from './Attack.module.scss'
 import { ClassNameable } from '../../../../shared/types'
+import { AttackIcon } from '../../../../entities/attack'
 
 type Props = ClassNameable & {
   attack: AttackType,
@@ -60,20 +59,11 @@ const Attack: FC<Props> = ({
 
   return (
     <div className={className}>
-      <span className={classNames(
-        styles.icon,
-        {
-          ...(isReturning ? {
-            [styles.isReturning]: isReturning
-          } : {
-            [styles.fromIcon]: fromCurrentCastle,
-            [styles.toIcon]: !fromCurrentCastle
-          })
-        }
-      )}
-      >
-        {fromCurrentCastle && !isReturning ? '>>>' : '<<<'}
-      </span>
+      <AttackIcon
+        flickering
+        isFrom={fromCurrentCastle}
+        isReturning={isReturning}
+      />
       {' '}
       {isReturning ? 'Returning' : 'Attack'}
       {' '}

@@ -1,0 +1,8 @@
+.amount {
+  display: inline-flex;
+  gap: 3px;
+
+  & + & {
+    margin-left: 5px;
+  }
+}

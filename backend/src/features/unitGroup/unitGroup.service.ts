@@ -1,10 +1,8 @@
 import {
-  UnitType, UnitGroup, Castle, Attack
+  UnitType, UnitGroup
 } from '@prisma/client'
 import { prisma } from '../../config/prisma'
-
-export type UnitGroupUpdateAmountModel = { unitGroupId: UnitGroup['id'], newAmount: number, oldAmount: number }
-export type UnitGroupCreateModel = { amount: number, ownerCastleId?: Castle['id'], ownerAttackId?: Attack['id'], unitTypeId: UnitType['id'] }
+import { UnitGroupCreateModel, UnitGroupUpdateAmountModel } from './types'
 
 export async function findUnitGroupsByOwnerCastleId(castleId: string) {
   return prisma.unitGroup.findMany({

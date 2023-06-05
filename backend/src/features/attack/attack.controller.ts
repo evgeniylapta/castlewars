@@ -3,12 +3,21 @@ import { GetCastleAttacksQueryDto } from './dto/GetCastleAttacksQueryDto'
 import { createAttack, findAttacksByUser } from './services/attack.service'
 import { PostCreateAttackBodyDto } from './dto/PostCreateAttackBodyDto'
 import { findCurrentUser } from '../user/user.service'
+import { GetAttackHistoryQueryDto } from './dto/GetAttackHistoryQueryDto'
+import { findCreateAttacksHistory } from './services/attackHistory.service'
 
-export const attacksController = async (
+export const getAttacksController = async (
   req: Request<object, object, object, GetCastleAttacksQueryDto>,
   res
 ) => {
   res.send(await findAttacksByUser(req.query.castleId))
+}
+
+export const getAttacksHistoryController = async (
+  req: Request<object, object, object, GetAttackHistoryQueryDto>,
+  res
+) => {
+  res.send(await findCreateAttacksHistory(req.query))
 }
 
 // todo rename all

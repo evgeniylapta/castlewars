@@ -51,6 +51,8 @@ model Castle {
   unitGroups      UnitGroup[]
   attacksFrom     Attack[]         @relation("AttackCastleFrom")
   attacksTo       Attack[]         @relation("AttackCastleTo")
+  attackHistoryFrom AttackHistory[] @relation("AttackHistoryCastleFrom")
+  attackHistoryTo AttackHistory[] @relation("AttackHistoryCastleTo")
   unitsOrders     UnitsOrder[]
 }
 
@@ -77,6 +79,7 @@ model UnitType {
   tribeType        TribeType        @relation(fields: [tribeTypeId], references: [id])
   tribeTypeId      String
   subsequence      Int
+  attackHistoryItems AttackHistoryItem[]
 }
 
 model TribeType {
@@ -137,4 +140,25 @@ model BotAction {
   user   User     @relation(fields: [userId], references: [id])
   userId String   @unique
   date   DateTime
+}
+
+model AttackHistory {
+  id     String   @id @default(uuid())
+  castleFrom   Castle     @relation(name: "AttackHistoryCastleFrom", fields: [castleFromId], references: [id])
+  castleFromId String
+  castleTo   Castle     @relation(name: "AttackHistoryCastleTo", fields: [castleToId], references: [id])
+  castleToId String
+  attackDate   DateTime
+  items AttackHistoryItem[]
+}
+
+model AttackHistoryItem {
+  id String   @id @default(uuid())
+  attackHistory AttackHistory @relation(fields: [attackHistoryId], references: [id])
+  attackHistoryId String
+  isDefence Boolean
+  unitType UnitType @relation(fields: [unitTypeId], references: [id])
+  unitTypeId String
+  oldAmount Int
+  newAmount Int
 }

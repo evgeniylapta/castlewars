@@ -5,8 +5,11 @@
 }
 
 .icon {
-  animation: flickerAnimation 1.5s infinite;
   font-weight: bold;
+}
+
+.animation {
+  animation: flickerAnimation 1.5s infinite;
 }
 
 .fromIcon {
