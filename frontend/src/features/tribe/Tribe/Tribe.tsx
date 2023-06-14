@@ -5,7 +5,7 @@ import romansImg from '../../../widgets/infoPanel/assets/romans.png'
 import teautonsImg from '../../../widgets/infoPanel/assets/teautons.png'
 import { useTribeTypeById } from '../../../entities/tribe'
 import { useCastleContext } from '../../../entities/castle'
-import CustomImage from '../../../shared/components/CustomImage/CustomImage'
+import { CustomImage } from '../../../shared'
 
 function useTribeType() {
   const { selectedCastleQuery: { data } } = useCastleContext()

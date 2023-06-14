@@ -1,4 +1,4 @@
-import { Uuid } from '../../shared/types'
+import { Uuid } from '../../shared'
 
 export type MapRange = { minX: number, minY: number, maxX: number, maxY: number }
 

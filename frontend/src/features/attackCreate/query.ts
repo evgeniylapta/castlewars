@@ -1,5 +1,5 @@
 import { useMutation } from 'react-query'
-import { apiClient } from '../../shared/apiClient'
+import { apiClient } from '../../shared'
 
 export function useCreateAttackMutation() {
   return useMutation<void, undefined, { castleId: string, data: object }>(

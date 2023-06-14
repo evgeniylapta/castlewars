@@ -4,20 +4,23 @@ import {
   getCastlesController
 } from './castle.controller'
 import validateRequest from '../../middlewares/validateRequest'
-import { GetCastlesQueryDto } from './dto/GetCastlesQueryDto'
-import { GetCastleDetailsQueryDto } from './dto/GetCastleDetailsQueryDto'
+import { GetCastleRangeQueryDto } from './dto/GetCastleRangeQueryDto'
+import { GetCastleDetailsParamsDto } from './dto/GetCastleDetailsParamsDto'
+import { auth } from '../../middlewares/auth'
 
 const router = express.Router()
 
 router.get(
-  '/',
-  validateRequest({ QueryDto: GetCastlesQueryDto }),
+  '/range',
+  auth(),
+  validateRequest({ QueryDto: GetCastleRangeQueryDto }),
   getCastlesController
 )
 
 router.get(
-  '/details',
-  validateRequest({ QueryDto: GetCastleDetailsQueryDto }),
+  '/:castleId/details',
+  auth(),
+  validateRequest({ ParamsDto: GetCastleDetailsParamsDto }),
   getCastleDetailsController
 )
 

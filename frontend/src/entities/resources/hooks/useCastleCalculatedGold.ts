@@ -1,8 +1,7 @@
 import { calculateCastleCold } from 'sharedUtils'
 import { useMemo } from 'react'
-import { useNewDateInterval } from '../../../shared/hooks/useNewDateInterval'
+import { useNewDateInterval, PossibleUndefined } from '../../../shared'
 import { CastleResources } from '../../../commonTypes'
-import { PossibleUndefined } from '../../../shared/types'
 
 export function useCalculatedGoldInterval(resources: PossibleUndefined<CastleResources>) {
   const newDate = useNewDateInterval()

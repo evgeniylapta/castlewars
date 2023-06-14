@@ -41,8 +41,9 @@ async function emitSocketEvents(actions: Awaited<ReturnType<typeof findActionsTo
   return Promise.all(actions.map(({ user: { castles } }) => (
     broadcastSocketsEvent(
       [
-        SocketAction.ATTACKS_CHANGE,
-        SocketAction.UNITS_ORDERING_CHANGE
+        SocketAction.ATTACKS_UPDATED,
+        SocketAction.UNITS_ORDERING_CHANGED,
+        SocketAction.RESOURCES_CHANGED
       ],
       ({ selectedCastleId }) => castles.map(({ id }) => id).includes(selectedCastleId)
     )

@@ -1,7 +1,6 @@
 import { useQuery, useQueryClient } from 'react-query'
 import { useEffect } from 'react'
-import { apiClient } from '../../shared/apiClient'
-import { PossibleUndefined, Uuid } from '../../shared/types'
+import { PossibleUndefined, Uuid, apiClient } from '../../shared'
 import { AttacksHistoryResponse } from './types'
 
 export const attacksHistoryKey = 'attacksHistory'

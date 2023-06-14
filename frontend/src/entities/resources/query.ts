@@ -1,9 +1,13 @@
 import { useQuery } from 'react-query'
-import { apiClient } from '../../shared/apiClient'
-import { PossibleUndefined, Uuid } from '../../shared/types'
+import { SocketAction } from 'sharedutils'
+import {
+  PossibleUndefined, Uuid, apiClient, useSocketSubscribeQueryOnEvent
+} from '../../shared'
 
 export function useResourcesQuery(castleId: PossibleUndefined<Uuid>) {
   const key = ['resources', castleId]
+
+  useSocketSubscribeQueryOnEvent(SocketAction.RESOURCES_CHANGED, key)
 
   return useQuery(
     key,

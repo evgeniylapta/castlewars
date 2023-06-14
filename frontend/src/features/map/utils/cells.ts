@@ -1,4 +1,4 @@
-import { Uuid } from '../../../shared/types'
+import { Uuid } from '../../../shared'
 import { CellModel, ExtremePoints, Point } from '../types'
 import { castleByPoint } from './castle'
 import { Castle } from '../../../commonTypes'

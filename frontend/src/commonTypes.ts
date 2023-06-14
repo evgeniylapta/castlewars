@@ -1,6 +1,8 @@
 import { UnitName } from './entities/unit/types'
 import { Uuid } from './shared/types'
 
+export type Role = 'USER' | 'ADMIN'
+
 export type UnitType = {
   id: Uuid
   name: UnitName
@@ -34,7 +36,6 @@ export type User = {
   id: Uuid
   name: string
   tribeTypeId: Uuid
-  castles: Castle[]
 }
 
 export type CastleUserExtension = {

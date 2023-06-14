@@ -1,19 +1,17 @@
 import { useQuery } from 'react-query'
 import { SocketAction } from 'sharedUtils'
-import { PossibleUndefined, Uuid } from '../../shared/types'
-import { apiClient } from '../../shared/apiClient'
-import { UnitGroup } from '../../commonTypes'
 import {
-  useSocketSubscribeQueryOnEvent
-} from '../../shared/hooks/useSocketSubscribeQueryOnEvent'
+  PossibleUndefined, Uuid, apiClient, useSocketSubscribeQueryOnEvent
+} from '../../shared'
+import { UnitGroup } from '../../commonTypes'
 
 export function useUnitGroupsQuery(castleId: PossibleUndefined<Uuid>) {
   const key = ['unitGroups', castleId]
 
   useSocketSubscribeQueryOnEvent(
     [
-      SocketAction.ATTACKS_CHANGE,
-      SocketAction.UNITS_ORDERING_CHANGE
+      SocketAction.ATTACKS_UPDATED,
+      SocketAction.UNITS_ORDERING_CHANGED
     ],
     key
   )

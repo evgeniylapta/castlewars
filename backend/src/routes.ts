@@ -1,6 +1,5 @@
 import express from 'express'
 import castleRoute from './features/castle/castle.route'
-import userRoute from './features/user/user.route'
 import attackRoute from './features/attack/attack.route'
 import unitOrderRoute from './features/unitOrder/unitOrder.route'
 import unitGroupRoute from './features/unitGroup/unitGroup.route'
@@ -15,10 +14,6 @@ const defaultRoutes = [
   {
     path: '/castle',
     route: castleRoute
-  },
-  {
-    path: '/user',
-    route: userRoute
   },
   {
     path: '/dictionary',

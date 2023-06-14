@@ -1,6 +1,7 @@
 import { TribeType, UserRole } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import { prisma } from '../../config/prisma'
+import { generateUser } from '../generation/services/generation.service'
 
 export async function findCurrentUser() {
   return prisma.user.findFirst({
@@ -33,18 +34,7 @@ export async function createUser(
   password: string,
   role: UserRole = 'USER'
 ) {
-  return prisma.user.create({
-    include: {
-      castles: true
-    },
-    data: {
-      name,
-      tribeTypeId: tribeId,
-      email,
-      role,
-      password: await encryptPassword(password)
-    }
-  })
+  return generateUser(name, email, password, role, tribeId)
 }
 
 export async function findUserByEmail(email: string) {

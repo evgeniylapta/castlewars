@@ -2,7 +2,7 @@ import { FC, useMemo, useState } from 'react'
 import { formatDistanceStrict, isAfter } from 'date-fns'
 import { useHarmonicIntervalFn } from 'react-use'
 import { Attack as AttackType } from '../../types'
-import { ClassNameable } from '../../../../shared/types'
+import { ClassNameable } from '../../../../shared'
 import { AttackIcon } from '../../../../entities/attack'
 
 type Props = ClassNameable & {

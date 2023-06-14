@@ -21,6 +21,8 @@ type GenerateUserConfig = {
   emailFactory: (index: number) => string
   passwordFactory: (index: number) => string
   isBot: boolean
+  tribeTypeId?: TribeType['id'],
+  noGold?: boolean,
   role: UserRole
   limit: number
   withTroops: boolean
@@ -56,7 +58,13 @@ function getUserOperation(
   point: Point,
   tribeType: TribeType,
   {
-    nameFactory, isBot, withTroops, emailFactory, passwordFactory
+    nameFactory,
+    isBot,
+    withTroops,
+    tribeTypeId,
+    noGold,
+    emailFactory,
+    passwordFactory
   }: GenerateUserConfig,
   index: number,
   unitTypes: UnitType[]
@@ -68,7 +76,7 @@ function getUserOperation(
       castles: true
     },
     data: {
-      tribeTypeId: tribeType.id,
+      tribeTypeId: tribeTypeId || tribeType.id,
       isBot,
       role: 'ADMIN',
       name: nameFactory(index),
@@ -80,7 +88,7 @@ function getUserOperation(
           y: point.y,
           castleResources: {
             create: {
-              gold: getRandomGoldAmount(),
+              gold: noGold ? 0 : getRandomGoldAmount(),
               goldLastUpdate: new Date()
             }
           },
@@ -295,7 +303,13 @@ export async function generateBots(limit: number) {
   console.log('[BOTS GENERATION END]')
 }
 
-export async function generateUser(name: string, email: string, password: string, role: UserRole) {
+export async function generateUser(
+  name: string,
+  email: string,
+  password: string,
+  role: UserRole,
+  tribeTypeId: TribeType['id']
+) {
   const encryptedPassword = await encryptPassword(password)
 
   const [user] = await generateUsers({
@@ -303,7 +317,9 @@ export async function generateUser(name: string, email: string, password: string
     role,
     isBot: false,
     nameFactory: () => name,
+    tribeTypeId,
     withTroops: true,
+    noGold: true,
     passwordFactory: () => encryptedPassword,
     emailFactory: () => email
   })

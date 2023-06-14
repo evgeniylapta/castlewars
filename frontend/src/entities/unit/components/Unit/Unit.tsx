@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { ClassNameable, Uuid } from '../../../../shared/types'
+import { ClassNameable, Uuid } from '../../../../shared'
 import styles from './Unit.module.scss'
 import UnitIcon from '../UnitIcon/UnitIcon'
 

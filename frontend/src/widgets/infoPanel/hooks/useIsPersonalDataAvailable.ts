@@ -1,8 +1,8 @@
 import { useCastleContext } from '../../../entities/castle'
+import { useAuthData } from '../../../entities/auth'
 
 export function useIsPersonalDataAvailable() {
-  const isSuperAdmin = true
-  // const isSuperAdmin = false
+  const isAdmin = useAuthData()?.role === 'ADMIN'
 
-  return useCastleContext().isMyCastleSelected || isSuperAdmin
+  return useCastleContext().isMyCastleSelected || isAdmin
 }

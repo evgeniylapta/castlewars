@@ -58,8 +58,6 @@ export async function getAttackCreateOperations(
   const unitGroupsToUpdate = (await findUnitGroupsByOwnerCastleId(castleFromId))
     .filter(({ unitTypeId }) => requestUnitTypeKeys.includes(unitTypeId))
 
-  // todo удалять если пустая группа
-
   return [
     prisma.attack.create({
       data: {
@@ -94,5 +92,5 @@ export async function createAttack(
   castleToId: string,
   data: AttackCreationData
 ) {
-  await prisma.$transaction(await getAttackCreateOperations(castleFromId, castleToId, data))
+  return prisma.$transaction(await getAttackCreateOperations(castleFromId, castleToId, data))
 }

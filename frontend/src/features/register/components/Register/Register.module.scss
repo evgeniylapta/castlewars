@@ -1,0 +1,11 @@
+.buttonWrap {
+  margin-top: 20px;
+  justify-content: space-between;
+  display: flex;
+}
+
+.form {
+  :global(.MuiFormControl-root) + :global(.MuiFormControl-root) {
+    margin-top: 10px;
+  }
+}

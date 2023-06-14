@@ -124,15 +124,21 @@ INSERT INTO "UnitType" (id, name, attack, defence, speed, "carryingCapacity", "c
     ('11111111-1111-1111-1111-111111111119', 'Paladin', 55, 100, 10, 110, 2, 10, '591a413b-829e-4e92-a775-bdf620548712', 100, 3);
 
 INSERT INTO "User" (id, name, "tribeTypeId", email, password, role) VALUES
-    ('a54e7593-0aa1-4a7c-a8df-6b44cdfab190', 'TestUser', '591a413b-829e-4e92-a775-bdf620548710', 'somemail73@gmail.com', '$2b$10$xGlQRIs008HNsLgDhU840eu.eaIYuCd2OvssTxGUtlbF7TJ.kOS5O', 'ADMIN');
+    ('a54e7593-0aa1-4a7c-a8df-6b44cdfab190', 'Admin', '591a413b-829e-4e92-a775-bdf620548710', 'admin@example.com', '$2b$10$xGlQRIs008HNsLgDhU840eu.eaIYuCd2OvssTxGUtlbF7TJ.kOS5O', 'ADMIN'),
+    ('a54e7593-0aa1-4a7c-a8df-6b44cdfab999', 'User', '591a413b-829e-4e92-a775-bdf620548710', 'user@example.com', '$2b$10$xGlQRIs008HNsLgDhU840eu.eaIYuCd2OvssTxGUtlbF7TJ.kOS5O', 'USER');
 
 INSERT INTO "Castle" (id, "userId", x, y) VALUES
-    ('591a413b-829e-4e92-a775-bdf620548101', 'a54e7593-0aa1-4a7c-a8df-6b44cdfab190', 0, 0);
+    ('591a413b-829e-4e92-a775-bdf620548101', 'a54e7593-0aa1-4a7c-a8df-6b44cdfab190', 0, 0),
+    ('591a413b-829e-4e92-a775-bdf620548102', 'a54e7593-0aa1-4a7c-a8df-6b44cdfab999', 2, 2);
 
 INSERT INTO "CastleResources" (id, gold, "castleId", "goldLastUpdate") VALUES
-    (gen_random_uuid(), 120, '591a413b-829e-4e92-a775-bdf620548101', now());
+    (gen_random_uuid(), 120, '591a413b-829e-4e92-a775-bdf620548101', now()),
+    (gen_random_uuid(), 120, '591a413b-829e-4e92-a775-bdf620548102', now());
 
 INSERT INTO "UnitGroup" (id, "unitTypeId", amount, "ownerCastleId", "ownerAttackId") VALUES
     (gen_random_uuid(), '11111111-1111-1111-1111-111111111114', 21, '591a413b-829e-4e92-a775-bdf620548101', null),
     (gen_random_uuid(), '11111111-1111-1111-1111-111111111115', 75, '591a413b-829e-4e92-a775-bdf620548101', null),
-    (gen_random_uuid(), '11111111-1111-1111-1111-111111111116', 12, '591a413b-829e-4e92-a775-bdf620548101', null);
+    (gen_random_uuid(), '11111111-1111-1111-1111-111111111116', 12, '591a413b-829e-4e92-a775-bdf620548101', null),
+    (gen_random_uuid(), '11111111-1111-1111-1111-111111111114', 21, '591a413b-829e-4e92-a775-bdf620548102', null),
+    (gen_random_uuid(), '11111111-1111-1111-1111-111111111115', 75, '591a413b-829e-4e92-a775-bdf620548102', null),
+    (gen_random_uuid(), '11111111-1111-1111-1111-111111111116', 12, '591a413b-829e-4e92-a775-bdf620548102', null);

@@ -97,19 +97,13 @@ function getAttackOperations(
     defenceUpdateModels
   } = getAttackUpdateModels(attackUnitGroups, castleToUnitGroups, unitTypes)
 
-  const hasTroopsToReturn = !!attackUpdateModels.length
-
-  // todo
-  // const deleteUnitGroupsOperations = [
-  //   ...attackUnitGroupIdsToDelete
-  // ].map(getUnitGroupDeleteOperation)
+  const hasTroopsToReturn = attackUpdateModels.some(({ newAmount }) => !!newAmount)
 
   const updateUnitGroupsOperations = [
     ...attackUpdateModels,
     ...defenceUpdateModels
   ].map(getUnitGroupUpdateAmountOperation)
 
-  // todo cascade remove unitGroups on attack remove
   const attackOperation = !hasTroopsToReturn
     ? attackDeleteOperation(attackId)
     : getAttackUpdateReturningDateOperation(
@@ -123,14 +117,12 @@ function getAttackOperations(
     attackId,
     distance,
     hasTroopsToReturn,
-    // attackUnitGroupIdsToDelete,
     attackUpdateModels,
     defenceUpdateModels
   })
 
   return [
     ...updateUnitGroupsOperations,
-    // ...deleteUnitGroupsOperations,
     attackOperation
   ]
 }
@@ -187,7 +179,7 @@ function getAttackReturningOperations(
 async function emitSocketEvents(attacks: Awaited<ReturnType<typeof findAttacks>>) {
   return Promise.all(attacks.map(({ castleToId, castleFromId }) => (
     broadcastSocketsEvent(
-      SocketAction.ATTACKS_CHANGE,
+      SocketAction.ATTACKS_UPDATED,
       ({ selectedCastleId }) => [castleToId, castleFromId].includes(selectedCastleId)
     )
   )))

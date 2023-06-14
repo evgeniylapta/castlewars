@@ -1,12 +1,9 @@
 import { useQuery } from 'react-query'
-import { apiClient } from '../../shared/apiClient'
-import { PossibleUndefined, Uuid } from '../../shared/types'
+import { apiClient, PossibleUndefined, Uuid } from '../../shared'
 import { CastleExtended } from './types'
 
 async function castleDetails(castleId: PossibleUndefined<Uuid>) {
-  const { data } = await apiClient.get<CastleExtended>('/castle/details', {
-    params: { castleId }
-  })
+  const { data } = await apiClient.get<CastleExtended>(`/castle/${castleId}/details`)
 
   return data
 }

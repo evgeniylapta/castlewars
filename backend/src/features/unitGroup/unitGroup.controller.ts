@@ -1,9 +1,9 @@
-import { Request } from 'express'
 import { GetCastleDetailsQueryDto } from './dto/GetCastleDetailsParamsDto'
 import { prisma } from '../../config/prisma'
+import { CustomRequest } from '../../types/express'
 
 export const getUnitGroupsController = async (
-  req: Request<object, object, object, GetCastleDetailsQueryDto>,
+  req: CustomRequest<true, object, GetCastleDetailsQueryDto>,
   res
 ) => {
   res.send(await prisma.unitGroup.findMany({

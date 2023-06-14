@@ -61,7 +61,7 @@ export function getAttackUpdateModels(
   castleToUnitGroups: UnitGroup[],
   unitTypes: UnitType[]
 ) {
-  //todo move?
+  // todo move?
   const attackSum = calculateAttackValueByUnitGroups(attackUnitGroups, unitTypes)
   const defenceSum = calculateDefenceValueByUnitGroups(castleToUnitGroups, unitTypes)
 

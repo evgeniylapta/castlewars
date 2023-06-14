@@ -1,5 +1,5 @@
 import {
-  CastleResources, TribeType, UnitsOrder, UnitType
+  CastleResources, TribeType, UnitType
 } from '@prisma/client'
 import { calculateCastleCold } from 'sharedUtils'
 import { randomArrayItem, rollChance } from '../../../utils/random'

@@ -3,7 +3,7 @@ import { addSeconds, formatDuration, intervalToDuration } from 'date-fns'
 import { unitTypesMovingSeconds } from 'sharedUtils'
 import { FormHelperText, Typography } from '@mui/material'
 import { findUnitTypeById, useUnitTypesContext } from '../../../../entities/unit'
-import { useNewDateInterval } from '../../../../shared/hooks/useNewDateInterval'
+import { useNewDateInterval } from '../../../../shared'
 import { useCreateAttackContext } from '../../contexts/createAttackContext'
 import { UnitType } from '../../../../commonTypes'
 

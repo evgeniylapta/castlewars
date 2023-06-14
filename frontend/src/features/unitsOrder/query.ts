@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from 'react-query'
-import { apiClient } from '../../shared/apiClient'
+import { apiClient, Uuid } from '../../shared'
 import { OrderUnitsFormData } from './types'
-import { Uuid } from '../../shared/types'
 import { useCastleContext } from '../../entities/castle'
 
 function prepareData(castleId: Uuid, data: OrderUnitsFormData) {

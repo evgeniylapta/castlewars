@@ -1,13 +1,12 @@
 import { useQuery } from 'react-query'
-import { apiClient } from '../../shared/apiClient'
+import { apiClient } from '../../shared'
 import { MapRange } from './types'
+import { Castle } from '../../commonTypes'
 
 async function castles({
   minX, minY, maxX, maxY
 }: MapRange) {
-  // todo type
-  // const { data } = await apiClient.get<Castle[]>('/castle', {
-  const { data } = await apiClient.get<any>('/castle', {
+  const { data } = await apiClient.get<Castle[]>('/castle/range', {
     params: {
       minX, minY, maxX, maxY
     }

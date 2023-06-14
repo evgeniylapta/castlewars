@@ -1,9 +1,8 @@
 import { FC } from 'react'
 import { UnitIcon } from '../../../../entities/unit'
 import { useUnitsOrderFormContext } from '../../contexts/unitsOrderFormContext'
-import { positiveNumberOnly } from '../../../../shared/utils/formValidationRules'
-import CustomTextField from '../../../../shared/components/form/CustomTextField/CustomTextField'
 import { UnitType } from '../../../../commonTypes'
+import { CustomTextField, positiveNumberOnly } from '../../../../shared'
 
 type Props = {
   unitType: UnitType

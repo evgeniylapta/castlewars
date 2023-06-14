@@ -1,4 +1,4 @@
-import { Uuid } from '../../shared/types'
+import { Uuid } from '../../shared'
 
 export type AttacksHistoryItem = {
   id: Uuid,

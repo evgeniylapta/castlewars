@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import styles from './UnitsList.module.scss'
 import Unit from '../Unit/Unit'
-import { Uuid } from '../../../../shared/types'
+import { Uuid } from '../../../../shared'
 
 type Props = {
   items: {

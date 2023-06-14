@@ -14,15 +14,18 @@ export const findCastlesByCoordsRanges = async (
       { y: { gte: minY } },
       { y: { lte: maxY } }
     ]
-  },
-  include: {
-    user: true
   }
 })
 
 const findCastleByIds = async (castleId: string) => prisma.castle.findFirst({
   where: {
     id: castleId
+  }
+})
+
+export const findCastlesByUserId = async (userId: string) => prisma.castle.findMany({
+  where: {
+    userId
   }
 })
 

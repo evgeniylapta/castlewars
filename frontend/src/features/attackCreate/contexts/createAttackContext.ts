@@ -63,8 +63,8 @@ function useSubmitHandle(
       castleId: selectedCastle.id
     })
 
-    onSubmitSuccess?.()
     callback()
+    onSubmitSuccess?.()
 
     return Promise.resolve()
   }

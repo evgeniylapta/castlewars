@@ -101,9 +101,6 @@ export async function getCreateUnitOrderItemOperations(
     unitOrder.items
   )
 
-  console.log('castle.castleResources, -unitType.goldPrice')
-  console.log(castle.castleResources, -unitType.goldPrice)
-
   return [
     ...await getUnitsOrderItemCreatingOperations(
       unitOrder,
@@ -114,7 +111,7 @@ export async function getCreateUnitOrderItemOperations(
     ...(updateLastCreationDateOperation ? [updateLastCreationDateOperation] : []),
     ...(
       subtractGold
-        ? [getAddCastleGoldOperation(castle.castleResources, -unitType.goldPrice)]
+        ? [getAddCastleGoldOperation(castle.castleResources, -(unitType.goldPrice * amount))]
         : []
     )
   ]
@@ -122,7 +119,10 @@ export async function getCreateUnitOrderItemOperations(
 
 async function emitSocketEvents(castleId: Castle['id']) {
   return broadcastSocketsEvent(
-    SocketAction.UNITS_ORDERING_CHANGE,
+    [
+      SocketAction.UNITS_ORDERING_CHANGED,
+      SocketAction.RESOURCES_CHANGED
+    ],
     ({ selectedCastleId }) => castleId === selectedCastleId
   )
 }

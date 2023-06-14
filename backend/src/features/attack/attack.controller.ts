@@ -5,9 +5,11 @@ import { PostCreateAttackBodyDto } from './dto/PostCreateAttackBodyDto'
 import { findCurrentUser } from '../user/user.service'
 import { GetAttackHistoryQueryDto } from './dto/GetAttackHistoryQueryDto'
 import { findCreateAttacksHistory } from './services/attackHistory.service'
+import { CustomRequest } from '../../types/express'
+import { findCastlesByUserId } from '../castle/castle.service'
 
 export const getAttacksController = async (
-  req: Request<object, object, object, GetCastleAttacksQueryDto>,
+  req: CustomRequest<true, object, GetCastleAttacksQueryDto>,
   res
 ) => {
   res.send(await findAttacksByUser(req.query.castleId))
@@ -20,19 +22,13 @@ export const getAttacksHistoryController = async (
   res.send(await findCreateAttacksHistory(req.query))
 }
 
-// todo rename all
 export const createAttackController = async (
-  req: Request<object, object, PostCreateAttackBodyDto>,
+  req: CustomRequest<true, PostCreateAttackBodyDto>,
   res
 ) => {
   const { data, castleId } = req.body
 
-  // todo change after auth implementation
-  // todo right error codes
-  const { castles } = await findCurrentUser()
+  const castles = await findCastlesByUserId(req.user.id)
 
-  await createAttack(castles[0].id, castleId, data)
-
-  // todo response
-  res.send(true)
+  res.send(await createAttack(castles[0].id, castleId, data))
 }

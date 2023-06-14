@@ -5,8 +5,9 @@ import {
   InputAdornment, TextFieldProps, TextField
 } from '@mui/material'
 import {
-  Control, RegisterOptions, useController, useFormState
+  Control, RegisterOptions, useController
 } from 'react-hook-form'
+import { useFormFieldError } from '../../../hooks/useFormFieldError'
 
 function useStartAdornment(startIcon?: ReactNode) {
   if (!startIcon) {
@@ -20,24 +21,12 @@ function useStartAdornment(startIcon?: ReactNode) {
   )
 }
 
-function useError(control: Control, fieldName: string) {
-  const { errors } = useFormState({ control })
-  const foundError = errors[fieldName]
-
-  return {
-    hasError: !!foundError,
-    errorText: typeof foundError?.message === 'string'
-      ? <span>{foundError?.message}</span>
-      : undefined
-  }
-}
-
 type Props = TextFieldProps & {
   label?: string | ReactNode
   fieldName: string
   startIcon?: ReactNode
   rules?: RegisterOptions
-  control: Control
+  control: Control<any>
 }
 const CustomTextField: FC<Props> = ({
   control,
@@ -47,21 +36,25 @@ const CustomTextField: FC<Props> = ({
   rules,
   InputProps,
   ...rest
-}) => (
-  <TextField
-    {...useController({ name: fieldName, control, rules }).field}
-    id={useId()}
-    variant="standard"
-    fullWidth
-    label={label}
-    InputProps={{
-      startAdornment: useStartAdornment(startIcon),
-      ...InputProps
-    }}
-    error={useError(control, fieldName).hasError}
-    helperText={useError(control, fieldName).errorText}
-    {...rest}
-  />
-)
+}) => {
+  const { hasError, errorText } = useFormFieldError(control, fieldName)
+
+  return (
+    <TextField
+      {...useController({ name: fieldName, control, rules }).field}
+      id={useId()}
+      variant="standard"
+      fullWidth
+      label={label}
+      InputProps={{
+        startAdornment: useStartAdornment(startIcon),
+        ...InputProps
+      }}
+      error={hasError}
+      helperText={errorText}
+      {...rest}
+    />
+  )
+}
 
 export default CustomTextField

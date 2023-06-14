@@ -1,8 +1,7 @@
 import constate from 'constate'
 import { useEffect, useState } from 'react'
 import { useCastleDetailsQuery } from '../query'
-import { Uuid } from '../../../shared/types'
-import { useSocketsContext } from '../../../shared/contexts/socketsContext'
+import { Uuid, useSocketsContext } from '../../../shared'
 
 function useCastleDetails(myCastleId?: Uuid) {
   const [selectedCastleId, setSelectedCastleId] = useState<Uuid>()

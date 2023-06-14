@@ -1,13 +1,14 @@
 import { Request } from 'express'
-import { GetCastlesQueryDto } from './dto/GetCastlesQueryDto'
+import { GetCastleRangeQueryDto } from './dto/GetCastleRangeQueryDto'
 import {
   findCastlesByCoordsRanges
 } from './castle.service'
-import { GetCastleDetailsQueryDto } from './dto/GetCastleDetailsQueryDto'
+import { GetCastleDetailsParamsDto } from './dto/GetCastleDetailsParamsDto'
 import { prisma } from '../../config/prisma'
+import { CustomRequest } from '../../types/express'
 
 export const getCastlesController = async (
-  req: Request<object, object, object, GetCastlesQueryDto>,
+  req: CustomRequest<true, object, GetCastleRangeQueryDto>,
   res
 ) => {
   const {
@@ -17,15 +18,22 @@ export const getCastlesController = async (
 }
 
 export const getCastleDetailsController = async (
-  req: Request<object, object, object, GetCastleDetailsQueryDto>,
+  req: CustomRequest<true, object, object, GetCastleDetailsParamsDto>,
   res
 ) => {
+  // todo move to service
   const castle = await prisma.castle.findFirst({
     where: {
-      id: req.query.castleId
+      id: req.params.castleId
     },
     include: {
-      user: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+          tribeTypeId: true
+        }
+      },
       castleResources: true
     }
   })

@@ -1,21 +1,37 @@
 import jwt from 'jsonwebtoken'
-import { User } from '@prisma/client'
+import { Castle, User } from '@prisma/client'
 import { addMinutes, getUnixTime, addDays } from 'date-fns'
 import { JwtPayloadType } from '../../config/passport'
 import { FullTokenType } from '../../types/token'
 import { prisma } from '../../config/prisma'
+import { findCastlesByUserId } from '../castle/castle.service'
+
+function getUserTokenPayload(
+  {
+    id, name, tribeTypeId, role
+  }: User,
+  castles: Castle[]
+) {
+  return {
+    userId: id,
+    name,
+    tribeTypeId,
+    role,
+    castleId: castles[0].id
+  }
+}
 
 const generateToken = (
-  userId: string,
+  data: ReturnType<typeof getUserTokenPayload>,
   expires: Date,
   type: FullTokenType,
   secret = process.env.JWT_SECRET
 ) => {
   const payload: JwtPayloadType = {
-    userId,
     type,
     exp: getUnixTime(expires),
-    iat: getUnixTime(new Date())
+    iat: getUnixTime(new Date()),
+    ...data
   }
 
   return jwt.sign(payload, secret)
@@ -76,14 +92,16 @@ export const removeToken = async (token: string) => prisma.token.delete({
 })
 
 export const generateAuthTokens = async (user: User) => {
+  const castles = await findCastlesByUserId(user.id)
+
   const accessTokenExpires = addMinutes(
     new Date(),
     Number(process.env.JWT_ACCESS_EXPIRATION_MINUTES)
   )
-  const accessToken = generateToken(user.id, accessTokenExpires, 'ACCESS')
+  const accessToken = generateToken(getUserTokenPayload(user, castles), accessTokenExpires, 'ACCESS')
 
   const refreshTokenExpires = addDays(new Date(), Number(process.env.JWT_ACCESS_EXPIRATION_MINUTES))
-  const refreshToken = generateToken(user.id, refreshTokenExpires, 'REFRESH')
+  const refreshToken = generateToken(getUserTokenPayload(user, castles), refreshTokenExpires, 'REFRESH')
   await saveToken(refreshToken, user.id, refreshTokenExpires, 'REFRESH')
 
   return {

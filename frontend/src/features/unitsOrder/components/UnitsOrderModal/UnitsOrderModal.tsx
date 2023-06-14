@@ -5,18 +5,18 @@ import {
   DialogContent,
   DialogTitle
 } from '@mui/material'
-import { ClassNameable } from '../../../../shared/types'
-import { useUserContext } from '../../../../entities/user'
+import { ClassNameable } from '../../../../shared'
 import { useUnitTypesByTribeId } from '../../../../entities/unit'
 import { UnitsOrderFormContextProvider } from '../../contexts/unitsOrderFormContext'
 import FormItem from '../FormItem/FormItem'
 import styles from './UnitsOrderModal.module.scss'
 import TotalPrice from '../TotalPrice/TotalPrice'
 import Submit from '../Submit/Submit'
+import { useAuthData } from '../../../../entities/auth'
 
 function useUnitTypes() {
-  const { currentUserQuery: { data: currentUser } } = useUserContext()
-  return useUnitTypesByTribeId(currentUser?.tribeTypeId)
+  const userData = useAuthData()
+  return useUnitTypesByTribeId(userData?.tribeTypeId)
 }
 
 type Props = {

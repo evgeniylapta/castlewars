@@ -5,7 +5,7 @@ import { GetUnitsOrdersDto } from './dto/GetUnitsOrdersDto'
 import { CustomRequest } from '../../types/express'
 
 export const getUnitsOrdersController = async (
-  req: CustomRequest<false, undefined, GetUnitsOrdersDto>,
+  req: CustomRequest<true, undefined, GetUnitsOrdersDto>,
   res
 ) => {
   res.send(await findUnitOrderItemByCastleId(req.query.castleId))
@@ -13,7 +13,7 @@ export const getUnitsOrdersController = async (
 
 // todo rename to unit order / troop order
 export const createUnitsOrderingController = async (
-  req: CustomRequest<false, PostCreateUnitsOrderDto>,
+  req: CustomRequest<true, PostCreateUnitsOrderDto>,
   res
 ) => {
   // todo check tribe type and unit type param

@@ -160,7 +160,7 @@ async function emitSocketEvents(
 ) {
   return Promise.all(unitOrders.map(({ castle }) => (
     broadcastSocketsEvent(
-      SocketAction.UNITS_ORDERING_CHANGE,
+      SocketAction.UNITS_ORDERING_CHANGED,
       ({ selectedCastleId }) => castle.id === selectedCastleId
     )
   )))

@@ -1,7 +1,6 @@
 import { FC } from 'react'
 import { useCreateAttackContext } from '../../contexts/createAttackContext'
-import CustomTextField from '../../../../shared/components/form/CustomTextField/CustomTextField'
-import { maxNumber, positiveNumberOnly } from '../../../../shared/utils/formValidationRules'
+import { CustomTextField, maxNumber, positiveNumberOnly } from '../../../../shared'
 import { fieldNameByUnitType } from '../../utils/fieldNameByUnitType'
 import { UnitIcon } from '../../../../entities/unit'
 import { UnitType } from '../../../../commonTypes'

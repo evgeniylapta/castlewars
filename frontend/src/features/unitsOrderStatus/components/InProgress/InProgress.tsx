@@ -5,7 +5,7 @@ import styles from './InProgress.module.scss'
 import UnitIcon from '../../../../entities/unit/components/UnitIcon/UnitIcon'
 import { useUnitsOrderStatusContext } from '../../contexts/unitsOrderStatusContext'
 import { UnitsOrder } from '../../types'
-import { useNewDateInterval } from '../../../../shared/hooks/useNewDateInterval'
+import { useNewDateInterval } from '../../../../shared'
 import { useUnitTypesContext } from '../../../../entities/unit'
 
 function getFirstQueueItem(unitsOrder?: UnitsOrder) {

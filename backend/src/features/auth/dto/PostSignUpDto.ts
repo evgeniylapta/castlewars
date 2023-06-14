@@ -16,7 +16,7 @@ export class PostSignUpDto {
 
   @IsNotEmpty()
   @IsString()
-    name: string
+    userName: string
 
   @IsNotEmpty()
   @IsString()

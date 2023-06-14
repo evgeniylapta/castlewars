@@ -2,7 +2,7 @@ import { FC } from 'react'
 import {
   Button
 } from '@mui/material'
-import { ClassNameable } from '../../../../shared/types'
+import { ClassNameable } from '../../../../shared'
 import { useUnitsOrderFormContext } from '../../contexts/unitsOrderFormContext'
 
 function useIsSubmitDisabled() {

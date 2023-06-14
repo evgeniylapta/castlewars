@@ -4,12 +4,13 @@ import { GetCastleAttacksQueryDto } from './dto/GetCastleAttacksQueryDto'
 import { createAttackController, getAttacksController, getAttacksHistoryController } from './attack.controller'
 import { PostCreateAttackBodyDto } from './dto/PostCreateAttackBodyDto'
 import { GetAttackHistoryQueryDto } from './dto/GetAttackHistoryQueryDto'
+import { auth } from '../../middlewares/auth'
 
 const router = express.Router()
 
 router.route('/')
-  .get(validateRequest({ QueryDto: GetCastleAttacksQueryDto }), getAttacksController)
-  .post(validateRequest({ BodyDto: PostCreateAttackBodyDto }), createAttackController)
+  .get(auth(), validateRequest({ QueryDto: GetCastleAttacksQueryDto }), getAttacksController)
+  .post(auth(), validateRequest({ BodyDto: PostCreateAttackBodyDto }), createAttackController)
 
 router.get(
   '/history',

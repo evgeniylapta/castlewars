@@ -1,5 +1,5 @@
 import { useQuery } from 'react-query'
-import { apiClient } from '../../shared/apiClient'
+import { apiClient } from '../../shared'
 import { UnitType } from '../../commonTypes'
 
 async function unitTypes() {

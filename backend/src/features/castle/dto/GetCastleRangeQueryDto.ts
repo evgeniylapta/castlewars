@@ -1,6 +1,6 @@
 import { IsNotEmpty } from 'class-validator'
 
-export class GetCastlesQueryDto {
+export class GetCastleRangeQueryDto {
   @IsNotEmpty()
     minX: string
 

@@ -10,7 +10,7 @@ import swordsmanImg from '../../assets/Swordsman.png'
 import theutatesThunderImg from '../../assets/TheutatesThunder.png'
 import { UnitName } from '../../types'
 import { useUnitTypeName } from '../../hooks/useUnitTypeName'
-import CustomImage from '../../../../shared/components/CustomImage/CustomImage'
+import { CustomImage } from '../../../../shared'
 import { UnitType } from '../../../../commonTypes'
 
 function useUnitIcon(type?: UnitName) {
