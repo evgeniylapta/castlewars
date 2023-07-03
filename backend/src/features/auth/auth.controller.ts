@@ -1,34 +1,64 @@
-import { Response } from 'express'
+import { Request, Response } from 'express'
+import jwt, { JwtPayload } from 'jsonwebtoken'
+import httpStatus from 'http-status'
 import { PostSignInDto } from './dto/PostSignInDto'
 import { PostSignUpDto } from './dto/PostSignUpDto'
 import {
-  checkEmail, refreshToken, signIn, signUp
+  logout, performRefreshToken, signIn, signUp
 } from './auth.service'
 import catchAsync from '../../utils/catchAsync'
-import { GetCheckEmailDto } from './dto/GetCheckEmailDto'
 import { CustomRequest } from '../../types/express'
-import { PostRefreshTokenDto } from './dto/PostRefreshTokenDto'
+import { setTokensHeaders } from '../token/token.service'
+import { getCookieFromRequest } from '../../utils/cookies'
+import { ACCESS_TOKEN_COOKIE_NAME, REFRESH_TOKEN_COOKIE_NAME } from '../../config/tokens'
+import ApiError from '../../utils/ApiError'
 
 export const signInController = catchAsync(
   async (req: CustomRequest<false, PostSignInDto>, res: Response) => {
-    res.send({ token: await signIn(req.body) })
+    const { accessToken, refreshToken } = await signIn(req.body)
+
+    setTokensHeaders(res, accessToken, refreshToken)
+
+    res.status(200).end()
   }
 )
 
 export const signUpController = catchAsync(
   async (req: CustomRequest<false, PostSignUpDto>, res: Response) => {
-    res.send({ token: await signUp(req.body) })
-  }
-)
+    const { accessToken, refreshToken } = await signUp(req.body)
 
-export const checkEmailController = catchAsync(
-  async (req: CustomRequest<false, null, GetCheckEmailDto>, res: Response) => {
-    res.send({ exists: await checkEmail(req.query) })
+    setTokensHeaders(res, accessToken, refreshToken)
+
+    res.status(200).end()
   }
 )
 
 export const refreshTokenController = catchAsync(
-  async (req: CustomRequest<false, PostRefreshTokenDto>, res: Response) => {
-    res.send({ exists: await refreshToken(req.body) })
+  async (req: Request, res: Response) => {
+    const refreshTokenValue = getCookieFromRequest(req, REFRESH_TOKEN_COOKIE_NAME)
+
+    const { accessToken, refreshToken } = await performRefreshToken(refreshTokenValue)
+
+    setTokensHeaders(res, accessToken, refreshToken)
+
+    res.status(200).end()
+  }
+)
+
+export const logoutController = catchAsync(
+  async (req: Request, res: Response) => {
+    const token = getCookieFromRequest(req, ACCESS_TOKEN_COOKIE_NAME)
+    const jwtData = jwt.decode(token) as JwtPayload
+
+    if (!jwtData?.userId) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'User not found')
+    }
+
+    await logout(jwtData.userId)
+
+    res.clearCookie(ACCESS_TOKEN_COOKIE_NAME, { httpOnly: true })
+    res.clearCookie(REFRESH_TOKEN_COOKIE_NAME, { httpOnly: true })
+
+    res.status(200).end()
   }
 )

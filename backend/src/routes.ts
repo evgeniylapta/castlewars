@@ -1,11 +1,12 @@
 import express from 'express'
-import castleRoute from './features/castle/castle.route'
-import attackRoute from './features/attack/attack.route'
-import unitOrderRoute from './features/unitOrder/unitOrder.route'
-import unitGroupRoute from './features/unitGroup/unitGroup.route'
-import resourcesRoute from './features/resource/resource.route'
-import authRoute from './features/auth/auth.route'
+import castleRouter from './features/castle/castle.route'
+import attackRouter from './features/attack/attack.route'
+import unitOrderRouter from './features/unitOrder/unitOrder.route'
+import unitGroupRouter from './features/unitGroup/unitGroup.route'
+import resourcesRouter from './features/resource/resource.route'
+import authRouter from './features/auth/auth.route'
 import dictionariesRouter from './features/dictionary/dictionary.route'
+import userRouter from './features/user/user.route'
 import config from './config/config'
 
 const router = express.Router()
@@ -13,7 +14,7 @@ const router = express.Router()
 const defaultRoutes = [
   {
     path: '/castle',
-    route: castleRoute
+    route: castleRouter
   },
   {
     path: '/dictionary',
@@ -21,23 +22,27 @@ const defaultRoutes = [
   },
   {
     path: '/attack',
-    route: attackRoute
+    route: attackRouter
   },
   {
     path: '/unit-order',
-    route: unitOrderRoute
+    route: unitOrderRouter
   },
   {
     path: '/unit-group',
-    route: unitGroupRoute
+    route: unitGroupRouter
   },
   {
     path: '/resource',
-    route: resourcesRoute
+    route: resourcesRouter
   },
   {
     path: '/auth',
-    route: authRoute
+    route: authRouter
+  },
+  {
+    path: '/user',
+    route: userRouter
   }
 ]
 

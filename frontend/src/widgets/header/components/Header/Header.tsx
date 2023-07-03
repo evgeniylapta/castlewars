@@ -1,13 +1,28 @@
 import { FC } from 'react'
-import { AppBar, Toolbar, Typography } from '@mui/material'
+import {
+  AppBar, Button, Toolbar, Typography
+} from '@mui/material'
+import { useRouter } from 'next/router'
+import AdminActions from '../AdminActions/AdminActions'
+import { logout, useIsUserAdmin } from '../../../../entities/auth'
+
+function useLogoutHandle() {
+  const { push } = useRouter()
+
+  return async () => {
+    await logout()
+    push('login')
+  }
+}
 
 export const Header: FC = () => (
-  //  todo styles
-  <AppBar position="sticky" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+  <AppBar position="sticky">
     <Toolbar>
-      <Typography variant="h6" noWrap component="div">
+      <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
         Castlewars
       </Typography>
+      {useIsUserAdmin() && <AdminActions />}
+      <Button onClick={useLogoutHandle()} color="inherit">Logout</Button>
     </Toolbar>
   </AppBar>
 )

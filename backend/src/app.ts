@@ -5,6 +5,7 @@ import 'reflect-metadata'
 import compression from 'compression'
 import cors from 'cors'
 import httpStatus from 'http-status'
+import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import http from 'http'
 import ApiError from './utils/ApiError'
@@ -36,13 +37,18 @@ app.use(express.urlencoded({ extended: true }))
 
 // sanitize request data
 app.use(xss())
+app.use(cookieParser())
 
 // gzip compression
 app.use(compression())
 
 // enable cors
-app.use(cors())
-app.options('*', cors())
+const preparedCors = cors({
+  credentials: true,
+  origin: 'http://localhost:3000'
+})
+app.use(preparedCors)
+app.options('*', preparedCors)
 
 // jwt authentication
 app.use(passport.initialize())

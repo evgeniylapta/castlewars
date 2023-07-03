@@ -15,7 +15,6 @@ import {
 import styles from './Register.module.scss'
 import { useRegisterMutation } from '../../query'
 import { FormData } from '../../types'
-import { useTokensModelHandle } from '../../../../entities/auth'
 import { useTribeTypesQuery } from '../../../../entities/tribe'
 
 function useFormInit() {
@@ -24,10 +23,9 @@ function useFormInit() {
 
 function useSubmit(callback?: () => void) {
   const { mutateAsync } = useRegisterMutation()
-  const handleTokensModel = useTokensModelHandle()
 
   return async (data: FormData) => {
-    handleTokensModel(await mutateAsync(data))
+    await mutateAsync(data)
 
     callback?.()
   }

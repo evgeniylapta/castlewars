@@ -1,28 +1,20 @@
 import jwt from 'jsonwebtoken'
-import { Castle, User } from '@prisma/client'
+import { Response } from 'express'
+import { User } from '@prisma/client'
 import { addMinutes, getUnixTime, addDays } from 'date-fns'
 import { JwtPayloadType } from '../../config/passport'
 import { FullTokenType } from '../../types/token'
 import { prisma } from '../../config/prisma'
-import { findCastlesByUserId } from '../castle/castle.service'
+import { ACCESS_TOKEN_COOKIE_NAME, REFRESH_TOKEN_COOKIE_NAME } from '../../config/tokens'
 
-function getUserTokenPayload(
-  {
-    id, name, tribeTypeId, role
-  }: User,
-  castles: Castle[]
-) {
+function getTokenPayload({ id }: User) {
   return {
-    userId: id,
-    name,
-    tribeTypeId,
-    role,
-    castleId: castles[0].id
+    userId: id
   }
 }
 
 const generateToken = (
-  data: ReturnType<typeof getUserTokenPayload>,
+  data: ReturnType<typeof getTokenPayload>,
   expires: Date,
   type: FullTokenType,
   secret = process.env.JWT_SECRET
@@ -37,10 +29,6 @@ const generateToken = (
   return jwt.sign(payload, secret)
 }
 
-function getAccessTokenError() {
-  return new Error('ACCESS token can not be saved in DB')
-}
-
 const saveToken = async (
   token: string,
   userId: string,
@@ -49,7 +37,7 @@ const saveToken = async (
   blacklisted = false
 ) => {
   if (type === 'ACCESS') {
-    throw getAccessTokenError()
+    throw new Error('ACCESS token can not be saved in DB')
   }
 
   return prisma.token.create({
@@ -67,65 +55,70 @@ export const verifyToken = async (token: string, type: FullTokenType) => {
   const payload = jwt.verify(token, process.env.JWT_SECRET) as JwtPayloadType
 
   if (type === 'ACCESS') {
-    throw getAccessTokenError()
+    throw new Error('Access token can not be verified')
   }
 
-  const tokenDoc = await prisma.token.findFirst({
+  const tokens = await prisma.token.findMany({
     where: {
       token,
-      // todo is it required?
       type,
       userId: payload.userId,
-      blacklisted: false
+      blacklisted: false,
+      expires: {
+        gte: new Date()
+      }
     }
   })
-  if (!tokenDoc) {
+
+  if (!tokens.length) {
     throw new Error('Token not found')
   }
-  return tokenDoc
+
+  return tokens[0]
 }
 
-export const removeToken = async (token: string) => prisma.token.delete({
+export const removeToken = async (token: string) => prisma.token.deleteMany({
   where: {
     token
   }
 })
 
 export const generateAuthTokens = async (user: User) => {
-  const castles = await findCastlesByUserId(user.id)
-
   const accessTokenExpires = addMinutes(
     new Date(),
     Number(process.env.JWT_ACCESS_EXPIRATION_MINUTES)
   )
-  const accessToken = generateToken(getUserTokenPayload(user, castles), accessTokenExpires, 'ACCESS')
+
+  const accessToken = generateToken(getTokenPayload(user), accessTokenExpires, 'ACCESS')
 
   const refreshTokenExpires = addDays(new Date(), Number(process.env.JWT_ACCESS_EXPIRATION_MINUTES))
-  const refreshToken = generateToken(getUserTokenPayload(user, castles), refreshTokenExpires, 'REFRESH')
+  const refreshToken = generateToken(getTokenPayload(user), refreshTokenExpires, 'REFRESH')
   await saveToken(refreshToken, user.id, refreshTokenExpires, 'REFRESH')
 
   return {
-    access: {
-      token: accessToken,
-      expires: accessTokenExpires.toString()
-    },
-    refresh: {
-      token: refreshToken,
-      expires: refreshTokenExpires.toString()
-    }
+    accessToken,
+    refreshToken
   }
 }
 
-// export async function removeUserTokens(user: User) {
-// const foundUser = await prisma.user.findUnique({
-//   where: { id: user.id },
-//   include: { tokens: true }
-// })
+export async function removeUserTokens(user: User) {
+  const foundUser = await prisma.user.findUnique({
+    where: { id: user.id },
+    include: { tokens: true }
+  })
 
-// foundUser.tokens.forEach(() => {
-//
-// })
-// }
+  foundUser.tokens.forEach(() => {
+
+  })
+}
+
+export function setTokensHeaders(res: Response, accessToken, refreshToken) {
+  // todo move accessToken to constant to reuse in passport strategy
+  res.setHeader('Set-Cookie', [
+    `${ACCESS_TOKEN_COOKIE_NAME}=${accessToken}; SameSite=None; Secure; Path=/`,
+    `${REFRESH_TOKEN_COOKIE_NAME}=${refreshToken}; SameSite=None; Secure; Path=/`
+  ])
+}
 
 // const generateResetPasswordToken = async (email: string) => {
 //   const user = await userByEmail(email);
@@ -137,10 +130,10 @@ export const generateAuthTokens = async (user: User) => {
 //   await saveToken(resetPasswordToken, user.id, expires, tokenTypes.RESET_PASSWORD);
 //   return resetPasswordToken;
 // };
-//
+
 // const generateVerifyEmailToken = async (user) => {
-//   const expires = moment().add(config.jwt.verifyEmailExpirationMinutes, 'minutes');
-//   const verifyEmailToken = generateToken(user.id, expires, tokenTypes.VERIFY_EMAIL);
-//   await saveToken(verifyEmailToken, user.id, expires, tokenTypes.VERIFY_EMAIL);
-//   return verifyEmailToken;
-// };
+//   const expires = moment().add(config.jwt.verifyEmailExpirationMinutes, 'minutes')
+//   const verifyEmailToken = generateToken(user.id, expires, tokenTypes.VERIFY_EMAIL)
+//   await saveToken(verifyEmailToken, user.id, expires, tokenTypes.VERIFY_EMAIL)
+//   return verifyEmailToken
+// }

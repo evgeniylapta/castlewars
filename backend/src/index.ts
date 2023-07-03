@@ -7,7 +7,7 @@ import { generateBots } from './features/generation/services/generation.service'
 const server = app.listen(config.port, async () => {
   logger.info(`Listening to port ${config.port}`)
 
-  // await generateBots(10)
+  await generateBots(100)
   realTimeHandleStart()
 })
 

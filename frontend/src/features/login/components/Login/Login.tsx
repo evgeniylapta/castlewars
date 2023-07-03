@@ -5,15 +5,12 @@ import { emailValidation, requiredRule, CustomTextField } from '../../../../shar
 import styles from './Login.module.scss'
 import { FormData } from '../../types'
 import { useLoginMutation } from '../../query'
-import { useTokensModelHandle } from '../../../../entities/auth'
 
 function useSubmit(callback?: () => void) {
   const { mutateAsync } = useLoginMutation()
 
-  const handleTokensModel = useTokensModelHandle()
-
   return async (data: FormData) => {
-    handleTokensModel(await mutateAsync(data))
+    await mutateAsync(data)
 
     callback?.()
   }

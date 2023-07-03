@@ -1,10 +1,17 @@
-import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
+import { Strategy as JwtStrategy } from 'passport-jwt'
 import { prisma } from './prisma'
 import { FullTokenType } from '../types/token'
+import { ACCESS_TOKEN_COOKIE_NAME } from './tokens'
+
+const cookieExtractor = (req) => {
+  let token = null
+  if (req && req.cookies) token = req.cookies[ACCESS_TOKEN_COOKIE_NAME]
+  return token
+}
 
 const jwtOptions = {
   secretOrKey: process.env.JWT_SECRET,
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
+  jwtFromRequest: cookieExtractor
 }
 
 export type JwtPayloadType = {

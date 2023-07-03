@@ -26,12 +26,18 @@ function useCells() {
   } = useCastleContext()
 
   return useMemo(
-    () => cellsModels(
-      castles,
-      extremePoints(centerPoint, mapSize(isExpanded)),
-      myCastle?.id,
-      selectedCastle?.id
-    ),
+    () => {
+      if (!castles) {
+        return []
+      }
+
+      return cellsModels(
+        castles,
+        extremePoints(centerPoint, mapSize(isExpanded)),
+        myCastle?.id,
+        selectedCastle?.id
+      )
+    },
     [castles, centerPoint, isExpanded, myCastle, selectedCastle]
   )
 }

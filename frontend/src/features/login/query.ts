@@ -1,13 +1,18 @@
 import { useMutation } from 'react-query'
 import { apiClient } from '../../shared'
 import { FormData } from './types'
-import { AuthTokensModel } from '../../entities/auth/types'
+import { UserData } from '../../entities/auth/types'
+import { useUserDataContext } from '../../entities/auth'
 
 export function useLoginMutation() {
-  return useMutation<AuthTokensModel, undefined, FormData>(
+  const { muUserQuery: { refetch } } = useUserDataContext()
+
+  return useMutation<UserData, undefined, FormData>(
     'login',
     async (formData) => {
       const { data } = await apiClient.post('/auth/login', formData)
+
+      await refetch()
 
       return data
     }

@@ -12,11 +12,10 @@ import FormItem from '../FormItem/FormItem'
 import styles from './UnitsOrderModal.module.scss'
 import TotalPrice from '../TotalPrice/TotalPrice'
 import Submit from '../Submit/Submit'
-import { useAuthData } from '../../../../entities/auth'
+import { useUserDataContext } from '../../../../entities/auth'
 
 function useUnitTypes() {
-  const userData = useAuthData()
-  return useUnitTypesByTribeId(userData?.tribeTypeId)
+  return useUnitTypesByTribeId(useUserDataContext().muUserQuery?.data?.tribeTypeId)
 }
 
 type Props = {

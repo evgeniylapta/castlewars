@@ -1,10 +1,13 @@
 import { useMutation } from 'react-query'
 import { apiClient } from '../../shared'
 import { FormData } from './types'
-import { AuthTokensModel } from '../../entities/auth/types'
+import { UserData } from '../../entities/auth/types'
+import { useUserDataContext } from '../../entities/auth'
 
 export function useRegisterMutation() {
-  return useMutation<AuthTokensModel, undefined, FormData>(
+  const { muUserQuery: { refetch } } = useUserDataContext()
+
+  return useMutation<UserData, undefined, FormData>(
     'register',
     async ({
       email, password, userName, tribeTypeId
@@ -15,6 +18,8 @@ export function useRegisterMutation() {
           email, password, userName, tribeTypeId
         }
       )
+
+      await refetch()
 
       return data
     }

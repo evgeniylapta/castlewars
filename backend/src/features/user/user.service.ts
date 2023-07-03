@@ -3,17 +3,6 @@ import bcrypt from 'bcrypt'
 import { prisma } from '../../config/prisma'
 import { generateUser } from '../generation/services/generation.service'
 
-export async function findCurrentUser() {
-  return prisma.user.findFirst({
-    where: {
-      name: 'TestUser'
-    },
-    include: {
-      castles: true
-    }
-  })
-}
-
 // todo optimize to aggregated
 export async function findBotsAmount() {
   return (await prisma.user.findMany({
@@ -41,6 +30,11 @@ export async function findUserByEmail(email: string) {
   return prisma.user.findFirst({ where: { email } })
 }
 
-export async function findUserById(id: string) {
-  return prisma.user.findUnique({ where: { id } })
+export async function findUserById(id: string, withCastles = false) {
+  return prisma.user.findUnique({
+    where: { id },
+    include: {
+      castles: withCastles
+    }
+  })
 }
