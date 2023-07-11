@@ -13,10 +13,10 @@ import HistoryDetails from '../HistoryDetails/HistoryDetails'
 import { AttackIcon } from '../../../../entities/attack'
 import styles from './Row.module.scss'
 
-function useIsAttack({ castleFromId }: AttacksHistory) {
+function useIsAttack({ castleFrom }: AttacksHistory) {
   const { selectedCastleQuery: { data: selectedCastle } } = useCastleContext()
 
-  return castleFromId === selectedCastle?.id
+  return castleFrom.id === selectedCastle?.id
 }
 
 function useDate({ attackDate }: AttacksHistory) {
@@ -49,7 +49,9 @@ const Row: FC<Props> = ({ history }) => {
           </div>
         </TableCell>
         <TableCell>
-          todo from/to
+          {isAttack
+            ? `To ${history.castleTo.user.name}`
+            : `From ${history.castleFrom.user.name}`}
         </TableCell>
         <TableCell align="right">
           {useDate(history)}

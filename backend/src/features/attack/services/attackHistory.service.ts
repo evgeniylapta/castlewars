@@ -25,7 +25,27 @@ export async function findCreateAttacksHistory({
     items: await prisma.attackHistory.findMany({
       where,
       include: {
-        items: true
+        items: true,
+        castleFrom: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
+        },
+        castleTo: {
+          include: {
+            user: {
+              select: {
+                id: true,
+                name: true
+              }
+            }
+          }
+        }
       },
       skip: Number(offset),
       take: Number(limit),

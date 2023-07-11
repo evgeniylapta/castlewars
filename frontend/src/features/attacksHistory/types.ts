@@ -1,4 +1,5 @@
 import { Uuid } from '../../shared'
+import { Castle } from '../../commonTypes'
 
 export type AttacksHistoryItem = {
   id: Uuid,
@@ -9,10 +10,17 @@ export type AttacksHistoryItem = {
   newAmount: number
 }
 
+type AttacksHistoryCastle = Castle & {
+  user: {
+    id: Uuid
+    name: string
+  }
+}
+
 export type AttacksHistory = {
   id: Uuid,
-  castleFromId: Uuid,
-  castleToId: Uuid,
+  castleFrom: AttacksHistoryCastle,
+  castleTo: AttacksHistoryCastle,
   attackDate: string,
   items: AttacksHistoryItem[]
 }
