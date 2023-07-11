@@ -185,5 +185,7 @@ export async function processUnitOrders() {
 
   await prisma.$transaction(operations)
 
-  await emitSocketEvents(foundUnitOrders)
+  await emitSocketEvents(
+    foundUnitOrders.filter((unitOrder) => getModelsToCreate(unitOrder, now).length)
+  )
 }

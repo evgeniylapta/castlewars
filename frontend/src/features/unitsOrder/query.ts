@@ -21,23 +21,3 @@ export function useUnitsOrderMutation() {
     )
   )
 }
-
-export function useUnitsOrderQuery() {
-  const { selectedCastleQuery: { data: castle } } = useCastleContext()
-  const key = ['unitsOrder', castle?.id]
-
-  return useQuery(
-    key,
-    async () => {
-      const { data } = await apiClient.get('/unit-group', {
-        params: { castleId: castle?.id }
-      })
-
-      return data
-    },
-    {
-      enabled: !!castle?.id,
-      keepPreviousData: true
-    }
-  )
-}
