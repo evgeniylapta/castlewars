@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  USER
+}
+
+enum TokenType {
+  REFRESH
+  RESET_PASSWORD
+  VERIFY_EMAIL
+}
+
+model User {
+  id          String     @id @default(uuid())
+  name        String
+  email       String
+  password    String
+  role        UserRole
+  isBot       Boolean    @default(false)
+  castles     Castle[]
+  tribeType   TribeType  @relation(fields: [tribeTypeId], references: [id])
+  tribeTypeId String
+  botAction   BotAction?
+  tokens      Token[]
+}
+
+model Token {
+  id          String     @id @default(uuid())
+  token       String
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String
+  type        TokenType
+  expires     DateTime
+  blacklisted Boolean
+}
+
+model Castle {
+  id              String           @id @default(uuid())
+  x               Int
+  y               Int
+  user            User             @relation(fields: [userId], references: [id])
+  userId          String
+  castleResources CastleResources?
+  unitGroups      UnitGroup[]
+  attacksFrom     Attack[]         @relation("AttackCastleFrom")
+  attacksTo       Attack[]         @relation("AttackCastleTo")
+  attackHistoryFrom AttackHistory[] @relation("AttackHistoryCastleFrom")
+  attackHistoryTo AttackHistory[] @relation("AttackHistoryCastleTo")
+  unitsOrders     UnitsOrder[]
+}
+
+model CastleResources {
+  id             String   @id @default(uuid())
+  gold           Int
+  goldLastUpdate DateTime
+  castle         Castle   @relation(fields: [castleId], references: [id])
+  castleId       String   @unique
+}
+
+model UnitType {
+  id               String           @id @default(uuid())
+  name             String
+  attack           Int
+  defence          Int
+  speed            Int
+  carryingCapacity Int
+  cropConsumption  Int
+  creatingSpeed    Int
+  goldPrice        Int
+  unitGroups       UnitGroup[]
+  unitsOrderItem   UnitsOrderItem[]
+  tribeType        TribeType        @relation(fields: [tribeTypeId], references: [id])
+  tribeTypeId      String
+  subsequence      Int
+  attackHistoryItems AttackHistoryItem[]
+}
+
+model TribeType {
+  id        String     @id @default(uuid())
+  name      String
+  users     User[]
+  unitTypes UnitType[]
+}
+
+model Attack {
+  id           String      @id @default(uuid())
+  castleFrom   Castle      @relation(name: "AttackCastleFrom", fields: [castleFromId], references: [id])
+  castleFromId String
+  castleTo     Castle      @relation(name: "AttackCastleTo", fields: [castleToId], references: [id])
+  castleToId   String
+  unitGroups   UnitGroup[]
+  dateTime     DateTime
+  isReturning  Boolean
+}
+
+model UnitGroup {
+  id            String   @id @default(uuid())
+  unitType      UnitType @relation(fields: [unitTypeId], references: [id])
+  unitTypeId    String
+  amount        Int
+  ownerCastle   Castle?  @relation(fields: [ownerCastleId], references: [id], onDelete: Cascade)
+  ownerCastleId String?
+  ownerAttack   Attack?  @relation(fields: [ownerAttackId], references: [id], onDelete: Cascade)
+  ownerAttackId String?
+}
+
+model MapSettlement {
+  id               String @id @default(uuid())
+  direction        String
+  settleAngleIndex Int
+}
+
+model UnitsOrder {
+  id               String           @id @default(uuid())
+  castle           Castle           @relation(fields: [castleId], references: [id])
+  castleId         String
+  lastCreationDate DateTime
+  items            UnitsOrderItem[]
+}
+
+model UnitsOrderItem {
+  id          String     @id @default(uuid())
+  unitType    UnitType   @relation(fields: [unitTypeId], references: [id])
+  unitTypeId  String
+  order       UnitsOrder @relation(fields: [orderId], references: [id])
+  orderId     String
+  amount      Int
+  subsequence Int
+}
+
+model BotAction {
+  id     String   @id @default(uuid())
+  user   User     @relation(fields: [userId], references: [id])
+  userId String   @unique
+  date   DateTime
+}
+
+model AttackHistory {
+  id     String   @id @default(uuid())
+  castleFrom   Castle     @relation(name: "AttackHistoryCastleFrom", fields: [castleFromId], references: [id])
+  castleFromId String
+  castleTo   Castle     @relation(name: "AttackHistoryCastleTo", fields: [castleToId], references: [id])
+  castleToId String
+  attackDate   DateTime
+  items AttackHistoryItem[]
+}
+
+model AttackHistoryItem {
+  id String   @id @default(uuid())
+  attackHistory AttackHistory @relation(fields: [attackHistoryId], references: [id])
+  attackHistoryId String
+  isDefence Boolean
+  unitType UnitType @relation(fields: [unitTypeId], references: [id])
+  unitTypeId String
+  newAmount Int
+}
