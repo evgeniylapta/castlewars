@@ -31,8 +31,7 @@
           "dev": true
         },
         "production": {
-          "buildTarget": "frontend:build:production",
-          "dev": true
+          "buildTarget": "frontend:build:production"
         }
       }
     },
