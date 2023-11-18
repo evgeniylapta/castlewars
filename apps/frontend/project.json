@@ -7,7 +7,7 @@
     "build": {
       "executor": "@nx/next:build",
       "outputs": ["{options.outputPath}"],
-      "defaultConfiguration": "production",
+      "defaultConfiguration": "development",
       "options": {
         "outputPath": "dist/apps/frontend"
       },
@@ -23,7 +23,6 @@
       "defaultConfiguration": "development",
       "options": {
         "buildTarget": "frontend:build",
-        "dev": true,
         "port": 3000
       },
       "configurations": {
@@ -33,7 +32,7 @@
         },
         "production": {
           "buildTarget": "frontend:build:production",
-          "dev": false
+          "dev": true
         }
       }
     },

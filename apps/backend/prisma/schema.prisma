@@ -160,5 +160,6 @@ model AttackHistoryItem {
   isDefence Boolean
   unitType UnitType @relation(fields: [unitTypeId], references: [id])
   unitTypeId String
+  oldAmount Int
   newAmount Int
 }

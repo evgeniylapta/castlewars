@@ -27,10 +27,7 @@
       "configurations": {
         "development": {},
         "production": {
-          "generateLockfile": true,
-          "esbuildOptions": {
-            "sourcemap": false
-          }
+          "generateLockfile": true
         }
       }
     },
@@ -78,68 +75,122 @@
       "executor": "@nx-tools/nx-prisma:generate",
       "options": {
         "schema": "apps/backend/prisma/schema.prisma"
+      },
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {},
+        "production": {}
       }
     },
     "prisma-migrate": {
       "executor": "nx:run-commands",
       "options": {
         "schema": "apps/backend/prisma/schema.prisma"
+      },
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {},
+        "production": {}
       }
     },
     "prisma-pull": {
       "executor": "@nx-tools/nx-prisma:pull",
       "options": {
         "schema": "apps/backend/prisma/schema.prisma"
+      },
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {},
+        "production": {}
       }
     },
     "prisma-push": {
       "executor": "@nx-tools/nx-prisma:push",
       "options": {
         "schema": "apps/backend/prisma/schema.prisma"
+      },
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {},
+        "production": {}
       }
     },
     "prisma-deploy": {
       "executor": "@nx-tools/nx-prisma:deploy",
       "options": {
         "schema": "apps/backend/prisma/schema.prisma"
+      },
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {},
+        "production": {}
       }
     },
     "prisma-status": {
       "executor": "@nx-tools/nx-prisma:status",
       "options": {
         "schema": "apps/backend/prisma/schema.prisma"
+      },
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {},
+        "production": {}
       }
     },
     "prisma-studio": {
       "executor": "@nx-tools/nx-prisma:studio",
       "options": {
         "schema": "apps/backend/prisma/schema.prisma"
+      },
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {},
+        "production": {}
       }
     },
     "prisma-reset": {
       "executor": "@nx-tools/nx-prisma:reset",
-      "defaultConfiguration": "development",
       "options": {
         "schema": "apps/backend/prisma/schema.prisma",
         "force": true
+      },
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {},
+        "production": {}
       }
     },
     "prisma-resolve": {
       "executor": "@nx-tools/nx-prisma:resolve",
       "options": {
         "schema": "apps/backend/prisma/schema.prisma"
+      },
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {},
+        "production": {}
       }
     },
     "prisma-seed": {
       "executor": "@nx-tools/nx-prisma:seed",
       "options": {
         "schema": "apps/backend/prisma/schema.prisma"
+      },
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {},
+        "production": {}
       }
     },
     "prisma-validate": {
       "executor": "@nx-tools/nx-prisma:validate",
       "options": {
         "schema": "apps/backend/prisma/schema.prisma"
+      },
+      "defaultConfiguration": "development",
+      "configurations": {
+        "development": {},
+        "production": {}
       }
     }
   },

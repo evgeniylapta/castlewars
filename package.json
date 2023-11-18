@@ -5,10 +5,15 @@
   "scripts": {
     "start": "npm run dev:start",
     "dev:start": "nx run-many -t serve --configuration=development",
+    "dev:start:frontend": "nx run frontend:serve",
+    "dev:start:backend": "nx run backend:serve",
     "dev:prisma:generate": "nx run-many -t prisma-generate --verbose",
     "dev:prisma:reset": "nx run-many -t prisma-reset --verbose",
-    "dev:docker:start-db-only": "docker-compose -f docker-compose-db-only.yml up --build",
-    "prod:start": "nx run-many -t serve --configuration=production"
+    "dev:docker:db": "docker-compose -f docker-compose-db-only.yml up --build",
+    "prod:docker:start": "docker-compose up --build",
+    "prod:start": "nx run-many -t serve --configuration=production",
+    "prod:prisma:generate": "nx run-many -t prisma-generate --verbose --configuration=production",
+    "prod:prisma:reset": "nx run-many -t prisma-reset --verbose --configuration=production"
   },
   "private": true,
   "dependencies": {
@@ -69,7 +74,6 @@
     "@nx/react": "16.5.2",
     "@nx/workspace": "16.5.2",
     "@testing-library/react": "14.0.0",
-    "@types/date-fns": "^2.6.0",
     "@types/express": "~4.17.13",
     "@types/jest": "^29.4.0",
     "@types/lodash": "^4.14.191",

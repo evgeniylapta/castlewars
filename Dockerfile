@@ -4,8 +4,10 @@ WORKDIR /app
 
 COPY ./package*.json .
 
-RUN npm ci --only=production
+RUN npm ci
+
+RUN npm run prod:prisma:generate
 
 COPY . .
 
-CMD npm run start:migrate:prod
+CMD ["sh","-c","npm run prod:prisma:reset && npm run prod:start"]

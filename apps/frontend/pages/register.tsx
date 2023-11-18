@@ -8,7 +8,7 @@ import { LoginLink } from '../src/features/login'
 const RegisterPage: NextPageExtended = () => {
   const router = useRouter()
 
-  return <Register onRegistered={() => router.push('/game')} extraContent={<LoginLink />} />
+  return <Register onRegistered={() => router.push('/')} extraContent={<LoginLink />} />
 }
 
 RegisterPage.getLayout = function getLayout(page: ReactElement) {
