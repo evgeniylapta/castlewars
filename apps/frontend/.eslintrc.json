@@ -3,7 +3,6 @@
     "plugin:@nx/react-typescript",
     "next",
     "next/core-web-vitals",
-    "airbnb",
     "../../.eslintrc.json"
   ],
   "ignorePatterns": ["!**/*", ".next/**/*"],
@@ -12,22 +11,12 @@
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
       "rules": {
         "@next/next/no-html-link-for-pages": ["error", "apps/frontend/pages"],
-        "indent": ["error", 2],
-        "semi": ["error", "never"],
-        "import/prefer-default-export": "off",
-        "import/no-extraneous-dependencies": "off",
-        "comma-dangle": ["error", "never"],
-        "react/react-in-jsx-scope": "off",
-        "no-nested-ternary": "off",
-        "import/extensions": "off",
         "react/jsx-no-useless-fragment": "off",
-        "import/no-unresolved": "off",
+        "react/react-in-jsx-scope": "off",
         "react/jsx-props-no-spreading": "off",
         "react/jsx-filename-extension": [2, { "extensions": [".js", ".jsx", ".ts", ".tsx"] }],
         "react/require-default-props": "off",
-        "react/function-component-definition": "off",
-        "no-unused-vars": "off",
-        "@typescript-eslint/no-unused-vars": ["error"]
+        "react/function-component-definition": "off"
       }
     },
     {

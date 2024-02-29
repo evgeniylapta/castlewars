@@ -36,6 +36,8 @@ const InProgress: FC = () => {
   const { unitsOrdersQuery: { data: unitsOrder } } = useUnitsOrderStatusContext()
   const item = getFirstQueueItem(unitsOrder)
 
+  const time = useTime()
+
   if (!item) {
     return null
   }
@@ -47,7 +49,7 @@ const InProgress: FC = () => {
       <Typography variant="body2">
         in
         {' '}
-        {useTime()}
+        {time}
       </Typography>
     </div>
   )

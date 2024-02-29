@@ -2,6 +2,7 @@ import { Strategy as JwtStrategy } from 'passport-jwt'
 import { prisma } from './prisma'
 import { FullTokenType } from '../types/token'
 import { ACCESS_TOKEN_COOKIE_NAME } from './tokens'
+import config from './config'
 
 const cookieExtractor = (req) => {
   let token = null
@@ -10,7 +11,7 @@ const cookieExtractor = (req) => {
 }
 
 const jwtOptions = {
-  secretOrKey: process.env.JWT_SECRET,
+  secretOrKey: config.jwt.secret,
   jwtFromRequest: cookieExtractor
 }
 

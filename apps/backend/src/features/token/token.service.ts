@@ -6,6 +6,7 @@ import { JwtPayloadType } from '../../config/passport'
 import { FullTokenType } from '../../types/token'
 import { prisma } from '../../config/prisma'
 import { ACCESS_TOKEN_COOKIE_NAME, REFRESH_TOKEN_COOKIE_NAME } from '../../config/tokens'
+import config from "../../config/config";
 
 function getTokenPayload({ id }: User) {
   return {
@@ -17,7 +18,7 @@ const generateToken = (
   data: ReturnType<typeof getTokenPayload>,
   expires: Date,
   type: FullTokenType,
-  secret = process.env.JWT_SECRET
+  secret = config.jwt.secret
 ) => {
   const payload: JwtPayloadType = {
     type,
@@ -52,7 +53,7 @@ const saveToken = async (
 }
 
 export const verifyToken = async (token: string, type: FullTokenType) => {
-  const payload = jwt.verify(token, process.env.JWT_SECRET) as JwtPayloadType
+  const payload = jwt.verify(token, config.jwt.secret) as JwtPayloadType
 
   if (type === 'ACCESS') {
     throw new Error('Access token can not be verified')
@@ -86,12 +87,12 @@ export const removeToken = async (token: string) => prisma.token.deleteMany({
 export const generateAuthTokens = async (user: User) => {
   const accessTokenExpires = addMinutes(
     new Date(),
-    Number(process.env.JWT_ACCESS_EXPIRATION_MINUTES)
+    Number(config.jwt.accessExpirationMinutes)
   )
 
   const accessToken = generateToken(getTokenPayload(user), accessTokenExpires, 'ACCESS')
 
-  const refreshTokenExpires = addDays(new Date(), Number(process.env.JWT_ACCESS_EXPIRATION_MINUTES))
+  const refreshTokenExpires = addDays(new Date(), Number(config.jwt.refreshExpirationDays))
   const refreshToken = generateToken(getTokenPayload(user), refreshTokenExpires, 'REFRESH')
   await saveToken(refreshToken, user.id, refreshTokenExpires, 'REFRESH')
 
@@ -113,10 +114,9 @@ export async function removeUserTokens(user: User) {
 }
 
 export function setTokensHeaders(res: Response, accessToken, refreshToken) {
-  // todo move accessToken to constant to reuse in passport strategy
   res.setHeader('Set-Cookie', [
-    `${ACCESS_TOKEN_COOKIE_NAME}=${accessToken}; SameSite=None; Secure; Path=/`,
-    `${REFRESH_TOKEN_COOKIE_NAME}=${refreshToken}; SameSite=None; Secure; Path=/`
+    `${ACCESS_TOKEN_COOKIE_NAME}=${accessToken}; HttpOnly; SameSite=None; Secure; Path=/`,
+    `${REFRESH_TOKEN_COOKIE_NAME}=${refreshToken}; HttpOnly; SameSite=None; Secure; Path=/`
   ])
 }
 

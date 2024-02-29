@@ -39,11 +39,9 @@ const GamePageContent: NextPageExtended = () => {
 const HomePage: NextPageExtended = () => (
   <TribeTypesContextProvider>
     <UnitTypesContextProvider>
-      <SocketsContextProvider>
-        <CastleProvider myCastleId={useUserDataContext().muUserQuery?.data?.castleId}>
-          <GamePageContent />
-        </CastleProvider>
-      </SocketsContextProvider>
+      <CastleProvider myCastleId={useUserDataContext().myUserQuery?.data?.castleId}>
+        <GamePageContent />
+      </CastleProvider>
     </UnitTypesContextProvider>
   </TribeTypesContextProvider>
 )

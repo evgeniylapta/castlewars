@@ -1,10 +1,11 @@
 import { ListItem, ListItemText } from '@mui/material'
 import { UnitsOrderStatus, useUnitsOrderStatusContext } from '../../../../../features/unitsOrderStatus'
+import { useIsPersonalDataAvailable } from '../../../hooks/useIsPersonalDataAvailable'
 
 export function useIsAvailable() {
   const { unitsOrdersQuery } = useUnitsOrderStatusContext()
 
-  return !!unitsOrdersQuery.data?.items?.length
+  return useIsPersonalDataAvailable() && !!unitsOrdersQuery.data?.items?.length
 }
 
 const UnitsOrderStatusItem = () => (

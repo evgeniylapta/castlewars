@@ -15,7 +15,7 @@ import Submit from '../Submit/Submit'
 import { useUserDataContext } from '../../../../entities/auth'
 
 function useUnitTypes() {
-  return useUnitTypesByTribeId(useUserDataContext().muUserQuery?.data?.tribeTypeId)
+  return useUnitTypesByTribeId(useUserDataContext().myUserQuery?.data?.tribeTypeId)
 }
 
 type Props = {

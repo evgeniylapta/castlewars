@@ -5,6 +5,7 @@ import unitOrderRouter from './features/unitOrder/unitOrder.route'
 import unitGroupRouter from './features/unitGroup/unitGroup.route'
 import resourcesRouter from './features/resource/resource.route'
 import authRouter from './features/auth/auth.route'
+import adminRouter from './features/admin/admin.route'
 import dictionariesRouter from './features/dictionary/dictionary.route'
 import userRouter from './features/user/user.route'
 import config from './config/config'
@@ -35,6 +36,10 @@ const defaultRoutes = [
   {
     path: '/resource',
     route: resourcesRouter
+  },
+  {
+    path: '/admin',
+    route: adminRouter
   },
   {
     path: '/auth',

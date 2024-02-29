@@ -1,5 +1,6 @@
 import { useQuery } from 'react-query'
-import { apiClient } from '../../shared'
+import { SocketAction } from '@castlewars/shared-utils'
+import { apiClient, useSocketSubscribeQueryOnEvent } from '../../shared'
 import { MapRange } from './types'
 import { Castle } from '../../commonTypes'
 
@@ -16,8 +17,12 @@ async function castles({
 }
 
 export function useCastlesQuery(mapRange: MapRange) {
+  const key = ['castles', mapRange?.minX, mapRange?.minY, mapRange?.maxX, mapRange?.maxY]
+
+  useSocketSubscribeQueryOnEvent(SocketAction.BOTS_GENERATED, key)
+
   return useQuery(
-    ['castles', mapRange?.minX, mapRange?.minY, mapRange?.maxX, mapRange?.maxY],
+    key,
     () => mapRange && castles(mapRange),
     {
       enabled: !!mapRange,

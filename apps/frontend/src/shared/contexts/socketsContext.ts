@@ -1,5 +1,5 @@
 import constate from 'constate'
-import { useEffect, useRef } from 'react'
+import {useCallback, useEffect, useRef} from 'react'
 import { io } from 'socket.io-client'
 import { useSetState } from 'react-use'
 import { Socket } from 'socket.io-client/build/esm/socket'
@@ -61,7 +61,10 @@ function useSocketStateHandle(socket: ReturnType<typeof useSocket>) {
   }, [socketState, socket])
 
   return {
-    setSocketState: (key: string, value: any) => setSocketState({ [key]: value })
+    setSocketState: useCallback(
+      (key: string, value: any) => setSocketState({ [key]: value }),
+      []
+    )
   }
 }
 

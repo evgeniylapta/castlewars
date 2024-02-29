@@ -1,4 +1,4 @@
-export * from './contexts/authContext'
+export * from './contexts/userDataContext'
 export { default as AuthGuard } from './components/AuthGuard'
 export { unauthorisedInterceptorInit } from './utils/unauthorisedHandleInterceptor'
 export * from './hooks/useCustomEventSubscribe'

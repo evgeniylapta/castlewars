@@ -5,7 +5,7 @@ import { UserData } from '../../entities/auth/types'
 import { useUserDataContext } from '../../entities/auth'
 
 export function useRegisterMutation() {
-  const { muUserQuery: { refetch } } = useUserDataContext()
+  const { myUserQuery: { refetch } } = useUserDataContext()
 
   return useMutation<UserData, undefined, FormData>(
     'register',

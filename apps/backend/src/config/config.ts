@@ -1,7 +1,8 @@
 const config = {
-  env: 'development',
+  env: process.env.NODE_ENV,
   port: 4000,
-
+  generateBotsOnStart: process.env.GENERATE_BOTS_ON_START === 'true',
+  consoleLogsEnabled: process.env.CONSOLE_LOGS_ENABLED === 'true',
   jwt: {
     secret: process.env.JWT_SECRET,
     accessExpirationMinutes: process.env.JWT_ACCESS_EXPIRATION_MINUTES,

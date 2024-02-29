@@ -133,13 +133,14 @@ export async function createUnitOrderItems(
 ) {
   await prisma.$transaction(
     await items.reduce(
-      async (result, { unitTypeId, amount }) => [
+      async (result, { unitTypeId, amount }, index) => [
         ...await result,
         ...await getCreateUnitOrderItemOperations(
           getUnitTypeById(unitTypes, unitTypeId),
           castleId,
           amount,
-          true
+          true,
+          index
         )
       ],
       Promise.resolve([])

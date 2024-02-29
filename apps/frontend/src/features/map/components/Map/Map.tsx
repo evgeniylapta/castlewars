@@ -57,6 +57,13 @@ function useImperativeHandleInit(forwardedRef: ForwardedRef<MapRefProps>) {
 const MapContent: ForwardRefRenderFunction<MapRefProps> = (_, forwardedRef) => {
   useImperativeHandleInit(forwardedRef)
 
+  const cellModels = useCells()
+  const { isExpanded } = useMapContext()
+
+  if (!cellModels.length) {
+    return null
+  }
+
   return (
     <div className={styles.mapContainer}>
       <div className={styles.mapWrap}>
@@ -70,13 +77,12 @@ const MapContent: ForwardRefRenderFunction<MapRefProps> = (_, forwardedRef) => {
         <div
           className={styles.map}
           style={{
-            gridTemplateColumns: `repeat(${mapSize(useMapContext().isExpanded)}, 1fr)`
+            gridTemplateColumns: `repeat(${mapSize(isExpanded)}, 1fr)`
           }}
         >
-          {useCells()
-            .map((model) => (
-              <Cell cellModel={model} key={`${model.point.x}_${model.point.y}`} />
-            ))}
+          {cellModels.map((model) => (
+            <Cell cellModel={model} key={`${model.point.x}_${model.point.y}`} />
+          ))}
         </div>
       </div>
     </div>

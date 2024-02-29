@@ -2,13 +2,13 @@ import {
   FC, PropsWithChildren
 } from 'react'
 import { PossibleUndefined } from '../../../shared'
-import { useUserDataContext } from '../contexts/authContext'
+import { useUserDataContext } from '../contexts/userDataContext'
 
 const AuthGuard: FC<PropsWithChildren & { onlyAuthenticated: PossibleUndefined<boolean> }> = ({
   onlyAuthenticated,
   children
 }) => {
-  const { muUserQuery: { data } } = useUserDataContext()
+  const { myUserQuery: { data } } = useUserDataContext()
 
   return !onlyAuthenticated || data
     ? <>{children}</>

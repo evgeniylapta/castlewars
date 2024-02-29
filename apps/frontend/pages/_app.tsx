@@ -22,6 +22,7 @@ import {
   UserDataProvider,
   useSubscribeOnRefreshTokenFail
 } from '../src/entities/auth'
+import { SocketsContextProvider } from '../src/shared'
 
 unauthorisedInterceptorInit()
 
@@ -41,24 +42,25 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   const { push } = useRouter()
 
   useSubscribeOnRefreshTokenFail(() => {
-    console.log('test')
     push('login')
   })
 
   return (
     <QueryClientProvider client={queryClient}>
       <Hydrate state={pageProps.dehydratedState}>
-        <UserDataProvider allowToFetch={Component.onlyAuthenticated || false}>
-          <AuthGuard onlyAuthenticated={Component.onlyAuthenticated}>
-            <div className={styles.wrap}>
-              <Header />
-              <div className={styles.container}>
-                {getLayout(<Component {...pageProps} />)}
+        <SocketsContextProvider>
+          <UserDataProvider allowToFetch={Component.onlyAuthenticated || false}>
+            <AuthGuard onlyAuthenticated={Component.onlyAuthenticated}>
+              <div className={styles.wrap}>
+                <Header />
+                <div className={styles.container}>
+                  {getLayout(<Component {...pageProps} />)}
+                </div>
               </div>
-            </div>
-          </AuthGuard>
-        </UserDataProvider>
-        <ReactQueryDevtools initialIsOpen={false} />
+            </AuthGuard>
+          </UserDataProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+        </SocketsContextProvider>
       </Hydrate>
     </QueryClientProvider>
   )
