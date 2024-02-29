@@ -70,7 +70,6 @@ async function getOperationsByModel(
         item.unitType,
         castleResources.castleId,
         item.amount,
-        false,
         entries.findIndex((entryItem) => entryItem === entry)
       )
     ]

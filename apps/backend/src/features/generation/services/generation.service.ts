@@ -63,6 +63,7 @@ function getUserOperation(
     withTroops,
     tribeTypeId,
     noGold,
+    role,
     emailFactory,
     passwordFactory
   }: GenerateUserConfig,
@@ -78,7 +79,7 @@ function getUserOperation(
     data: {
       tribeTypeId: tribeTypeId || tribeType.id,
       isBot,
-      role: 'ADMIN',
+      role,
       name: nameFactory(index),
       email: emailFactory(index),
       password: passwordFactory(index),

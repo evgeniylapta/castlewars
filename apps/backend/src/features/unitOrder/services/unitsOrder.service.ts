@@ -27,12 +27,8 @@ async function getUnitsOrderItemCreatingOperations(
   extraSubsequenceIndex = 0
 ) {
   const lastUnitOrderItem = await prisma.unitsOrderItem.findFirst({
-    where: {
-      orderId: unitsOrder.id
-    },
-    orderBy: {
-      subsequence: 'desc'
-    }
+    where: { orderId: unitsOrder.id },
+    orderBy: { subsequence: 'desc' }
   })
 
   return [
@@ -73,28 +69,12 @@ export async function getCreateUnitOrderItemOperations(
   unitType: UnitType,
   castleId: Castle['id'],
   amount?: number,
-  subtractGold = true,
   extraSubsequenceIndex = 0
 ) {
-  // todo pass castleModel as param ??
-  const castle = await prisma.castle.findFirst({
-    where: {
-      id: castleId
-    },
-    include: {
-      castleResources: true,
-      unitsOrders: {
-        include: {
-          items: true
-        }
-      }
-    }
-  })
-
-  let unitOrder = castle.unitsOrders[0]
-  if (!unitOrder) {
-    unitOrder = await createUnitsOrder(castleId)
-  }
+  const unitOrder = await prisma.unitsOrder.findFirst({
+    where: { castleId },
+    include: { items: true }
+  }) || await createUnitsOrder(castleId)
 
   const updateLastCreationDateOperation = getUpdateUnitsOrderLastCreationDateOperation(
     unitOrder,
@@ -108,12 +88,7 @@ export async function getCreateUnitOrderItemOperations(
       amount,
       extraSubsequenceIndex
     ),
-    ...(updateLastCreationDateOperation ? [updateLastCreationDateOperation] : []),
-    ...(
-      subtractGold
-        ? [getAddCastleGoldOperation(castle.castleResources, -(unitType.goldPrice * amount))]
-        : []
-    )
+    ...(updateLastCreationDateOperation ? [updateLastCreationDateOperation] : [])
   ]
 }
 
@@ -127,10 +102,18 @@ async function emitSocketEvents(castleId: Castle['id']) {
   )
 }
 
+function calculateUnitsPrice(items: PostCreateUnitsOrderDto['items'], unitTypes: UnitType[]) {
+  return items.reduce((result, { unitTypeId, amount }) => (
+    result + (getUnitTypeById(unitTypes, unitTypeId).goldPrice * amount)
+  ), 0)
+}
+
 export async function createUnitOrderItems(
   unitTypes: UnitType[],
   { items, castleId }: PostCreateUnitsOrderDto
 ) {
+  const castleResources = await prisma.castleResources.findFirst({ where: { castleId } })
+
   await prisma.$transaction(
     await items.reduce(
       async (result, { unitTypeId, amount }, index) => [
@@ -139,8 +122,11 @@ export async function createUnitOrderItems(
           getUnitTypeById(unitTypes, unitTypeId),
           castleId,
           amount,
-          true,
           index
+        ),
+        getAddCastleGoldOperation(
+          castleResources,
+          -(calculateUnitsPrice(items, unitTypes))
         )
       ],
       Promise.resolve([])
