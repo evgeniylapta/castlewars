@@ -1,5 +1,5 @@
 import constate from 'constate'
-import {useCallback, useEffect, useRef} from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { io } from 'socket.io-client'
 import { useSetState } from 'react-use'
 import { Socket } from 'socket.io-client/build/esm/socket'

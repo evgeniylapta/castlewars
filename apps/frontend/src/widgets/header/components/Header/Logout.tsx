@@ -1,7 +1,7 @@
 import { FC } from 'react'
 import { Button } from '@mui/material'
 import { useRouter } from 'next/router'
-import {logout, useUserDataContext} from '../../../../entities/auth'
+import { logout, useUserDataContext } from '../../../../entities/auth'
 
 function useLogoutHandle() {
   const { push } = useRouter()

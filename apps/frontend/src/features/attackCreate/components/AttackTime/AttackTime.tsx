@@ -1,11 +1,11 @@
 import { FC, useMemo } from 'react'
 import { addSeconds, formatDuration, intervalToDuration } from 'date-fns'
 import { FormHelperText, Typography } from '@mui/material'
+import { unitTypesMovingSeconds } from '@castlewars/shared-utils'
 import { findUnitTypeById, useUnitTypesContext } from '../../../../entities/unit'
 import { useNewDateInterval } from '../../../../shared'
 import { useCreateAttackContext } from '../../contexts/createAttackContext'
 import { UnitType } from '../../../../commonTypes'
-import { unitTypesMovingSeconds } from '@castlewars/shared-utils'
 
 function useAttackTime() {
   const { unitTypesQuery: { data: unitTypes } } = useUnitTypesContext()

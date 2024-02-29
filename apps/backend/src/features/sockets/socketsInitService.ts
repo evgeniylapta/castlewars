@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { Server, Socket } from 'socket.io'
 import { Server as HttpServer } from 'http'
-import {Castle, User} from '@prisma/client'
+import { Castle, User } from '@prisma/client'
 import { SocketAction } from '@castlewars/shared-utils'
 
 let socketsServer: Server = null

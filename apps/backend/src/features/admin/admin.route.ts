@@ -1,6 +1,6 @@
 import express from 'express'
-import {generateBotsController} from './admin.controller'
-import {auth} from "../../middlewares/auth";
+import { generateBotsController } from './admin.controller'
+import { auth } from '../../middlewares/auth'
 
 const router = express.Router()
 

@@ -6,7 +6,7 @@ import { JwtPayloadType } from '../../config/passport'
 import { FullTokenType } from '../../types/token'
 import { prisma } from '../../config/prisma'
 import { ACCESS_TOKEN_COOKIE_NAME, REFRESH_TOKEN_COOKIE_NAME } from '../../config/tokens'
-import config from "../../config/config";
+import config from '../../config/config'
 
 function getTokenPayload({ id }: User) {
   return {
