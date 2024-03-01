@@ -1,6 +1,6 @@
 # Castlewars
 
-**This is a simple clone of the popular online strategy game Travian.**
+**This is a feature-rich clone of the popular online strategy game Travian.**
 
 https://github.com/evgeniylapta/castlewars/assets/8464396/0c4a7789-bcf5-4e04-8285-eace3366f2f5
 
